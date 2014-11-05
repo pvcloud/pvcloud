@@ -2,19 +2,17 @@
 
 /**
  * @ngdoc function
- * @name pvcloudApp.controller:AboutCtrl
+ * @name pvcloudApp.controller:MyCloudCtrl
  * @description
- * # AboutCtrl
+ * # MyCloudCtrl
  * Controller of the pvcloudApp
  */
 angular.module('pvcloudApp')
-        .controller('AboutCtrl', function ($scope) {
-            $scope.$parent.ActiveView = "about";
-            $scope.ActiveView = "About";
+        .controller('MyCloudCtrl', function ($scope) {
+            $scope.$parent.ActiveView = "my_cloud";
             $scope.awesomeThings = [
                 'HTML5 Boilerplate',
                 'AngularJS',
                 'Karma'
             ];
-
         });

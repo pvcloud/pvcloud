@@ -4,6 +4,15 @@ body {
   padding-bottom: 20px;
 }
 
+#flecha-ingresar{
+    display:inline-block;
+    top:3px;
+}
+
+span.glyphicon-copyright-mark{
+    top:2px;
+    margin-right: 5px;
+}
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,
