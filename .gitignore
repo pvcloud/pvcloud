@@ -1,6 +1,8 @@
-node_modules/
-bower_components/
-*.log
-
-build/
-dist/
+node_modules
+dist
+.tmp
+.sass-cache
+bower_components
+/nbproject/private/
+/nbproject/
+/pvcloud.zip
