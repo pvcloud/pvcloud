@@ -1,1 +1,58 @@
-<p>This is the my_cloud view.</p>
+<div class="page-header text-muted">
+    <h1>Mi Nube IoT</h1>
+</div>
+
+<div class="panel panel-default">
+    <div id="pv-credentials" class="panel-body">
+        <div class="row">
+            <p id="pv-header-credentials" class="text-muted col-md-12 pv-login-controls">
+                Digite sus credenciales para ingresar a su cuenta
+            </p>
+            <p id="pv-header-registration" class="text-muted col-md-12 pv-registration-controls alert alert-info">
+                Digite su dirección de email y la clave que desea usar; luego haga clic en [Registrarme] para crear su nueva cuenta.
+            </p>      
+            <p id="pv-header-password-recovery" class="text-muted col-md-12 pv-password-recovery-controls alert alert-warning">
+                Digite su dirección de email y luego haga clic en [Recuperar Contraseña]
+            </p>             
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon">@</span>
+                    <input type="email" class="form-control"  placeholder="Digite su email aquí">
+                </div>
+            </div>
+        </div>
+        <div class="row pv-input-password">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon" >***</span>
+                    <input type="password" class="form-control" placeholder="Digite su clave de acceso aquí">
+                </div>
+            </div>
+        </div>
+        <div class="row pv-input-password2" >
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon" >***</span>
+                    <input type="password" class="form-control" placeholder="Repita aquí su clave de acceso">
+                </div>
+            </div>
+        </div>        
+        <div class="row">
+            <div class="col-sm-6">
+                <button class="btn btn-lg btn-success pv-control-login" style="width:200px">Ingresar</button>
+                <button class="btn btn-lg btn-primary pv-control-register" style="width:200px">Registrarme</button>
+                <button class="btn btn-lg btn-warning pv-control-recover-password" style="width:250px">Recuperar Contraseña</button>
+            </div>
+            <div class="col-sm-6 pv-credentials-addon-actions">
+                <div class="pv-credentials-actions">
+                    <a data-ng-click="SwitchToRegistrationMode();" class="pv-control-register-link"> Nueva Cuenta </a> <span class="pv-control-register-link"> | </span>
+                    <a data-ng-click="SwitchToLoginMode();" class="pv-control-back-to-login-link" > Ingresar </a> <span class="pv-control-back-to-login-separator"> | </span>
+                    <a data-ng-click="SwitchToPasswordRecoveryMode();" class="pv-control-recover-password-link" > Olvidé mi clave </a>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
