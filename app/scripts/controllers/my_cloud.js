@@ -7,16 +7,45 @@
  * # MyCloudCtrl
  * Controller of the pvcloudApp
  */
-angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, accountService) {
+angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, accountService, $location) {
+
+    $scope.Email = "";
+    $scope.Nickname = "";
+    $scope.Pwd = "";
+    $scope.Pwd2 = "";
+    $scope.ErrorMessages = [];
 
     function hideAddonActions(whatsNext) {
         $(".pv-credentials-actions").slideUp(200, whatsNext);
     }
 
+    $scope.CheckFields_AddAccount = function () {
+        $scope.ErrorMessages = [];
+        if (!$scope.Email) {
+            $scope.ErrorMessages.push("El campo Email es inválido");
+        }
+
+        if (!$scope.Pwd) {
+            $scope.ErrorMessages.push("El campo Password está vacío");
+        } else if ($scope.Pwd != $scope.Pwd2) {
+            $scope.ErrorMessages.push("Los campos de Password no coinciden");
+        }
+        console.log($scope.ErrorMessages)
+    };
+
     $scope.RegisterAccount = function () {
-        accountService.AddNewAccount("jose.a.nunez@hotmail.com", "jose", "1234").$promise.then(function (response) {
-            console.log(response);
-        });
+        $scope.CheckFields_AddAccount();
+        if ($scope.ErrorMessages.length == 0) {
+            accountService.AddNewAccount($scope.Email, $scope.Nickname, $scope.Pwd).$promise.then(
+                    function (response) {
+                        if (response.status == "OK") {
+                            $location.path("account_add_complete");
+                        }
+                    },
+                    function (response) {
+                        $scope.ErrorMessages = ["En este momento no podemos crear su cuenta. Por favor intente nuevamente en unos minutos."];
+                    });
+        }
     };
 
     function showAddonActions() {

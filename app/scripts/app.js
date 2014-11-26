@@ -35,6 +35,10 @@ angular
         templateUrl: 'views/contact.html',
         controller: 'ContactCtrl'
       })
+      .when('/account_add_complete', {
+        templateUrl: 'views/account_add_complete.html',
+        controller: 'AccountAddCompleteCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

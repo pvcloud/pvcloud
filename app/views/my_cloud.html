@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <span class="input-group-addon">@</span>
-                    <input type="email" class="form-control"  placeholder="Digite su email aquí">
+                    <input data-ng-model="Email" type="email" class="form-control"  placeholder="Digite su email aquí" required>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <span class="input-group-addon" >***</span>
-                    <input type="password" class="form-control" placeholder="Digite su clave de acceso aquí">
+                    <input data-ng-model="Pwd" type="password" class="form-control" placeholder="Digite su clave de acceso aquí">
                 </div>
             </div>
         </div>
@@ -35,10 +35,21 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <span class="input-group-addon" >***</span>
-                    <input type="password" class="form-control" placeholder="Repita aquí su clave de acceso">
+                    <input data-ng-model="Pwd2" type="password" class="form-control" placeholder="Repita aquí su clave de acceso">
                 </div>
             </div>
-        </div>        
+        </div> 
+        <div class="row" data-ng-show="ErrorMessages">
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert">
+                    <ul>
+                        <li data-ng-repeat="error in ErrorMessages">
+                            {{error}}
+                        </li>
+                    </ul>                
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <button class="btn btn-lg btn-success pv-control-login" style="width:200px">Ingresar</button>
