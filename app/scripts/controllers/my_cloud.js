@@ -7,7 +7,7 @@
  * # MyCloudCtrl
  * Controller of the pvcloudApp
  */
-angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, accountService, $location) {
+angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, accountService, sessionService, $location) {
 
     $scope.Email = "";
     $scope.Nickname = "";
@@ -30,7 +30,6 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, account
         } else if ($scope.Pwd != $scope.Pwd2) {
             $scope.ErrorMessages.push("Los campos de Password no coinciden");
         }
-        console.log($scope.ErrorMessages)
     };
 
     $scope.RegisterAccount = function () {
@@ -38,15 +37,48 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, account
         if ($scope.ErrorMessages.length == 0) {
             accountService.AddNewAccount($scope.Email, $scope.Nickname, $scope.Pwd).$promise.then(
                     function (response) {
-                        if (response.status == "OK") {
+                        $scope.ErrorMessages = [];
+                        processResponse(response, function () {
                             $location.path("account_add_complete");
-                        }
+                        });
                     },
                     function (response) {
                         $scope.ErrorMessages = ["En este momento no podemos crear su cuenta. Por favor intente nuevamente en unos minutos."];
                     });
         }
     };
+
+    $scope.Login = function () {
+        $scope.ErrorMessages = [];
+        sessionService.Authenticate($scope.Email, $scope.Pwd).$promise.then(function (response) {
+            console.log(response);
+            processResponse(response, function () {
+                var token = response.message;
+                sessionService.SetToken(token, $scope.Email);
+                $location.path("mycloud_home");
+            });
+        });
+    };
+
+    function processResponse(response, OKCallback) {
+        switch (response.status) {
+            case "OK":
+                console.log("OK");
+                OKCallback();
+                break;
+            case "ERROR":
+                console.log("ERROR");
+                $scope.ErrorMessages.push(response.message);
+                break;
+            case "EXCEPTION":
+                console.log("EXCEPTION");
+                $scope.ErrorMessages.push("Ocurrió un error en el servidor. Por favor intente de nuevo más tarde.");
+                break;
+            default:
+                console.log("OOPS");
+                $scope.ErrorMessages.push("Ocurrió un error inesperado. Por favor intente de nuevo más tarde.");
+        }
+    }
 
     function showAddonActions() {
         $(".pv-credentials-actions").fadeIn(200);

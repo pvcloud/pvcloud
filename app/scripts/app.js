@@ -39,6 +39,10 @@ angular
         templateUrl: 'views/account_add_complete.html',
         controller: 'AccountAddCompleteCtrl'
       })
+      .when('/mycloud_home', {
+        templateUrl: 'views/mycloud_home.html',
+        controller: 'MycloudHomeCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
