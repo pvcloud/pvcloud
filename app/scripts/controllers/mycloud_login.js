@@ -63,7 +63,6 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, a
                     },
                     function error(response) {
                         console.log("ERROR");
-                        $scope.ErrorMessages.push("ERROR!");
                         $scope.ErrorMessages.push(response.message);
                         console.log($scope.ErrorMessages);
                     },

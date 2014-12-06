@@ -40,6 +40,7 @@ angular.module('pvcloudApp').factory('sessionService', function ($resource) {
     return {
         Authenticate: authenticate,
         ValidateSession: validateSession,
-        SetToken: setToken
+        SetToken: setToken,
+        GetCurrentEmail:getCurrentEmail
     };
 });

@@ -27,10 +27,18 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
-      .when('/mycloud', {
+      .when('/mycloud/:section/:article_id', {
         templateUrl: 'views/mycloud.html',
         controller: 'MyCloudCtrl'
       })
+      .when('/mycloud/:section', {
+        templateUrl: 'views/mycloud.html',
+        controller: 'MyCloudCtrl'
+      })
+      .when('/mycloud', {
+        templateUrl: 'views/mycloud.html',
+        controller: 'MyCloudCtrl'
+      })      
       .when('/mycloud_login', {
         templateUrl: 'views/mycloud_login.html',
         controller: 'MyCloud_LoginCtrl'
