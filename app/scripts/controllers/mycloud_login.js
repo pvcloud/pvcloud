@@ -7,13 +7,16 @@
  * # MyCloudCtrl
  * Controller of the pvcloudApp
  */
-angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, accountService, sessionService, $location) {
-
+angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, accountService, sessionService, $location, utilityService) {
+    $scope.$parent.ActiveView = "mycloud";
     $scope.Email = "";
     $scope.Nickname = "";
     $scope.Pwd = "";
     $scope.Pwd2 = "";
     $scope.ErrorMessages = [];
+    $scope.LoggedIn = false;
+
+
 
     function hideAddonActions(whatsNext) {
         $(".pv-credentials-actions").slideUp(200, whatsNext);
@@ -52,41 +55,31 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, account
         $scope.ErrorMessages = [];
         sessionService.Authenticate($scope.Email, $scope.Pwd).$promise.then(function (response) {
             console.log(response);
-            processResponse(response, function () {
-                var token = response.message;
-                sessionService.SetToken(token, $scope.Email);
-                $location.path("mycloud_home");
-            });
+            utilityService.ProcessServiceResponse(response,
+                    function success(response) {
+                        var token = response.message;
+                        sessionService.SetToken(token, $scope.Email);
+                        $location.path("mycloud");
+                    },
+                    function error(response) {
+                        console.log("ERROR");
+                        $scope.ErrorMessages.push("ERROR!");
+                        $scope.ErrorMessages.push(response.message);
+                        console.log($scope.ErrorMessages);
+                    },
+                    function exception(response) {
+                        console.log("EXCEPTION");
+                        $scope.ErrorMessages.push("Ocurrió un error en el servidor. Por favor intente de nuevo más tarde.");
+                    });
         });
     };
-
-    function processResponse(response, OKCallback) {
-        switch (response.status) {
-            case "OK":
-                console.log("OK");
-                OKCallback();
-                break;
-            case "ERROR":
-                console.log("ERROR");
-                $scope.ErrorMessages.push(response.message);
-                break;
-            case "EXCEPTION":
-                console.log("EXCEPTION");
-                $scope.ErrorMessages.push("Ocurrió un error en el servidor. Por favor intente de nuevo más tarde.");
-                break;
-            default:
-                console.log("OOPS");
-                $scope.ErrorMessages.push("Ocurrió un error inesperado. Por favor intente de nuevo más tarde.");
-        }
-    }
 
     function showAddonActions() {
         $(".pv-credentials-actions").fadeIn(200);
     }
 
-    $scope.$parent.ActiveView = "my_cloud";
-
     $scope.SwitchToRegistrationMode = function () {
+        $scope.ErrorMessages = [];
         hideAddonActions(function () {
             $("#pv-header-password-recovery").slideUp(100);
             $("#pv-header-credentials").slideUp(100);
@@ -106,6 +99,8 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, account
     };
 
     $scope.SwitchToPasswordRecoveryMode = function () {
+        $scope.ErrorMessages = [];
+
         hideAddonActions(function () {
             $(".pv-control-back-to-login-separator").slideUp(100);
             $(".pv-control-register").slideUp(100);
@@ -124,6 +119,7 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, account
     };
 
     $scope.SwitchToLoginMode = function () {
+        $scope.ErrorMessages = [];
         hideAddonActions(function () {
             $(".pv-control-back-to-login-separator, #pv-header-registration,#pv-header-password-recovery, .pv-control-recover-password, .pv-control-back-to-login-link, .pv-control-register, .pv-input-password2 ").slideUp(200, function () {
                 $(".pv-control-recover-password-link,.pv-input-password, .pv-control-login, .pv-control-register-link, #pv-header-credentials ").slideDown(200, showAddonActions);
