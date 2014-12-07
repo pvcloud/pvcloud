@@ -1,7 +1,7 @@
 <div data-ng-controller="_mycloud_mydevices">
     <button>Add a Device</button>
     <ol data-ng-if="Devices && Devices.length > 0">
-        <li data-ng-repeat="device in Devices">{{device.Name}}</li>
+        <li data-ng-repeat="device in Devices">{{device.nickname}}</li>
     </ol>
     <div data-ng-if="!Devices || Devices.length == 0">You have no devices registered</div>
 </div>
