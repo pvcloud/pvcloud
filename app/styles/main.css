@@ -10,6 +10,23 @@ a {
 .pvcloud-home p {
     text-align: justify;
 }
+
+.pvcloud-home input{
+    width:100%;
+}
+
+.pvcloud-device-edit{
+    cursor:pointer;
+}
+
+input, textarea {
+    padding:5px;
+    margin:5px;
+}
+
+.pvcloud-device-edit:hover{
+    color:green;
+}
 #flecha-ingresar{
     display:inline-block;
     top:3px;
