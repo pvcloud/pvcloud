@@ -2,41 +2,103 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     console.log("This is my devices controller being invoked");
     console.log($scope);
     getListOfDevicesForAccountID();
-    
-    
-    $scope.EditDevice = function (device){
+
+    $scope.EditDevice = function (device) {
         var device_id = device.device_id;
         device.device_nickname_edited = device.device_nickname;
         device.device_description_edited = device.device_description;
         device.api_key_edited = device.api_key;
         device.deviceBeingEdited = true;
     };
-    
-    $scope.EditDevice_Cancel = function (device){
-        var device_id = device.device_id;
-        
+
+    $scope.EditDevice_Cancel = function (device) {
         device.deviceBeingEdited = false;
     };
-    
-    $scope.EditDevice_Delete = function (device){
+
+    $scope.EditDevice_Delete = function (device) {
         var device_id = device.device_id;
-        var response = confirm("De verdad quiere eliminar este dispositivo? Todos sus datos relacionados serán eliminados también.");
-        
-        device.deviceBeingEdited = false;
-    };    
-    
-    $scope.EditDevice_NewAPIKey = function (device){
-        var response = confirm("Desear regenerar el API Key para este dispositivo?");
-        if(response== true){
-            device.api_key = "OK";
+        var confirmation = confirm("De verdad quiere eliminar este dispositivo? Todos sus datos relacionados serán eliminados también.");
+        if (confirmation) {
+            var account_id = sessionService.GetCurrentAccountID();
+            var token = sessionService.GetCurrentToken();
+            var device_id = device.device_id;
+            DeviceRegistryService.DeleteDevice(account_id, token, device_id).$promise.then(function (response) {
+                UtilityService.ProcessServiceResponse(response,
+                        function success(response) {
+                            alert("Dispositivo " + device_id + "fue removido satisfactoriamente");
+                            getListOfDevicesForAccountID();
+                        },
+                        function error(response) {
+                            console.log(response);
+                        },
+                        function exception(response) {
+                            console.log(response);
+                        });
+            });
             device.deviceBeingEdited = false;
         }
-    }
-    
-    function getListOfDevicesForAccountID(){
+
+
+    };
+
+    $scope.EditDevice_NewAPIKey = function (device) {
+        var confirmation = confirm("Desear regenerar el API Key para este dispositivo?");
+        if (confirmation === true) {
+            var account_id = sessionService.GetCurrentAccountID();
+            var token = sessionService.GetCurrentToken();
+            var device_id = device.device_id;
+
+            DeviceRegistryService.RegenerateAPIKey(account_id, token, device_id).$promise.then(function (response) {
+                UtilityService.ProcessServiceResponse(response,
+                        function success(response) {
+                            alert("API Key was re-generated for device" + device_id);
+                            device.api_key = response.data.api_key;
+                            device.deviceBeingEdited = false;
+                        },
+                        function error(response) {
+                            console.log(response);
+                        },
+                        function exception(response) {
+                            console.log(response);
+                        });
+            });
+        }
+    };
+
+    $scope.EditDevice_Save = function (device) {
+        if (device.device_nickname_edited != "" && device.device_description_edited != "") {
+            device.device_nickname = device.device_nickname_edited;
+            device.device_description = device.device_description_edited;
+
+            var account_id = sessionService.GetCurrentAccountID();
+            var token = sessionService.GetCurrentToken();
+
+            DeviceRegistryService.UpdateDevice(account_id, token, device.device_id, device.device_nickname, device.device_description).$promise.then(function (response) {
+                console.log("device_id");
+                console.log(device.device_id);
+                UtilityService.ProcessServiceResponse(response,
+                        function success(response) {
+                            alert("Los datos se guardaron satisfactoriamente" + device.device_nickname);
+                            device = response.data;
+                        },
+                        function error(response) {
+                            console.log(response);
+                        },
+                        function exception(response) {
+                            console.log(response);
+                        });
+            });
+
+            device.deviceBeingEdited = false;
+        } else {
+            alert("El nombre del dispositivo y la descripción no pueden estar vacíos");
+        }
+    };
+
+    function getListOfDevicesForAccountID() {
         var token = sessionService.GetCurrentToken();
         var account_id = sessionService.GetCurrentAccountID();
-        
+
         DeviceRegistryService.GetDeviceListForAccountID(account_id, token).$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
                     function success(response) {
@@ -49,7 +111,7 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
                     function exception(response) {
                         console.log(response);
                     });
-        });        
+        });
     }
 });
 

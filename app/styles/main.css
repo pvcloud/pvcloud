@@ -7,6 +7,16 @@ a {
     cursor:pointer;
 }
 
+.pvcloud-edit-toolbar{
+    padding-left:10px;
+    padding-right: 10px;
+    font-size:1.9em;
+    margin-right:15px
+}
+
+.pvcloud-edit-toolbar i{
+    margin:5px
+}
 .pvcloud-home p {
     text-align: justify;
 }

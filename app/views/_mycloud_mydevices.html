@@ -14,13 +14,13 @@
         <tr id="tr_device_{{device.device_id}}" data-ng-repeat="device in Devices">
             <td class="td-device-info" style="vertical-align: middle">{{device.device_id}}</td>
             <td class="td-device-info" colspan="{{device.deviceBeingEdited?3:1}}">
-                <div style="float:right; font-size: 1.7em; text-align: center" class="panel panel-body default" data-ng-show="device.deviceBeingEdited">
-                    <i class="glyphicon glyphicon-refresh pvcloud-device-edit" data-ng-click="EditDevice_NewAPIKey(device)" title="Haga clic para generar un nuevo API KEY"  style="color:maroon"></i>&nbsp;
-                    <i class="glyphicon glyphicon-floppy-save pvcloud-device-edit" data-ng-click="EditDevice_Save(device)"  title="Guardar Cambios"></i>&nbsp;
-                    <i class="glyphicon glyphicon-floppy-remove pvcloud-device-edit" data-ng-click="EditDevice_Cancel(device)" title="Desechar Cambios"></i>
-                    <br>
-                    
-                    <a data-ng-click="EditDevice_Delete(device)" style="font-size:0.7em">Eliminar Dispositivo</a>
+                <i class="glyphicon glyphicon-remove pull-right pvcloud-device-edit" data-ng-show="device.deviceBeingEdited" data-ng-click="EditDevice_Cancel(device)" title="Cancelar Edición"></i>
+                <div class="pvcloud-edit-toolbar panel panel-default pull-right" data-ng-show="device.deviceBeingEdited">
+                    <div class="panel-content">
+                        <i class="glyphicon glyphicon-refresh pvcloud-device-edit" style="color:organge" data-ng-click="EditDevice_NewAPIKey(device)" title="Haga clic para generar un nuevo API KEY"  style="color:maroon"></i>&nbsp;
+                        <i class="glyphicon glyphicon-floppy-save pvcloud-device-edit" style="color:green" data-ng-click="EditDevice_Save(device)"  title="Guardar Cambios"></i>&nbsp;
+                        <i class="glyphicon glyphicon-floppy-remove pvcloud-device-edit" style="color:red" data-ng-click="EditDevice_Delete(device)" title="Desechar Cambios"></i>
+                    </div>
                 </div>
                 <span data-ng-show="!device.deviceBeingEdited">{{device.device_nickname}}</span>
                 <span data-ng-show="!device.deviceBeingEdited" class="badge success" title="Data records in pvCloud">{{device.device_id + 8}}</span>
