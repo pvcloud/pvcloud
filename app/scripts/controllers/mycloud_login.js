@@ -7,7 +7,7 @@
  * # MyCloudCtrl
  * Controller of the pvcloudApp
  */
-angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, accountService, sessionService, $location, utilityService) {
+angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, AccountService, sessionService, $location, UtilityService) {
     $scope.$parent.ActiveView = "mycloud";
     $scope.Email = "";
     $scope.Nickname = "";
@@ -38,7 +38,7 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, a
     $scope.RegisterAccount = function () {
         $scope.CheckFields_AddAccount();
         if ($scope.ErrorMessages.length == 0) {
-            accountService.AddNewAccount($scope.Email, $scope.Nickname, $scope.Pwd).$promise.then(
+            AccountService.AddNewAccount($scope.Email, $scope.Nickname, $scope.Pwd).$promise.then(
                     function (response) {
                         $scope.ErrorMessages = [];
                         processResponse(response, function () {
@@ -54,11 +54,11 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, a
     $scope.Login = function () {
         $scope.ErrorMessages = [];
         sessionService.Authenticate($scope.Email, $scope.Pwd).$promise.then(function (response) {
-            console.log(response);
-            utilityService.ProcessServiceResponse(response,
+            UtilityService.ProcessServiceResponse(response,
                     function success(response) {
-                        var token = response.message;
-                        sessionService.SetToken(token, $scope.Email);
+                        var token = response.data.token;
+                        var account_id = response.data.account_id;
+                        sessionService.SetToken(token, $scope.Email, account_id);
                         $location.path("mycloud");
                     },
                     function error(response) {

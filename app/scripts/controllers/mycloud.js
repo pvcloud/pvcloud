@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $location, sessionService, utilityService, $routeParams) {
+angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $location, sessionService, UtilityService, $routeParams) {
     $scope.$parent.ActiveView = "mycloud";
     $scope.Email = "HELLO!";
     $scope.LoggedIn = false;
@@ -20,10 +20,11 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
 
     function validateSession() {
         sessionService.ValidateSession().$promise.then(function (response) {
-            utilityService.ProcessServiceResponse(response,
+            UtilityService.ProcessServiceResponse(response,
                     function success(response) {
                         $scope.LoggedIn = true;
                         $scope.Email = sessionService.GetCurrentEmail();
+                        $scope.AccountID = sessionService.GetCurrentAccountID();
                     },
                     function error(response) {
                         $location.path("mycloud_login");

@@ -1,6 +1,19 @@
 'use strict';
 
-angular.module('pvcloudApp').factory('utilityService', function ($resource) {
+angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
+
+    function getBaseURL() {
+        var baseURL = "";
+        
+        if (window.location.host === "localhost:9000") {
+            baseURL = "http://localhost:8080/pvcloud_backend/";
+        } else {
+            baseURL = "/pvcloud_backend/";
+        }
+
+        return baseURL;
+    }
+
     function processServiceResponse(response, successFunction, errorFunction, exceptionFunction) {
         console.log("PROCESS_SERVICE_RESPONSE");
         console.log(response);
@@ -30,6 +43,7 @@ angular.module('pvcloudApp').factory('utilityService', function ($resource) {
         }
     }
     return {
-        ProcessServiceResponse: processServiceResponse
+        ProcessServiceResponse: processServiceResponse,
+        GetBaseURL:getBaseURL
     };
 });
