@@ -1,4 +1,5 @@
 <div data-ng-controller="_mycloud_mydevices" class="container-fluid">
+    <!--HEADING - REGISTRAR NUEVO DISPOSITIVO-->
     <div class="row">
         <div class="col-sm-12">
             <button class="btn btn-primary" style="float:right; margin:10px 0" title="Registrar nuevo dispositivo" data-ng-click="NewDevicesMode()"><i class="glyphicon glyphicon-plus"></i> Nuevo Dispositivo</button>
@@ -33,6 +34,7 @@
             </div>
         </div>
     </div>
+    <!--LISTA DE DISPOSITIVOS-->
     <table class="table table-striped table-hover" data-ng-if="Devices && Devices.length > 0">
         <tr>
             <th>ID</th>
@@ -83,9 +85,114 @@
                 <code>{{device.api_key}}</code> 
             </td>
             <td data-ng-show="!device.deviceBeingEdited" class="td-device-info" style="font-size: 2em">
-                <i class="glyphicon glyphicon-pencil pvcloud-device-edit" data-ng-click="EditDevice(device)" data-ng-show="!device.deviceBeingEdited"></i>
+                <i class="glyphicon glyphicon-pencil pvcloud-device-edit" data-ng-click="EditDevice(device)" data-ng-show="!device.deviceBeingEdited" title="Editar dispositivo."></i>
+                <i class="glyphicon glyphicon-eye-open pvcloud-device-edit" title="Ver instrucciones de uso"></i>
             </td>
         </tr>
     </table>
     <div data-ng-if="!Devices || Devices.length === 0">You have no devices registered</div>
+    <!--API DOCUMENTATION-->
+    <div style="text-align: justify; font-size:16px">
+        <hr>
+        <h3>Documentación de la Interfase de Programación VSE</h3>
+        <strong>Dispositivo:</strong>{{SelectedDevice.device_nickname}} ({{SelectedDevice.device_id}}) [{{SelectedDevice.api_key}}]
+        <p>VSE son las siglas de <strong>Valor Simple Extendible</strong>; y es la funcionalidad que le da a pvCloud su poder a través de la simplicidad.</p>
+        <p>El API VSE consiste en una serie de CUATRO servicios en la nube que permiten a sus dispositivos enviar y consumir datos hacia y desde pvCloud.</p>
+        <p>Las funciones que se suministran son:</p>
+        <hr>
+        <h3>#1 - Agregar Valor <small>(vse_add_value.php)</small></h3>
+        <p>Es una forma sencilla de enviar valores de un dispositivo IoT a pvCloud. El sistema recibe los siguientes parámetros:</p>
+        <ul>
+            <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
+            <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+            <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
+            <li><strong>label: </strong> este parámetro permite darle un nombre al dato que se está enviando. Por ejemplo "Sensor de Humedad"</li>
+            <li><strong>type: </strong> es un parámetro que acepta cualquier texto, pero que tiene como objetivo determinar el tipo de dato que se está almacenando para tomarlo en cuenta al momento de consumir los datos.</li>
+            <li><strong>value: </strong> corresponde al valor en sí que se desea almacenar. Nótese que soporta valores alfanuméricos e incluso descriptores JSON.</li>
+            <li><strong>captured_datetime: </strong> la fecha y hora en que el dato fue capurado por el dispositivo. Este es un parámetro requerido.</li>
+            <li><strong>annotations (opcional): </strong> es un parámetro para anotaciones adicionales</li>
+        </ul>
+        <h4>Ejemplo:</h4>
+        <a href="http://localhost:8080/pvcloud_backend/vse_add_value.php?account_id=1&device_id=1&api_key=5eed4949398c5905578c8f17825e5316a4bec52b&label=DIRECT+pvCloud+TEST&value=12345&type=numerico&captured_datetime=2014-12-09+21:01" target="_blank">
+            <code>http://localhost:8080/pvcloud_backend/<strong>vse_add_value.php</strong>?account_id=1
+                &device_id=1<br>
+                &api_key=5eed4949398c5905578c8f17825e5316a4bec52b<br>
+                &label=DIRECT+pvCloud+TEST<br>
+                &value=12345<br>
+                &type=numerico<br>
+                &captured_datetime=2014-12-09+21:01</code>
+        </a>
+        <hr>
+        <h3>#2 - Obtener el último valor <small>(vse_get_value_last.php)</small></h3>
+        <p>Este método obtiene del servidor el último valor registrado para un dispositivo dado, ya sea para un "label" específico; o el último valor de todos los registrados para el dispositivo.</p>
+        <p>Parámetros:</p>
+        <ul>
+            <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
+            <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+            <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
+            <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema el ultimo valor de una etiqueta específica. Si se omite, el sistem devolverá el último valor de todos para el dispositivo en cuestión.</li>
+        </ul>        
+        <h4>Ejemplos:</h4>
+        <a href="http://localhost:8080/pvcloud_backend/vse_get_value_last.php?account_id=1&device_id=1&api_key=5eed4949398c5905578c8f17825e5316a4bec52b&optional_label=DIRECT+pvCloud+TEST" target="_blank">
+            <code>http://localhost:8080/pvcloud_backend/vse_get_value_last.php?account_id=1<br>
+                &device_id=1<br>
+                &api_key=5eed4949398c5905578c8f17825e5316a4bec52b<br>
+                &optional_label=DIRECT+pvCloud+TEST</code>  
+        </a><br><br>
+        <p>Sin el parámetro opcional sería así:</p>
+        <a href="http://localhost:8080/pvcloud_backend/vse_get_value_last.php?account_id=1&device_id=1&api_key=5eed4949398c5905578c8f17825e5316a4bec52b" target="_blank">
+            <code>http://localhost:8080/pvcloud_backend/vse_get_value_last.php?account_id=1<br>
+                &device_id=1<br>
+                &api_key=5eed4949398c5905578c8f17825e5316a4bec52b</code>  
+        </a>     
+        <hr>
+        <h3>#3 - Obtener lista de valores registrados <small>vse_get_values.php</small></h3>
+        <p>Este método devuelve una lista de todos los valores registrados, ya sea para una etiqueta de valor (optional_label) o todos los datos en general registrados por el dispositivo si se omite el parámetro de "optional_label".</p>
+        <p>Parámetros:</p>
+        <ul>
+            <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
+            <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+            <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
+            <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema el ultimo valor de una etiqueta específica. Si se omite, el sistem devolverá el último valor de todos para el dispositivo en cuestión.</li>
+            <li><strong>optional_last_limit: </strong> este parámetro permite solicitar al sistema una cantidad determinada de registros a partir de los más recientes.</li>
+        </ul>        
+        <h4>Ejemplos:</h4>
+        <a href="http://localhost:8080/pvcloud_backend/vse_get_values.php?account_id=1&device_id=1&api_key=5eed4949398c5905578c8f17825e5316a4bec52b&optional_label=DIRECT+pvCloud+TEST&optional_last_limit=2" target="_blank">
+            <code>http://localhost:8080/pvcloud_backend/vse_get_values.php?account_id=1<br>
+                &device_id=1<br>
+                &api_key=5eed4949398c5905578c8f17825e5316a4bec52b<br>
+                &optional_label=DIRECT+pvCloud+TEST<br>
+                &optional_last_limit=2
+            </code>  
+        </a><br><br>
+        <p>Sin el parámetro opcional sería así:</p>
+        <a href="http://localhost:8080/pvcloud_backend/vse_get_values.php?account_id=1&device_id=1&api_key=5eed4949398c5905578c8f17825e5316a4bec52b" target="_blank">
+            <code>http://localhost:8080/pvcloud_backend/vse_get_values.php?account_id=1<br>
+                &device_id=1<br>
+                &api_key=5eed4949398c5905578c8f17825e5316a4bec52b</code>  
+        </a>     
+        <hr>        
+        <h3>#4 - Limpiar/Borrar Valores Registrados <small>vse_clear_values</small></h3>
+        <p>Este método realiza un borrado permanente de los valores registrados para un dispositivo específico, ya sea para una etiqueta de valor (optional_label) específica, o la eliminación de todos los valores almacenados por el dispositivo.</p>
+        <p>Parámetros:</p>
+        <ul>
+            <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
+            <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+            <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
+            <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema borrar los valores con una etiqueta específica. Si se omite, el sistem borrarán todos los valores para el dispositivo en cuestión.</li>
+        </ul>        
+        <h4>Ejemplos:</h4>
+        <a href="http://localhost:8080/pvcloud_backend/vse_clear_values.php?account_id=1&device_id=1&api_key=5eed4949398c5905578c8f17825e5316a4bec52b&optional_label=DIRECT+pvCloud+TEST" target="_blank">
+            <code>http://localhost:8080/pvcloud_backend/vse_clear_values.php?account_id=1<br>
+                &device_id=1<br>
+                &api_key=5eed4949398c5905578c8f17825e5316a4bec52b<br>
+                &optional_label=DIRECT+pvCloud+TEST</code>  
+        </a><br><br>
+        <p>Sin el parámetro opcional sería así:</p>
+        <a href="http://localhost:8080/pvcloud_backend/vse_clear_values.php?account_id=1&device_id=1&api_key=5eed4949398c5905578c8f17825e5316a4bec52b" target="_blank">
+            <code>http://localhost:8080/pvcloud_backend/vse_clear_values.php?account_id=1<br>
+                &device_id=1<br>
+                &api_key=5eed4949398c5905578c8f17825e5316a4bec52b</code>  
+        </a>          
+    </div>
 </div>
