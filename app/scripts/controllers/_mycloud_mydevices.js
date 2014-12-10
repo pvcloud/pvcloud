@@ -1,7 +1,54 @@
 angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, $location, UtilityService, $routeParams, DeviceRegistryService, sessionService) {
     console.log("This is my devices controller being invoked");
     console.log($scope);
+    $scope.AddingDevice = false;
+    $scope.AddDevice_device_nickname = "";
+    $scope.AddDevice_device_description = "";
+
+
     getListOfDevicesForAccountID();
+
+    $scope.NewDevicesMode = function () {
+        $scope.AddDevice_device_nickname = "";
+        $scope.AddDevice_device_description = "";
+        $scope.AddingDevice = true;
+    };
+
+    $scope.CancelNewDevicesMode = function () {
+        $scope.AddingDevice = false;
+    };
+
+    $scope.AddDevice_Save = function () {
+        alert("about to save...");
+        if ($scope.AddDevice_device_nickname !== undefined && $scope.AddDevice_device_nickname !== "") {
+            if ($scope.AddDevice_device_description !== undefined && $scope.AddDevice_device_description !== "") {
+                var account_id = sessionService.GetCurrentAccountID();
+                var token = sessionService.GetCurrentToken();
+
+                DeviceRegistryService.RegisterNewDevice(account_id, token, $scope.AddDevice_device_nickname, $scope.AddDevice_device_description).$promise.then(function (response) {
+                    UtilityService.ProcessServiceResponse(response,
+                            function success(response) {
+                                device = response.data;
+                                getListOfDevicesForAccountID();
+                                alert("Dispositivo registrado satisfactoriamente mediante el ID: " + device.device_id);
+                                $scope.AddingDevice = false;
+                            },
+                            function error(response) {
+                                console.log(response);
+                            },
+                            function exception(response) {
+                                console.log(response);
+                            });
+                });
+
+            } else {
+                alert("El campo Descripción es requerido y está vacío");
+            }
+        } else {
+            alert("El campo Nombre es requerido y está vacío");
+        }
+    };
+
 
     $scope.EditDevice = function (device) {
         var device_id = device.device_id;

@@ -1,7 +1,36 @@
 <div data-ng-controller="_mycloud_mydevices" class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            <button class="btn btn-primary" style="float:right; margin:10px 0" title="Registrar nuevo dispositivo"><i class="glyphicon glyphicon-plus"></i> Nuevo Dispositivo</button>
+            <button class="btn btn-primary" style="float:right; margin:10px 0" title="Registrar nuevo dispositivo" data-ng-click="NewDevicesMode()"><i class="glyphicon glyphicon-plus"></i> Nuevo Dispositivo</button>
+            <br><br><br>
+            <div data-ng-show="AddingDevice" class="pull-right panel panel-info" style="width:100%; padding: 10px">
+                <div class="panel-heading">
+                    Nuevo Dispositivo:
+                    <i class="glyphicon glyphicon-remove pull-right pvcloud-device-edit"  title="Cancelar Edición" data-ng-click="CancelNewDevicesMode()"></i>
+                </div>                
+                <div class="panel-body success">
+
+                    <div class="pvcloud-edit-toolbar panel panel-default pull-right">
+                        <div class="panel-content">
+                            <i class="glyphicon glyphicon-floppy-save pvcloud-device-edit pull-right" style="color:green" data-ng-click="AddDevice_Save()"  title="Guardar Cambios"></i>&nbsp;
+                        </div>
+                    </div>     
+
+
+                    <table style="width:60%" class="pvcloud-device-edit-form">
+                        <tr>
+                            <td style="text-align: right">Nombre:</td>
+                            <td><input data-ng-model="AddDevice_device_nickname" type="text" style="width:100%" /></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right">Descripción:</td>
+                            <td>
+                                <textarea data-ng-model="AddDevice_device_description" style="width:100%" rows="2"></textarea>
+
+                        </tr>
+                    </table>  
+                </div>
+            </div>
         </div>
     </div>
     <table class="table table-striped table-hover" data-ng-if="Devices && Devices.length > 0">
@@ -17,9 +46,9 @@
                 <i class="glyphicon glyphicon-remove pull-right pvcloud-device-edit" data-ng-show="device.deviceBeingEdited" data-ng-click="EditDevice_Cancel(device)" title="Cancelar Edición"></i>
                 <div class="pvcloud-edit-toolbar panel panel-default pull-right" data-ng-show="device.deviceBeingEdited">
                     <div class="panel-content">
-                        <i class="glyphicon glyphicon-refresh pvcloud-device-edit" style="color:organge" data-ng-click="EditDevice_NewAPIKey(device)" title="Haga clic para generar un nuevo API KEY"  style="color:maroon"></i>&nbsp;
+                        <i class="glyphicon glyphicon-refresh pvcloud-device-edit" style="color:orange" data-ng-click="EditDevice_NewAPIKey(device)" title="Haga clic para generar un nuevo API KEY"  style="color:maroon"></i>&nbsp;
                         <i class="glyphicon glyphicon-floppy-save pvcloud-device-edit" style="color:green" data-ng-click="EditDevice_Save(device)"  title="Guardar Cambios"></i>&nbsp;
-                        <i class="glyphicon glyphicon-floppy-remove pvcloud-device-edit" style="color:red" data-ng-click="EditDevice_Delete(device)" title="Desechar Cambios"></i>
+                        <i class="glyphicon glyphicon-floppy-remove pvcloud-device-edit" style="color:red" data-ng-click="EditDevice_Delete(device)" title="Eliminar Dispositivo"></i>
                     </div>
                 </div>
                 <span data-ng-show="!device.deviceBeingEdited">{{device.device_nickname}}</span>
