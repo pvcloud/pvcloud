@@ -4,7 +4,17 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     $scope.AddingDevice = false;
     $scope.AddDevice_device_nickname = "";
     $scope.AddDevice_device_description = "";
+    $scope.SelectedDevice = undefined;
+    $scope.SelectedAccountID = sessionService.GetCurrentAccountID();
+    var protocol = window.location.protocol;
+    var hostname = window.location.host;
+    var port = window.location.port;
 
+    if (port == 9000) {
+        $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080";
+    } else {
+        $scope.URLBegin = protocol + "//" + hostname;
+    }
 
     getListOfDevicesForAccountID();
 
@@ -20,12 +30,12 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
 
     $scope.AddDevice_Save = function () {
         alert("about to save...");
-        if ($scope.AddDevice_device_nickname !== undefined && $scope.AddDevice_device_nickname !== "") {
-            if ($scope.AddDevice_device_description !== undefined && $scope.AddDevice_device_description !== "") {
+        if (this.AddDevice_device_nickname !== undefined && this.AddDevice_device_nickname !== "") {
+            if (this.AddDevice_device_description !== undefined && this.AddDevice_device_description !== "") {
                 var account_id = sessionService.GetCurrentAccountID();
                 var token = sessionService.GetCurrentToken();
 
-                DeviceRegistryService.RegisterNewDevice(account_id, token, $scope.AddDevice_device_nickname, $scope.AddDevice_device_description).$promise.then(function (response) {
+                DeviceRegistryService.RegisterNewDevice(account_id, token, this.AddDevice_device_nickname, this.AddDevice_device_description).$promise.then(function (response) {
                     UtilityService.ProcessServiceResponse(response,
                             function success(response) {
                                 device = response.data;
@@ -140,6 +150,26 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
         } else {
             alert("El nombre del dispositivo y la descripción no pueden estar vacíos");
         }
+    };
+
+    $scope.ViewAPIReference = function (device) {
+        console.log("VIEW API REFERENCE");
+        $scope.SelectedDevice = device;
+
+        var date = new Date();
+        var fullYear = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var dayOfMonth = date.getDate();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+        var fulldateFormat = fullYear + '-' + month + '-' + dayOfMonth + '+' + hours + ":" + minutes + ":" + seconds;
+
+        $scope.SelectedDevice.CapturedDatetime = fulldateFormat;
+    };
+
+    $scope.CloseAPIReference = function () {
+        $scope.SelectedDevice = undefined;
     };
 
     function getListOfDevicesForAccountID() {
