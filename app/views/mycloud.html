@@ -1,14 +1,18 @@
 <div data-ng-if="LoggedIn">
+    <!-- HEADING -->
     <div class="page-header text-muted">
-        <h1>{{Email}} - <small><a class="pull-right">logout</a></small></h1>
+        <h1>{{Email}} - <small><a data-ng-click="Logout()" class="pull-right">logout <i class="glyphicon glyphicon-lock"></i></a></small></h1>
     </div>
+    
+    <!-- CONTENT -->
     <div class="panel panel-default">
+        <!-- TABS -->
         <div class="panel-body">
             <ul class="nav nav-tabs">
-                <li role="presentation" ng-class="{active: Section === ''}"><a href=#/mycloud>Principal</a></li>
-                <li role="presentation" ng-class="{active: Section === 'mydevices'}"><a href="#/mycloud/mydevices">Mis Dispositivos</a></li>                
+                <li role="presentation" ng-class="{active: Section === 'mydevices'}"><a href="#/mycloud/mydevices">Mis Dispositivos</a></li>
                 <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork">Mi Red</a></li>
                 <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount">Mi Cuenta</a></li>
+                <li role="presentation" ng-class="{active: Section === 'about'}"><a href=#/mycloud/about>¿Qué es pvCloud?</a></li>
             </ul>   
             <div class="row">
                 <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                

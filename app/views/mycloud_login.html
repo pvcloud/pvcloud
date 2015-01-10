@@ -1,8 +1,12 @@
+<!--TITLE-->
 <div class="page-header text-muted">
     <h1>Mi Nube IoT</h1>
 </div>
+
+<!-- LOGIN/NEW ACCOUNT/RECOVER PWD-->
 <div class="panel panel-default">
     <div id="pv-credentials" class="panel-body">
+        <!--INSTRUCTIONS-->
         <div class="row">
             <p id="pv-header-credentials" class="text-muted col-md-12 pv-login-controls">
                 Digite sus credenciales para ingresar a su cuenta
@@ -14,22 +18,30 @@
                 Digite su dirección de email y luego haga clic en [Recuperar Contraseña]
             </p>             
         </div>
+        
+        <!-- LOGIN FORM -->
+        <form id="login_form">
+        <!-- USER NAME FIELD -->
         <div class="row">
             <div class="col-md-12">
                 <div class="input-group">
                     <span class="input-group-addon">@</span>
-                    <input data-ng-model="Email" type="email" class="form-control"  placeholder="Digite su email aquí" required>
+                    <input id="username" name="username" data-ng-model="Email" type="email" class="form-control"  placeholder="Digite su email aquí" required>
                 </div>
             </div>
         </div>
+        <!-- PASSWORD FIELD -->
         <div class="row pv-input-password">
             <div class="col-md-12">
                 <div class="input-group">
                     <span class="input-group-addon" >***</span>
-                    <input data-ng-model="Pwd" type="password" class="form-control" placeholder="Digite su clave de acceso aquí">
+                    <input id="password" name="password" data-ng-model="Pwd" type="password" class="form-control" placeholder="Digite su clave de acceso aquí">
                 </div>
             </div>
         </div>
+        </form>
+        
+        <!-- PASSWORD REPEAT FIELD -->
         <div class="row pv-input-password2" >
             <div class="col-md-12">
                 <div class="input-group">
@@ -38,6 +50,8 @@
                 </div>
             </div>
         </div> 
+        
+        <!-- ERROR MESSAGES -->
         <div class="row" data-ng-show="ErrorMessages.length > 0">
             <div class="col-md-12">
                 <div class="alert alert-danger" role="alert">
@@ -49,6 +63,8 @@
                 </div>
             </div>
         </div>
+        
+        <!-- SWITCH MODE LINKS -->
         <div class="row">
             <div class="col-sm-6">
                 <button data-ng-click="Login()" class="btn btn-lg btn-success pv-control-login" style="width:200px">Ingresar</button>
