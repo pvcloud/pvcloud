@@ -41,7 +41,7 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
             AccountService.AddNewAccount($scope.Email, $scope.Nickname, $scope.Pwd).$promise.then(
                     function (response) {
                         $scope.ErrorMessages = [];
-                        processResponse(response, function () {
+                        UtilityService.ProcessServiceResponse(response, function () {
                             $location.path("account_add_complete");
                         });
                     },
