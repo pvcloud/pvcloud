@@ -6,6 +6,8 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     $scope.AddDevice_device_description = "";
     $scope.SelectedDevice = undefined;
     $scope.SelectedAccountID = sessionService.GetCurrentAccountID();
+    $scope.LoadingListOfDevicesComplete = false;
+    
     var protocol = window.location.protocol;
     var hostname = window.location.host;
     var port = window.location.port;
@@ -179,6 +181,7 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
         DeviceRegistryService.GetDeviceListForAccountID(account_id, token).$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
                     function success(response) {
+                        $scope.LoadingListOfDevicesComplete = true;
                         $scope.Devices = response.data;
                         console.log(response);
                     },

@@ -89,7 +89,7 @@
             </td>
         </tr>
     </table>
-    <div data-ng-if="!Devices || Devices.length === 0">You have no devices registered</div>
+    <div data-ng-if="LoadingListOfDevicesComplete && (!Devices || Devices.length === 0)">No hay dispositivos registrados</div>
     
     <!--API DOCUMENTATION-->
     <div style="text-align: justify; font-size:16px" data-ng-show="SelectedDevice !== undefined">
@@ -115,36 +115,43 @@
                 <p>En esta sección mostramos los pasos 1-2-3 para implementar PV Cloud en su dispositivo IoT compatible con Intel Galileo e Intel Edison.</p>
                 <h3>Requisitos</h3>
                 <p>Su dispositivo debe ser capaz de ejecutar LINUX y programas NODE.JS</p>
-                <h3>Resumen</h3>
-                <h4>Paso 1: Descargar el programa pvcloud_api.js</h4>
-                <p>pvCloud ofrece un programa personalizado para su dispositivo que puede descargar usando el siguiente comando:</p>
+                <h3>Resumen</h3>             
+                <h4>Paso 1 de 3: Descargar el programa pvcloud_api.js</h4>
+                <p>pvCloud ofrece un programa personalizado para su dispositivo que puede descargar usando los siguientes comandos de LINUX.</p>
+                <p>Primero, descargue el programa personalizado para su dispositivo usando el comando de LINUX wget:</p>
                 <code style="text-align: left; display: inline-block; word-break: break-all">
-                    wget {{URLBegin}}/pvcloud_backend/<strong>vse_api_generate.php</strong>?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}} /pvcloud/pvcloud_vse_api.js
-                </code>    
-                <a class="pull-right" href="{{URLBegin}}/pvcloud_backend/vse_api_generate.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}">Download to your PC</a>
+                    wget -O ~/pvcloud_api.js "{{URLBegin}}/pvcloud_backend/<strong>vse_api_generate.php</strong>?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}"
+                </code><br><br>                
+                <a class="pull-right" href="{{URLBegin}}/pvcloud_backend/vse_api_generate.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}" title="También puede descargarlo en su PC para realizar pruebas">Descargar en su computador</a>
                 <br>
                 <hr>
-                <h4>Paso 2: Ejecutando comandos de pvCloud desde ARDUINO IDE:</h4>
+                <h4>Paso 2 de 3: Instale el módulo "request" de nodejs</h4>     
+                <code style="text-align: left; display: inline-block; word-break: break-all">
+                    cd ~ <br><br>
+                    npm install request
+                </code><br>                
+                <hr>
+                <h4>Paso 3 de 3: Cómo ejecutar comandos de pvCloud desde ARDUINO IDE:</h4>
                 <p>Una vez descargado el programa de NodeJS para pvCloud usted puede ejecutar comandos de pvCloud para su dispositivo simplemente haciendo alguna de las siguientes llamadas de sistema en ARDUINO IDE:</p>
 
                 <h5>ej1 - Subir un valor a pvCloud:</h5>
                 <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system node /pvcloud/pvcloud.js action="add_value" value="123ABC" value_type="ANY_TYPE_IS_FINE" value_label="ANY LABEL WORKS" captured_datetime="2000-01-01+10:23"
+                    system ( "node ~/pvcloud_api.js action='add_value' value='123ABC' value_type='ANY_TYPE_IS_FINE' value_label='ANY LABEL WORKS' captured_datetime='2000-01-01+10:23'");
                 </code>
 
                 <h5>ej2 - Descargar lista de valores registrados desde pvCloud:</h5>
                 <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system node /pvcloud/pvcloud.js action="get_values" value="123ABC" value_type="ANY_TYPE_IS_FINE" value_label="ANY LABEL WORKS" captured_datetime="2000-01-01+10:23"
+                    system ( "node ~/pvcloud_api.js action='get_values' value_label='ANY LABEL WORKS'");
                 </code>     
 
                 <h5>ej3 - Descargar último valor desde pvCloud</h5>
                 <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system node /pvcloud/pvcloud.js action="get_last_value" value="123ABC" value_type="ANY_TYPE_IS_FINE" value_label="ANY LABEL WORKS" captured_datetime="2000-01-01+10:23"
+                    system ( "node ~/pvcloud_api.js action='get_last_value' value_label='ANY LABEL WORKS'");
                 </code>
 
                 <h5>ej4 - Eliminar valores de pvCloud</h5>
                 <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system node /pvcloud/pvcloud.js action="clear_values" value="123ABC" value_type="ANY_TYPE_IS_FINE" value_label="ANY LABEL WORKS" captured_datetime="2000-01-01+10:23"
+                    system ("node ~/pvcloud_api.js action='clear_values' value_label='ANY LABEL WORKS'");
                 </code>                    
 
             </div>
@@ -195,7 +202,7 @@
                 </a><br><br>
                 <p>Sin el parámetro opcional sería así:</p>
                 <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}<br>
+                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}
 &device_id={{SelectedDevice.device_id}}
 &api_key={{SelectedDevice.api_key}}</pre>  
                 </a>     
@@ -212,10 +219,10 @@
                 </ul>        
                 <h4>Ejemplos:</h4>
                 <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}&optional_label=DIRECT+pvCloud+TEST&optional_last_limit=3" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}<br>
-&device_id={{SelectedDevice.device_id}}<br>
-&api_key={{SelectedDevice.api_key}}<br>
-&optional_label=DIRECT+pvCloud+TEST<br>
+                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}
+&device_id={{SelectedDevice.device_id}}
+&api_key={{SelectedDevice.api_key}}
+&optional_label=DIRECT+pvCloud+TEST
 &optional_last_limit=3</pre>  
                 </a><br><br>
                 <p>Sin el parámetro opcional sería así:</p>
