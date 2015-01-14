@@ -282,7 +282,8 @@ module.exports = function (grunt) {
         // Copies remaining files to places other tasks can use
         copy: {
             dist: {
-                files: [{
+                files: [
+                    {
                         expand: true,
                         dot: true,
                         cwd: '<%= yeoman.app %>',
@@ -293,7 +294,10 @@ module.exports = function (grunt) {
                             '*.html',
                             'views/{,*/}*.html',
                             'images/{,*/}*.{webp}',
-                            'fonts/*'
+                            'fonts/*',
+                            'jqueryui-themes/{,*/}*.css',
+                            'jqueryui-themes/smoothness/images{,*/}*.png',
+                            'jqueryui-themes/smoothness/images{,*/}*.gif'
                         ]
                     }, {
                         expand: true,

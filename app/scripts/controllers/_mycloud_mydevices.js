@@ -31,7 +31,6 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     };
 
     $scope.AddDevice_Save = function () {
-        alert("about to save...");
         if (this.AddDevice_device_nickname !== undefined && this.AddDevice_device_nickname !== "") {
             if (this.AddDevice_device_description !== undefined && this.AddDevice_device_description !== "") {
                 var account_id = sessionService.GetCurrentAccountID();
@@ -40,7 +39,7 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
                 DeviceRegistryService.RegisterNewDevice(account_id, token, this.AddDevice_device_nickname, this.AddDevice_device_description).$promise.then(function (response) {
                     UtilityService.ProcessServiceResponse(response,
                             function success(response) {
-                                device = response.data;
+                                var device = response.data;
                                 getListOfDevicesForAccountID();
                                 alert("Dispositivo registrado satisfactoriamente mediante el ID: " + device.device_id);
                                 $scope.AddingDevice = false;
