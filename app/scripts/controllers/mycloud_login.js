@@ -56,6 +56,8 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
             Message: message,
             Result: result
         };
+        
+        $scope.CapchaResponse = "";
 
 
     }
@@ -161,6 +163,7 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
     $scope.SwitchToPasswordRecoveryMode = function () {
         $scope.FunctionMode = "RECOVER_PASSWORD";//LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT 
         $scope.ErrorMessages = [];
+        generateCapchaCase();
 
         hideAddonActions(function () {
             $(".pv-control-back-to-login-separator").slideUp(100);
