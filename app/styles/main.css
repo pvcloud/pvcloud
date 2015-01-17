@@ -7,6 +7,14 @@ a {
     cursor:pointer;
 }
 
+#account_accordion input, #account_accordion button {
+    margin:3px;
+}
+
+.alert {
+    margin-top:5px;;
+}
+
 .pvcloud-edit-toolbar{
     padding-left:10px;
     padding-right: 10px;

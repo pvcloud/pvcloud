@@ -8,7 +8,6 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
     $scope.Section = "";
     $scope.Logout = logout;
 
-
     validateSession();
 
     if (!$routeParams.section)
@@ -28,7 +27,7 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
             $location.path("/");
         }
     }
-
+    
     function validateSession() {
         sessionService.ValidateSession().$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
