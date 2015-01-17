@@ -9,17 +9,55 @@
  */
 angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, AccountService, sessionService, $location, UtilityService) {
     $scope.$parent.ActiveView = "mycloud";
+    $scope.FunctionMode = "LOGIN";//LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT
     $scope.Email = "";
     $scope.Nickname = "";
     $scope.Pwd = "";
     $scope.Pwd2 = "";
     $scope.ErrorMessages = [];
     $scope.LoggedIn = false;
-
-
+    generateCapchaCase();
+    $scope.GenerateCapchaCase = generateCapchaCase;
 
     function hideAddonActions(whatsNext) {
         $(".pv-credentials-actions").slideUp(200, whatsNext);
+    }
+
+    function generateCapchaCase() {
+        var num1 = Math.floor((Math.random() * 10) + 1);
+        var num2 = Math.floor((Math.random() * 10) + 1);
+        var oper = Math.floor((Math.random() * 3) + 1);
+        var result = 0;
+        var message = "";
+
+        switch (oper) {
+            case 1: //+
+                result = num1 + num2;
+                message = "El resultado de la suma entre " + num1 + " y " + num2 + " debería ser:";
+                break;
+            case 2: //-
+                if (num1 > num2) {
+                    result = num1 - num2;
+                    message = "El resultado de la resta (" + num1 + " - " + num2 + ") debería ser:";
+                } else {
+                    result = num2 - num1;
+                    message = "El resultado de la resta (" + num2 + " - " + num1 + ") debería ser:";
+                }
+
+                break;
+            case 3:
+                result = num1 * num2;
+                message = "El resultado de la multiplicación (" + num1 + " * " + num2 + ") debería ser:";
+                break;
+        }
+        
+        
+        $scope.CapchaCase = {
+            Message: message,
+            Result: result
+        };
+
+
     }
 
     $scope.CheckFields_AddAccount = function () {
@@ -51,6 +89,28 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
         }
     };
 
+    $scope.RecoverPassword_Click = function () {
+        alert("Un mensaje con instrucciones para recuperar su clave se enviará a su cuenta de correo electrónico. Gracias!");
+        $scope.SwitchToLoginMode();
+    };
+
+    $scope.EnterKeyBehavior = function (event) {
+        if (event.charCode === 13) {
+
+            switch ($scope.FunctionMode) {
+                case "LOGIN":
+                    $scope.Login();
+                    break;
+                case "RECOVER_PASSWORD":
+                    $scope.RecoverPassword_Click();
+                    break;
+                case "NEW_ACCOUNT":
+                    break;
+            }
+
+        }
+    };
+
     $scope.Login = function () {
         $scope.ErrorMessages = [];
         sessionService.Authenticate($scope.Email, $scope.Pwd).$promise.then(function (response) {
@@ -78,6 +138,7 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
     }
 
     $scope.SwitchToRegistrationMode = function () {
+        $scope.FunctionMode = "NEW_ACCOUNT";//LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT    
         $scope.ErrorMessages = [];
         hideAddonActions(function () {
             $("#pv-header-password-recovery").slideUp(100);
@@ -98,6 +159,7 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
     };
 
     $scope.SwitchToPasswordRecoveryMode = function () {
+        $scope.FunctionMode = "RECOVER_PASSWORD";//LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT 
         $scope.ErrorMessages = [];
 
         hideAddonActions(function () {
@@ -118,6 +180,7 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
     };
 
     $scope.SwitchToLoginMode = function () {
+        $scope.FunctionMode = "LOGIN";//LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT 
         $scope.ErrorMessages = [];
         hideAddonActions(function () {
             $(".pv-control-back-to-login-separator, #pv-header-registration,#pv-header-password-recovery, .pv-control-recover-password, .pv-control-back-to-login-link, .pv-control-register, .pv-input-password2 ").slideUp(200, function () {
