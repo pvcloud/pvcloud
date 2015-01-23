@@ -50,13 +50,13 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
                 message = "El resultado de la multiplicación (" + num1 + " * " + num2 + ") debería ser:";
                 break;
         }
-        
-        
+
+
         $scope.CapchaCase = {
             Message: message,
             Result: result
         };
-        
+
         $scope.CapchaResponse = "";
 
 
@@ -92,6 +92,8 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
     };
 
     $scope.RecoverPassword_Click = function () {
+        var email = $scope.Email;
+        AccountService.RequestPasswordRecovery(email);
         alert("Un mensaje con instrucciones para recuperar su clave se enviará a su cuenta de correo electrónico. Gracias!");
         $scope.SwitchToLoginMode();
     };
