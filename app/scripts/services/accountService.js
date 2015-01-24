@@ -6,7 +6,7 @@ angular.module('pvcloudApp').factory('AccountService', function ($resource, Util
     var accountChangePasswordResource = $resource(baseURL + "account_change_password.php?account_id=:account_id&token=:token" +
             "&old_password=:old_password&new_password=:new_password", {});
 
-    var accountRequestPasswordRecoveryResource = $resource(baseURL + "account_recover_password.php?email=:email", {});    
+    var accountRequestPasswordRecoveryResource = $resource(baseURL + "account_password_recovery_request.php?email=:email", {});    
 
     function addNewAccount(email, nickname, pwd) {
         return newAccountResource.get({email: email, nickname: nickname, pwd: pwd});

@@ -55,6 +55,16 @@ angular
         templateUrl: 'views/mycloud_home.html',
         controller: 'MycloudHomeCtrl'
       })
+      .when('/passwordrecovery/:account_id/:confirmation_code', {
+        templateUrl: 'views/passwordrecovery.html',
+        controller: 'PasswordrecoveryCtrl'
+      })
+      .when('/prs', {
+        templateUrl: 'views/passwordrecoverysuccess.html'
+      })     
+      .when('/err', {
+        templateUrl: 'views/error.html'
+      })           
       .otherwise({
         redirectTo: '/'
       });
