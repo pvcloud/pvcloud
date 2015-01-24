@@ -1,13 +1,15 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name pvcloudApp.controller:PasswordrecoveryCtrl
- * @description
- * # PasswordrecoveryCtrl
- * Controller of the pvcloudApp
- */
-angular.module('pvcloudApp').controller('PasswordrecoveryCtrl', function ($scope, $routeParams, UtilityService, $sce) {
+angular.module('pvcloudApp').controller('PasswordrecoveryCtrl', function ($scope, $routeParams, UtilityService, $sce, $location) {
+    if ($location.port() !== "9000") {
+        if ($location.protocol() !== "https") {
+            var currentURL = window.location.href;
+            var newURL = currentURL.replace("http", "https").replace(":8080", "");
+            window.location.href = newURL;
+            return;
+        }
+    }
+    
     var actionURL = UtilityService.GetBaseURL() + "account_password_recovery_execute.php";
 
     $scope.AccountID = $routeParams.account_id;

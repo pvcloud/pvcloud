@@ -8,6 +8,16 @@
  * Controller of the pvcloudApp
  */
 angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, AccountService, sessionService, $location, UtilityService) {
+    
+    if($location.port()!=="9000"){
+        if($location.protocol()!=="https"){
+            var currentURL = window.location.href;
+            var newURL = currentURL.replace("http","https").replace(":8080","");
+            window.location.href = newURL;
+            return;
+        }
+    }
+    
     $scope.$parent.ActiveView = "mycloud";
     $scope.FunctionMode = "LOGIN";//LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT
     $scope.Email = "";
