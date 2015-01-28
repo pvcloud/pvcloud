@@ -4,7 +4,7 @@
 </div>
 
 <!-- LOGIN/NEW ACCOUNT/RECOVER PWD-->
-<div class="panel panel-default">
+<div class="panel panel-default" data-ng-show="AllGood">
     <div id="pv-credentials" class="panel-body">
         <!--INSTRUCTIONS-->
         <div class="row">
@@ -20,7 +20,7 @@
         </div>
 
         <!-- LOGIN FORM -->
-        <form id="login_form">
+        <form id="login_form" action="/pvcloud_backend/post_account_login.php" method="POST">
             <!-- USER NAME FIELD -->
             <div class="row">
                 <div class="col-md-12">
@@ -46,6 +46,20 @@
                     </div>
                 </div>
             </div>
+            <!-- SWITCH MODE LINKS -->
+            <div class="row">
+                <div class="col-sm-6">
+                    <input type="submit" value="Ingresar" style="width:200px" class="btn btn-lg btn-success pv-control-login">
+                    <button data-ng-click="RegisterAccount();" class="btn btn-lg btn-primary pv-control-register" style="width:200px">Registrarme</button>
+                    <button data-ng-disabled="!Email || CapchaResponse != CapchaCase.Result" data-ng-click='RecoverPassword_Click();' class="btn btn-lg btn-warning pv-control-recover-password" style="width:250px">Recuperar Contraseña</button>
+                </div>
+                <div class="col-sm-6 pv-credentials-addon-actions">
+                    <div class="pv-credentials-actions">
+                        <a data-ng-click="SwitchToLoginMode();" class="pv-control-back-to-login-link" > Cancelar </a> <span class="pv-control-back-to-login-separator"> | </span>
+                        <a data-ng-click="SwitchToPasswordRecoveryMode();" class="pv-control-recover-password-link" > Olvidé mi clave </a>
+                    </div>
+                </div>            
+            </div>            
         </form>
 
         <!-- PASSWORD REPEAT FIELD -->
@@ -71,25 +85,7 @@
             </div>
         </div>
 
-        <!-- SWITCH MODE LINKS -->
-        <div class="row">
-            <div class="col-sm-6">
-                <button data-ng-click="Login()" class="btn btn-lg btn-success pv-control-login" style="width:200px">Ingresar</button>
-                <button data-ng-click="RegisterAccount();" class="btn btn-lg btn-primary pv-control-register" style="width:200px">Registrarme</button>
 
-
-
-                <button data-ng-disabled="!Email || CapchaResponse!=CapchaCase.Result" data-ng-click='RecoverPassword_Click();' class="btn btn-lg btn-warning pv-control-recover-password" style="width:250px">Recuperar Contraseña</button>
-
-            </div>
-            <div class="col-sm-6 pv-credentials-addon-actions">
-                <div class="pv-credentials-actions">
-
-                    <a data-ng-click="SwitchToLoginMode();" class="pv-control-back-to-login-link" > Cancelar </a> <span class="pv-control-back-to-login-separator"> | </span>
-                    <a data-ng-click="SwitchToPasswordRecoveryMode();" class="pv-control-recover-password-link" > Olvidé mi clave </a>
-                </div>
-            </div>            
-        </div>
     </div>
 </div>
 

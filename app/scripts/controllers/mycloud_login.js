@@ -1,23 +1,29 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name pvcloudApp.controller:MyCloudCtrl
- * @description
- * # MyCloudCtrl
- * Controller of the pvcloudApp
- */
-angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, AccountService, sessionService, $location, UtilityService) {
-    
-    if($location.port()!=="9000"){
-        if($location.protocol()!=="https"){
+angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, AccountService, sessionService, $location, UtilityService, $routeParams) {
+    $scope.AllGood = false;
+    if ($location.port() !== "9000") {
+        if ($location.protocol() !== "https") {
             var currentURL = window.location.href;
-            var newURL = currentURL.replace("http","https").replace(":8080","");
+            var newURL = currentURL.replace("http", "https").replace(":8080", "");
             window.location.href = newURL;
             return;
+        } else {
+            $scope.AllGood = true;
         }
     }
+   
+    //PROCESS AUTHENTICATION SUCESS
+    if($routeParams.account_id>0 && $routeParams.token !== "" && $routeParams.token !== undefined){
+        var token = $routeParams.token;
+        var account_id = $routeParams.account_id;
+        var email = $routeParams.email;
+        sessionService.SetToken(token, email, account_id);
+        $location.path("mycloud");
+        return;
+    }
     
+
     $scope.$parent.ActiveView = "mycloud";
     $scope.FunctionMode = "LOGIN";//LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT
     $scope.Email = "";
