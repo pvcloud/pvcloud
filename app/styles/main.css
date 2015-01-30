@@ -78,7 +78,7 @@ input, textarea {
     width:70px;   
 }
 
-.pv-control-register, .pv-control-recover-password, .pv-control-back-to-login-link , .pv-input-password2{
+#recover_password_form {
     display:none;
 }
 
