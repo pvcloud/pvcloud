@@ -2,48 +2,26 @@
 
 angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, AccountService, sessionService, $location, UtilityService, $routeParams) {
     $scope.AllGood = false;
-    if ($location.port() !== 9000) {
-        if ($location.protocol() !== "https") {
-            var currentURL = window.location.href;
-            var newURL = currentURL.replace("http", "https").replace(":8080", "");
-            window.location.href = newURL;
-            return;
-        } else {
-            $scope.AllGood = true;
-        }
-    } else {
-        $scope.AllGood = true;
-    }
-
-    var actionURL = UtilityService.GetBaseURL() + "post_account_login.php";
-    if (actionURL.indexOf("9000")) {
-        document.getElementById("login_form").setAttribute("action", actionURL);
-    }
-
-//PROCESS AUTHENTICATION SUCESS
-    if ($routeParams.account_id > 0 && $routeParams.token !== "" && $routeParams.token !== undefined) {
-        var token = $routeParams.token;
-        var account_id = $routeParams.account_id;
-        var email = $routeParams.email;
-        sessionService.SetToken(token, email, account_id);
-        $location.path("mycloud");
-        return;
-    }
-
+    $scope.LoginIn = false;
     $scope.$parent.ActiveView = "mycloud";
+    
+    //TODO: FIX ENTER KEY BEHAVIOR IN RELATION TO FUNCTIONMODE
     $scope.FunctionMode = "LOGIN"; //LOGIN or RECOVER_PASSWORD or NEW_ACCOUNT
     $scope.Email = "";
     $scope.Nickname = "";
     $scope.Pwd = "";
     $scope.ErrorMessages = [];
     $scope.LoggedIn = false;
+    
     $scope.GenerateCapchaCase = generateCapchaCase;
+    
     $scope.RecoverPassword_Click = function () {
         var email = $scope.Email;
         AccountService.RequestPasswordRecovery(email);
         alert("Un mensaje con instrucciones para recuperar su clave se enviará a su cuenta de correo electrónico. Gracias!");
         $scope.SwitchToLoginMode();
     };
+    
     $scope.EnterKeyBehavior = function (event) {
         if (event.charCode === 13) {
 
@@ -60,7 +38,7 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
 
         }
     };
-    
+
     //TODO: FUNCTION TO BE REMOVED AFTER CONVERTING TO POST
     $scope.Login = function () {
         $scope.ErrorMessages = [];
@@ -83,13 +61,44 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
                     });
         });
     };
-    
-    
+
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
+
     $scope.SwitchToLoginMode = switchToLoginMode;
-    switchToLoginMode();
-    generateCapchaCase();
     
+    //INITIALIZATION CODE
+    generateCapchaCase();
+
+    if ($location.port() !== 9000) {
+        if ($location.protocol() !== "https") {
+            var currentURL = window.location.href;
+            var newURL = currentURL.replace("http", "https").replace(":8080", "");
+            window.location.href = newURL;
+            return;
+        }
+    }
+
+    //FIX FORM ACTION ON 9000 PORT
+    var actionURL = UtilityService.GetBaseURL() + "post_account_login.php";
+    if (actionURL.indexOf("9000")) {
+        document.getElementById("login_form").setAttribute("action", actionURL);
+    }
+
+    //PROCESS AUTHENTICATION SUCESS
+    if ($routeParams.account_id > 0 && $routeParams.token !== "" && $routeParams.token !== undefined) {
+        $scope.LoginIn = true;
+        var token = $routeParams.token;
+        var account_id = $routeParams.account_id;
+        var email = $routeParams.email;
+        sessionService.SetToken(token, email, account_id);
+        $location.path("mycloud");
+        return;
+    }
+    
+    $scope.AllGood = true;
+    
+    //PRIVATE VARIABLES
+
     function generateCapchaCase() {
         var num1 = Math.floor((Math.random() * 10) + 1);
         var num2 = Math.floor((Math.random() * 10) + 1);
