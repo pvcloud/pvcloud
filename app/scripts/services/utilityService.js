@@ -13,9 +13,6 @@ angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
 
         return baseURL;
     }
-    function getCORSRequestURL(){
-        return window.location.host;      
-    }
 
     function processServiceResponse(response, successFunction, errorFunction, exceptionFunction) {
         console.log("PROCESS_SERVICE_RESPONSE");
@@ -47,7 +44,6 @@ angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
     }
     return {
         ProcessServiceResponse: processServiceResponse,
-        GetBackendBaseURL:getBackendBaseURL,
-        GetCORSRequestURL:getCORSRequestURL
+        GetBackendBaseURL:getBackendBaseURL
     };
 });
