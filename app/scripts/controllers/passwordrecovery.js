@@ -10,7 +10,7 @@ angular.module('pvcloudApp').controller('PasswordrecoveryCtrl', function ($scope
         }
     }
     
-    var actionURL = UtilityService.GetBaseURL() + "account_password_recovery_execute.php";
+    var actionURL = UtilityService.GetBackendBaseURL() + "account_password_recovery_execute.php";
 
     $scope.AccountID = $routeParams.account_id;
     $scope.ConfirmationCode = $routeParams.confirmation_code;

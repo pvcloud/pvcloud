@@ -2,7 +2,7 @@
 
 angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
 
-    function getBaseURL() {
+    function getBackendBaseURL() {
         var baseURL = "";
         
         if (window.location.host === "localhost:9000") {
@@ -12,6 +12,9 @@ angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
         }
 
         return baseURL;
+    }
+    function getCORSRequestURL(){
+        return window.location.host;      
     }
 
     function processServiceResponse(response, successFunction, errorFunction, exceptionFunction) {
@@ -44,6 +47,7 @@ angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
     }
     return {
         ProcessServiceResponse: processServiceResponse,
-        GetBaseURL:getBaseURL
+        GetBackendBaseURL:getBackendBaseURL,
+        GetCORSRequestURL:getCORSRequestURL
     };
 });

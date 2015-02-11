@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pvcloudApp').factory('DeviceRegistryService', function ($resource, UtilityService) {
-    var baseURL = UtilityService.GetBaseURL();
+    var baseURL = UtilityService.GetBackendBaseURL();
     var deviceAddNewItemResource = $resource(baseURL + "device_register.php?account_id=:account_id&token=:token&device_nickname=:device_nickname&device_description=:device_description", {});
     var deviceRegistryResource = $resource(baseURL + "device_get_list_by_account.php?account_id=:account_id&token=:token", {});
     var deviceRegenerateAPIKeyResource = $resource(baseURL + "device_generate_api_key.php?account_id=:account_id&token=:token&device_id=:device_id", {});

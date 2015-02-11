@@ -3,7 +3,7 @@
 angular.module('pvcloudApp').factory('sessionService', function ($resource, UtilityService) {
 
 
-    var baseURL = UtilityService.GetBaseURL();
+    var baseURL = UtilityService.GetBackendBaseURL();
 
 
     var sessionResource_Create = $resource(baseURL + "account_authenticate.php?email=:email&pwd=:pwd", {});

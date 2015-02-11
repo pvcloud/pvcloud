@@ -1,4 +1,4 @@
-angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, $location, UtilityService, $routeParams, DeviceRegistryService, sessionService) {
+angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, UtilityService, DeviceRegistryService, sessionService) {
     console.log("This is my devices controller being invoked");
     console.log($scope);
     $scope.AddingDevice = false;
@@ -9,10 +9,14 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     $scope.LoadingListOfDevicesComplete = false;
     
     var protocol = window.location.protocol;
+    //TODO: Making protocol for WGET to be HTTPS until we find an easy way to install wget-ssl in Galileo
+    //pvcloud_api.js driver will anyway interact ONLY with HTTPS
+    
+    protocol = "https:";
     var hostname = window.location.host;
     var port = window.location.port;
 
-    if (port == 9000) {
+    if (port === 9000) {
         $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080";
     } else {
         $scope.URLBegin = protocol + "//" + hostname;
@@ -124,7 +128,7 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     };
 
     $scope.EditDevice_Save = function (device) {
-        if (device.device_nickname_edited != "" && device.device_description_edited != "") {
+        if (device.device_nickname_edited !== "" && device.device_description_edited !== "") {
             device.device_nickname = device.device_nickname_edited;
             device.device_description = device.device_description_edited;
 
