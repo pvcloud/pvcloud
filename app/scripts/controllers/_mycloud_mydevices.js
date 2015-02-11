@@ -9,10 +9,10 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     $scope.LoadingListOfDevicesComplete = false;
     
     var protocol = window.location.protocol;
-    //TODO: Making protocol for WGET to be HTTPS until we find an easy way to install wget-ssl in Galileo
+    //TODO: Making protocol for WGET to be HTTP until we find an easy way to install wget-ssl in Galileo
     //pvcloud_api.js driver will anyway interact ONLY with HTTPS
     
-    protocol = "https:";
+    protocol = "http:";
     var hostname = window.location.host;
     var port = window.location.port;
 
