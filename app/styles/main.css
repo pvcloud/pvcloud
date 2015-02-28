@@ -7,8 +7,28 @@ a {
     cursor:pointer;
 }
 
+#login_form, #recover_password_form{
+    background-color:rgba(255,255,255,0.5)    
+}
+
+#login_form div.login-form-buttons,
+#recover_password_form div.login-form-buttons{
+    margin:20px auto;
+}
+
+#login_form .input-group, #recover_password_form .input-group{
+    width:100%;
+}
 #account_accordion input, #account_accordion button {
     margin:3px;
+}
+#newAccountPanel{
+    display:none;
+    text-align: justify;
+}
+
+#newAccountPanel p{
+    font-size:1em;
 }
 
 .alert {
@@ -21,6 +41,15 @@ a {
     padding-right: 10px;
     font-size:1.9em;
     margin-right:15px
+}
+
+.pvcloud-close-button {
+    cursor:pointer;
+    color:maroon;
+}
+
+.pvcloud-close-button:hover{
+    color:red;
 }
 
 .pvcloud-edit-toolbar i{
@@ -133,6 +162,12 @@ span.glyphicon-copyright-mark{
     padding-top: 19px;
     color: #777;
     border-top: 1px solid #e5e5e5;
+    text-align: center; 
+    border-style: none;    
+}
+
+.footer .panel{
+    background-color: rgba(255,255,255,0.9);
 }
 
 .container-narrow > hr {
@@ -143,10 +178,11 @@ span.glyphicon-copyright-mark{
 .jumbotron {
     text-align: center;
     border-bottom: 1px solid #e5e5e5;
+    background-color: rgba(255,255,255,0.6);    
 }
 .jumbotron .btn {
     font-size: 21px;
-    padding: 14px 24px;
+
 }
 
 /* Supporting marketing content */
@@ -184,4 +220,30 @@ span.glyphicon-copyright-mark{
         text-align: left;
         margin-top:20px;
     }    
+    
+    .crmakers-logo{
+        width:50px;
+        position:absolute;
+        top:25px;
+        left:20px
+    }
+    
+    .jumbotron p{
+        font-size: 0.8em
+    }
+    
+    .login-form-buttons a{
+        display:inline-block;
+        margin-top:1em
+    }
+    
+    .login-form-buttons button{
+        font-size:1em!important
+    }
+}
+
+@media screen and (max-width:400px){
+    .login-form-buttons .pipe{
+        display:none
+    }
 }
