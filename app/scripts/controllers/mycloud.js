@@ -32,16 +32,19 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
         sessionService.ValidateSession().$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
                     function success(response) {
+                        console.log("SUCCESS @ myCloud");
                         $scope.LoggedIn = true;
                         $scope.Email = sessionService.GetCurrentEmail();
                         $scope.AccountID = sessionService.GetCurrentAccountID();
                     },
                     function error(response) {
-                        $location.path("mycloud_login");
+                        console.log("ERROR @ myCloud");
+                        $location.path("/");
                     },
                     function exception(response) {
+                        console.log("EXCEPTION @ myCloud");
                         alert("Disculpas por la interrupción. Ocurrió un problema con su sesión. Por favor trate autenticándose nuevamente.");
-                        $location.path("mycloud_login");
+                        $location.path("/");
                     });
         });
     }

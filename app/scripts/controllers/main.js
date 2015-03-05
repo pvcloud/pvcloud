@@ -1,8 +1,20 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('MainCtrl', function ($scope, UtilityService, AccountService) {
+angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location, UtilityService, AccountService, sessionService) {
+
+    console.log("InitatingModule")
+    validateSession();
 
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
+    
+    if ($location.port() !== 9000) {
+        if ($location.protocol() !== "https") {
+            var currentURL = window.location.href;
+            var newURL = currentURL.replace("http", "https").replace(":8080", "");
+            window.location.href = newURL;
+            return;
+        }
+    }    
 
     $scope.RecoverPassword_Click = function () {
         if (!$scope.Email)
@@ -27,6 +39,25 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, UtilitySer
 
     $scope.SwitchToLoginMode = switchToLoginMode;
     $scope.SwitchToNewAccountInfoMode = switchToNewAccountInfoMode;
+    
+    function validateSession() {
+        sessionService.ValidateSession().$promise.then(function (response) {
+            UtilityService.ProcessServiceResponse(response,
+                    function success(response) {
+                        $scope.LoggedIn = true;
+                        $scope.Email = sessionService.GetCurrentEmail();
+                        $scope.AccountID = sessionService.GetCurrentAccountID();
+                        $location.path("/mycloud");
+                    },
+                    function error(response) {
+                        $location.path("/");
+                    },
+                    function exception(response) {
+                        alert("Disculpas por la interrupción. Ocurrió un problema con su sesión. Por favor trate autenticándose nuevamente.");
+                        $location.path("/");
+                    });
+        });
+    }  
 
     function fixLoginFormAction() {
         var actionURL = UtilityService.GetBackendBaseURL() + "post_account_login.php";

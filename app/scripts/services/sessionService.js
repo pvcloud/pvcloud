@@ -47,7 +47,7 @@ angular.module('pvcloudApp').factory('sessionService', function ($resource, Util
     function validateSession() {
         console.log("VALIDATE SESSION");
         return sessionResource_Validate.get({account_id: getCurrentAccountID(), token: getCurrentToken()});
-    }
+    }    
 
     function setToken(tokenToSet, emailToSet, account_id) {
         setCurrentToken(tokenToSet);

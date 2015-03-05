@@ -31,14 +31,10 @@ angular
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
                     })
-                    .when('/mycloud_login/:email/:account_id/:token', {
-                        templateUrl: 'views/mycloud_login.html',
-                        controller: 'MyCloud_LoginCtrl'
+                    .when('/login_data/:email/:account_id/:token', {
+                        templateUrl: 'views/login_data.html',
+                        controller: 'LoginCtrl'
                     })
-                    .when('/mycloud_login', {
-                        templateUrl: 'views/mycloud_login.html',
-                        controller: 'MyCloud_LoginCtrl'
-                    })                    
                     .when('/mycloud_login/:error_code', {
                         templateUrl: 'views/mycloud_login.html',
                         controller: 'MyCloud_LoginCtrl'

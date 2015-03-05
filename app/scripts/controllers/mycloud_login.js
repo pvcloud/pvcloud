@@ -11,11 +11,12 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
     $scope.Pwd = "";
     $scope.ErrorMessages = [];
     $scope.LoggedIn = false;
-    
+
     $scope.GenerateCapchaCase = generateCapchaCase;
 
     $scope.RecoverPassword_Click = function () {
-        if(!$scope.Email || $scope.CapchaResponse != $scope.CapchaCase.Result) return;
+        if (!$scope.Email || $scope.CapchaResponse != $scope.CapchaCase.Result)
+            return;
         var email = $scope.Email;
         AccountService.RequestPasswordRecovery(email);
         alert("Un mensaje con instrucciones para recuperar su clave se enviará a su cuenta de correo electrónico. Gracias!");
@@ -55,8 +56,8 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
     }
 
     // PROCESS LOGIN ERROR IF ANY  
-    if($routeParams.error_code){
-        $scope.ErrorMessages=["El proceso de autenticación falló. Verifique por favor sus credenciales."];
+    if ($routeParams.error_code) {
+        $scope.ErrorMessages = ["El proceso de autenticación falló. Verifique por favor sus credenciales."];
     }
     //PROCESS AUTHENTICATION SUCESS
     if ($routeParams.account_id > 0 && $routeParams.token !== "" && $routeParams.token !== undefined) {
@@ -123,4 +124,22 @@ angular.module('pvcloudApp').controller('MyCloud_LoginCtrl', function ($scope, A
         generateCapchaCase();
         $scope.FunctionMode = "RECOVER_PASSWORD";
     }
+
+    // PROCESS LOGIN ERROR IF ANY  
+    if ($routeParams.error_code) {
+        $scope.ErrorMessages = ["El proceso de autenticación falló. Verifique por favor sus credenciales."];
+    }
+    //PROCESS AUTHENTICATION SUCESS
+    if ($routeParams.account_id > 0 && $routeParams.token !== "" && $routeParams.token !== undefined) {
+        $scope.LoginIn = true;
+        var token = $routeParams.token;
+        var account_id = $routeParams.account_id;
+        var email = $routeParams.email;
+        sessionService.SetToken(token, email, account_id);
+        $location.path("mycloud");
+        return;
+    }
+
+    $scope.AllGood = true;
+
 });

@@ -42,6 +42,7 @@ angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
             default:
         }
     }
+    
     return {
         ProcessServiceResponse: processServiceResponse,
         GetBackendBaseURL:getBackendBaseURL
