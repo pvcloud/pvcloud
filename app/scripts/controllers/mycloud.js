@@ -23,7 +23,12 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
 
     function logout() {
         if (confirm("¿Está seguro que desea cerrar su sesión?")) {
-            sessionService.Logout();
+            console.log("LOGOUT IS CALLED HERE!!!!!!");
+            var account_id = sessionService.GetCurrentAccountID();
+            var token = sessionService.GetCurrentToken();
+            
+            console.log({account_id:account_id, token:token});
+            sessionService.Logout(account_id, token);
             $location.path("/");
         }
     }
