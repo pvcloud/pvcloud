@@ -4,6 +4,7 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
 
     console.log("InitatingModule")
     validateSession();
+    $scope.ErrorMessages = [];
 
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
     
@@ -72,8 +73,23 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
 
     function login(){
         alert("OK");
-        sessionService.Login($scope.Email, $scope.Pwd);
-        //$("#login_form").submit();
+        sessionService.Login($scope.Email, $scope.Pwd).$promise.then(function (response) {
+            if(response.status == "OK"){
+                sessionService.SetToken(response.data.token, response.data.email, response.data.account_id);
+                
+                
+                //$("#login_form").submit();
+            }
+            else
+            {
+                $scope.ErrorMessages.push(response.message);
+                
+            
+            
+            }
+            
+        });
+        
     }
 
     function switchToPWRecoveryMode() {

@@ -5,6 +5,17 @@
             <img class="crmakers-logo" src="images/crmakers.png" alt="CRMK"><br>
             El poder de lo simple en el Internet de las Cosas
         </p>
+        
+        <!-- ERROR MESSAGES -->
+        <div class="row" data-ng-show="ErrorMessages.length > 0">
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert">
+                    <p data-ng-repeat="error in ErrorMessages">
+                        <i class="glyphicon glyphicon-warning-sign pull-left"></i>{{error}}  
+                    </p>                
+                </div>
+            </div>
+        </div>
 
         <!-- LOGIN FORM -->
         <form id="login_form" 
@@ -61,5 +72,7 @@
                 <p>Si alguno de tus amigos tiene una cuenta de pvCloud, habla con él o ella y pídele que te invite! :-)</p>
             </div>
         </div>
+        
+        
     </div>
 </div>
