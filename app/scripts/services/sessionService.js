@@ -5,7 +5,7 @@ angular.module('pvcloudApp').factory('sessionService', function ($resource, Util
     var baseURL = UtilityService.GetBackendBaseURL();
 
 
-    var sessionResource_Create = $resource(baseURL + "account_authenticate.php?email=:email&pwd=:pwd", {});
+    var sessionResource_Login = $resource(baseURL + "session_login.php?email=:email&pwd=:pwd", {});
     var sessionResource_Validate = $resource(baseURL + "session_validate.php?account_id=:account_id&token=:token", {});
     
     var sessionResource_Logout = $resource(baseURL + "session_logout.php?account_id=:account_id&token=:token", {});
@@ -34,10 +34,10 @@ angular.module('pvcloudApp').factory('sessionService', function ($resource, Util
         return sessionStorage.getItem("email");
     }
 
-    function authenticate(email, pwd) {
-        return sessionResource_Create.get({email: email, pwd: pwd});
+    function login(email, pwd) {
+        return sessionResource_Login.get({email: email, pwd: pwd});
     }
-    
+       
     function logout(account_id, token){
         setCurrentAccountID(0);
         setCurrentEmail("");
@@ -59,12 +59,12 @@ angular.module('pvcloudApp').factory('sessionService', function ($resource, Util
     }
 
     return {
-        Authenticate: authenticate,
         ValidateSession: validateSession,
         SetToken: setToken,
         GetCurrentEmail: getCurrentEmail,
         GetCurrentAccountID: getCurrentAccountID,
         GetCurrentToken: getCurrentToken,
+        Login: login,
         Logout: logout
     };
 });

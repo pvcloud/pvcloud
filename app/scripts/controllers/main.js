@@ -35,9 +35,12 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
         }
     };
 
+    $scope.Login = login;
+    
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
 
     $scope.SwitchToLoginMode = switchToLoginMode;
+    
     $scope.SwitchToNewAccountInfoMode = switchToNewAccountInfoMode;
     
     function validateSession() {
@@ -67,6 +70,11 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
         }
     }
 
+    function login(){
+        alert("OK");
+        sessionService.Login($scope.Email, $scope.Pwd);
+        //$("#login_form").submit();
+    }
 
     function switchToPWRecoveryMode() {
         $("#recover_password_form").slideDown(100);
