@@ -35,14 +35,6 @@ angular
                         templateUrl: 'views/login_data.html',
                         controller: 'LoginCtrl'
                     })
-                    .when('/mycloud_login/:error_code', {
-                        templateUrl: 'views/mycloud_login.html',
-                        controller: 'MyCloud_LoginCtrl'
-                    })
-                    .when('/mycloud_login_err', {
-                        templateUrl: 'views/mycloud_login_err.html',
-                        controller: 'MyCloud_Login_ErrCtrl'
-                    })                    
                     .when('/contact', {
                         templateUrl: 'views/contact.html',
                         controller: 'ContactCtrl'

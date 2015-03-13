@@ -5,9 +5,10 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
     console.log("InitatingModule")
     validateSession();
     $scope.ErrorMessages = [];
+    $scope.UIReady = false;
 
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
-    
+
     if ($location.port() !== 9000) {
         if ($location.protocol() !== "https") {
             var currentURL = window.location.href;
@@ -15,7 +16,7 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
             window.location.href = newURL;
             return;
         }
-    }    
+    }
 
     $scope.RecoverPassword_Click = function () {
         if (!$scope.Email)
@@ -37,13 +38,13 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
     };
 
     $scope.Login = login;
-    
+
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
 
     $scope.SwitchToLoginMode = switchToLoginMode;
-    
+
     $scope.SwitchToNewAccountInfoMode = switchToNewAccountInfoMode;
-    
+
     function validateSession() {
         sessionService.ValidateSession().$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
@@ -54,14 +55,15 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
                         $location.path("/mycloud");
                     },
                     function error(response) {
-                        $location.path("/");
+                        $scope.UIReady = true;
                     },
                     function exception(response) {
                         alert("Disculpas por la interrupción. Ocurrió un problema con su sesión. Por favor trate autenticándose nuevamente.");
                         $location.path("/");
+                        $scope.UIReady = true;
                     });
         });
-    }  
+    }
 
     function fixLoginFormAction() {
         var actionURL = UtilityService.GetBackendBaseURL() + "post_account_login.php";
@@ -71,25 +73,21 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
         }
     }
 
-    function login(){
-        alert("OK");
+    function login() {
+        console.log("login()");
+        $scope.ErrorMessages = [];
+        console.log({Email: $scope.Email, Pwd: $scope.Pwd});
         sessionService.Login($scope.Email, $scope.Pwd).$promise.then(function (response) {
-            if(response.status == "OK"){
+            console.log(response);
+            if (response.status === "OK") {
                 sessionService.SetToken(response.data.token, response.data.email, response.data.account_id);
-                
-                
-                //$("#login_form").submit();
+                $("#login_form").submit();
             }
             else
             {
                 $scope.ErrorMessages.push(response.message);
-                
-            
-            
             }
-            
         });
-        
     }
 
     function switchToPWRecoveryMode() {
@@ -106,9 +104,9 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
         $("#username").focus();
         $scope.FunctionMode = "LOGIN";
     }
-    
-    function switchToNewAccountInfoMode(){
-        $("#login_form").slideUp(100, function(){
+
+    function switchToNewAccountInfoMode() {
+        $("#login_form").slideUp(100, function () {
             $("#newAccountPanel").slideDown(1000);
         });
 
