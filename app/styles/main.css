@@ -36,6 +36,12 @@ a {
     margin-bottom:5px;
 }
 
+.invite_a_friend{
+    color:red !important;
+    font-style: italic;
+    font-weight: bold;
+}
+
 .pvcloud-edit-toolbar{
     padding-left:10px;
     padding-right: 10px;

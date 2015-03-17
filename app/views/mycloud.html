@@ -10,10 +10,11 @@
             <!-- TABS -->
             <div class="panel-body">
                 <ul class="nav nav-tabs">
-                    <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps">Mis Dispositivos</a></li>
-                    <li role="presentation" ng-class="{active: Section === 'invite'}"><a href="#/mycloud/myapps" style="color:red">Invitar a un amigo</a></li>
+                    <li role="presentation" ng-class="{active: Section === 'mydevices'}"><a href="#/mycloud/mydevices">Mis Dispositivos</a></li>
+                    <li role="presentation" ng-class="{active: Section === 'inviteafriend'}"><a class="invite_a_friend" href="#/mycloud/inviteafriend">Invitar a un amigo</a></li>
                     <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork">Mi Red</a></li>
                     <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount">Mi Cuenta</a></li>
+                    
                 </ul>   
                 <div class="row">
                     <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                
