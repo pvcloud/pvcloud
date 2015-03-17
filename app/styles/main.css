@@ -63,7 +63,7 @@ a {
     width:100%;
 }
 
-.pvcloud-device-edit{
+.pvcloud-app-edit{
     cursor:pointer;
 }
 
@@ -71,7 +71,7 @@ input, textarea {
     padding:5px;
 }
 
-.pvcloud-device-edit:hover{
+.pvcloud-app-edit:hover{
     color:green;
 }
 #flecha-ingresar{

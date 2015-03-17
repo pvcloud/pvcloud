@@ -1,33 +1,33 @@
 <!-- CONTAINER FLUID -->
-<div data-ng-controller="_mycloud_mydevices" class="container-fluid">
+<div data-ng-controller="_mycloud_myapps" class="container-fluid">
     <!--HEADING - REGISTRAR NUEVO DISPOSITIVO-->
-    <div class="row" data-ng-if="SelectedDevice === undefined">
+    <div class="row" data-ng-if="SelectedApp === undefined">
         <div class="col-sm-12">
-            <button class="btn btn-primary" style="float:right; margin:10px 0" title="Registrar nuevo dispositivo" data-ng-click="NewDevicesMode()"><i class="glyphicon glyphicon-plus"></i> Nuevo Dispositivo</button>
+            <button class="btn btn-primary" style="float:right; margin:10px 0" title="Registrar nuevo dispositivo" data-ng-click="NewAppsMode()"><i class="glyphicon glyphicon-plus"></i> Nuevo Dispositivo</button>
             <br><br><br>
-            <div data-ng-show="AddingDevice" class="pull-right panel panel-info" style="width:100%; padding: 10px">
+            <div data-ng-show="AddingApp" class="pull-right panel panel-info" style="width:100%; padding: 10px">
                 <div class="panel-heading">
                     Nuevo Dispositivo:
-                    <i class="glyphicon glyphicon-remove pull-right pvcloud-device-edit"  title="Cancelar Edición" data-ng-click="CancelNewDevicesMode()"></i>
+                    <i class="glyphicon glyphicon-remove pull-right pvcloud-app-edit"  title="Cancelar Edición" data-ng-click="CancelNewAppsMode()"></i>
                 </div>                
                 <div class="panel-body success">
 
                     <div class="pvcloud-edit-toolbar panel panel-default pull-right">
                         <div class="panel-content">
-                            <i class="glyphicon glyphicon-floppy-save pvcloud-device-edit pull-right" style="color:green" data-ng-click="AddDevice_Save()"  title="Guardar Cambios"></i>&nbsp;
+                            <i class="glyphicon glyphicon-floppy-save pvcloud-app-edit pull-right" style="color:green" data-ng-click="AddApp_Save()"  title="Guardar Cambios"></i>&nbsp;
                         </div>
                     </div>     
 
 
-                    <table style="width:60%" class="pvcloud-device-edit-form">
+                    <table style="width:60%" class="pvcloud-app-edit-form">
                         <tr>
                             <td style="text-align: right">Nombre:</td>
-                            <td><input data-ng-model="AddDevice_device_nickname" type="text" style="width:100%" /></td>
+                            <td><input data-ng-model="AddApp_app_nickname" type="text" style="width:100%" /></td>
                         </tr>
                         <tr>
                             <td style="text-align: right">Descripción:</td>
                             <td>
-                                <textarea data-ng-model="AddDevice_device_description" style="width:100%" rows="2"></textarea>
+                                <textarea data-ng-model="AddApp_app_description" style="width:100%" rows="2"></textarea>
 
                         </tr>
                     </table>  
@@ -36,79 +36,79 @@
         </div>
     </div>
     <!--LISTA DE DISPOSITIVOS-->
-    <table class="table table-striped table-hover" data-ng-if="Devices && Devices.length > 0 && SelectedDevice === undefined">
+    <table class="table table-striped table-hover" data-ng-if="Apps && Apps.length > 0 && SelectedApp === undefined">
         <tr>
             <th>ID</th>
             <th>Nombre de Dipositivo</th>
             <th style="text-align: center">API KEY</th>
             <th></th>
         </tr>
-        <tr id="tr_device_{{device.device_id}}" data-ng-repeat="device in Devices">
-            <td class="td-device-info" style="vertical-align: middle">{{device.device_id}}</td>
-            <td class="td-device-info" colspan="{{device.deviceBeingEdited?3:1}}">
-                <i class="glyphicon glyphicon-remove pull-right pvcloud-device-edit" data-ng-show="device.deviceBeingEdited" data-ng-click="EditDevice_Cancel(device)" title="Cancelar Edición"></i>
-                <div class="pvcloud-edit-toolbar panel panel-default pull-right" data-ng-show="device.deviceBeingEdited">
+        <tr id="tr_app_{{app.app_id}}" data-ng-repeat="app in Apps">
+            <td class="td-app-info" style="vertical-align: middle">{{app.app_id}}</td>
+            <td class="td-app-info" colspan="{{app.appBeingEdited?3:1}}">
+                <i class="glyphicon glyphicon-remove pull-right pvcloud-app-edit" data-ng-show="app.appBeingEdited" data-ng-click="EditApp_Cancel(app)" title="Cancelar Edición"></i>
+                <div class="pvcloud-edit-toolbar panel panel-default pull-right" data-ng-show="app.appBeingEdited">
                     <div class="panel-content">
-                        <i class="glyphicon glyphicon-refresh pvcloud-device-edit" style="color:orange" data-ng-click="EditDevice_NewAPIKey(device)" title="Haga clic para generar un nuevo API KEY"  style="color:maroon"></i>&nbsp;
-                        <i class="glyphicon glyphicon-floppy-save pvcloud-device-edit" style="color:green" data-ng-click="EditDevice_Save(device)"  title="Guardar Cambios"></i>&nbsp;
-                        <i class="glyphicon glyphicon-floppy-remove pvcloud-device-edit" style="color:red" data-ng-click="EditDevice_Delete(device)" title="Eliminar Dispositivo"></i>
+                        <i class="glyphicon glyphicon-refresh pvcloud-app-edit" style="color:orange" data-ng-click="EditApp_NewAPIKey(app)" title="Haga clic para generar un nuevo API KEY"  style="color:maroon"></i>&nbsp;
+                        <i class="glyphicon glyphicon-floppy-save pvcloud-app-edit" style="color:green" data-ng-click="EditApp_Save(app)"  title="Guardar Cambios"></i>&nbsp;
+                        <i class="glyphicon glyphicon-floppy-remove pvcloud-app-edit" style="color:red" data-ng-click="EditApp_Delete(app)" title="Eliminar Dispositivo"></i>
                     </div>
                 </div>
-                <span data-ng-show="!device.deviceBeingEdited">{{device.device_nickname}}</span>
-                <span data-ng-show="!device.deviceBeingEdited" class="badge success" title="Data records in pvCloud">{{device.device_id + 8}}</span>
-                <br data-ng-show="!device.deviceBeingEdited">
-                <small data-ng-show="!device.deviceBeingEdited" class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{device.device_description}}</small>
+                <span data-ng-show="!app.appBeingEdited">{{app.app_nickname}}</span>
+                <span data-ng-show="!app.appBeingEdited" class="badge success" title="Data records in pvCloud">{{app.app_id + 8}}</span>
+                <br data-ng-show="!app.appBeingEdited">
+                <small data-ng-show="!app.appBeingEdited" class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{app.app_description}}</small>
 
-                <div data-ng-show="device.deviceBeingEdited">
-                    <table style="width:60%" class="pvcloud-device-edit-form">
+                <div data-ng-show="app.appBeingEdited">
+                    <table style="width:60%" class="pvcloud-app-edit-form">
                         <tr>
                             <td style="text-align: right">Nombre:</td>
-                            <td><input type="text" data-ng-model="device.device_nickname_edited" style="width:100%" /></td>
+                            <td><input type="text" data-ng-model="app.app_nickname_edited" style="width:100%" /></td>
                         </tr>
                         <tr>
                             <td style="text-align: right">Descripción:</td>
                             <td>
-                                <textarea data-ng-model="device.device_description_edited" style="width:100%" rows="2"></textarea>
+                                <textarea data-ng-model="app.app_description_edited" style="width:100%" rows="2"></textarea>
 
                         </tr>
                         <tr>
                             <td style="text-align: right">API KEY:</td>
-                            <td><code>{{device.api_key_edited}}</code></td>
+                            <td><code>{{app.api_key_edited}}</code></td>
                         </tr>                        
                     </table>
 
                 </div>
 
             </td>
-            <td data-ng-show="!device.deviceBeingEdited" class="td-device-info" style="text-align: center">
-                <code>{{device.api_key}}</code> 
+            <td data-ng-show="!app.appBeingEdited" class="td-app-info" style="text-align: center">
+                <code>{{app.api_key}}</code> 
             </td>
-            <td data-ng-show="!device.deviceBeingEdited" class="td-device-info" style="font-size: 2em">
-                <i class="glyphicon glyphicon-pencil pvcloud-device-edit" data-ng-click="EditDevice(device)" data-ng-show="!device.deviceBeingEdited" title="Editar dispositivo."></i>
-                <i class="glyphicon glyphicon-eye-open pvcloud-device-edit" title="Ver referencia del API" data-ng-click="ViewAPIReference(device)"></i>
+            <td data-ng-show="!app.appBeingEdited" class="td-app-info" style="font-size: 2em">
+                <i class="glyphicon glyphicon-pencil pvcloud-app-edit" data-ng-click="EditApp(app)" data-ng-show="!app.appBeingEdited" title="Editar dispositivo."></i>
+                <i class="glyphicon glyphicon-eye-open pvcloud-app-edit" title="Ver referencia del API" data-ng-click="ViewAPIReference(app)"></i>
             </td>
         </tr>
     </table>
-    <div data-ng-if="LoadingListOfDevicesComplete && (!Devices || Devices.length === 0)">No hay dispositivos registrados</div>
+    <div data-ng-if="LoadingListOfAppsComplete && (!Apps || Apps.length === 0)">No hay dispositivos registrados</div>
     
     <!--API DOCUMENTATION-->
-    <div style="text-align: justify; font-size:16px" data-ng-show="SelectedDevice !== undefined">
-        <i style="color:red" class="glyphicon glyphicon-remove pull-right pvcloud-device-edit" data-ng-click="CloseAPIReference();"></i>
+    <div style="text-align: justify; font-size:16px" data-ng-show="SelectedApp !== undefined">
+        <i style="color:red" class="glyphicon glyphicon-remove pull-right pvcloud-app-edit" data-ng-click="CloseAPIReference();"></i>
         <h2 class="demoHeaders">Cómo usar pvCloud en su dispositivo</h2>
         <div class="alert alert-info">
-            <strong>ID de Dispositivo:</strong> <span style="font-family: monospace">{{SelectedDevice.device_id}}</span><br>
-            <strong>Nombre de Dispositivo:</strong> <span style="font-family: monospace">{{SelectedDevice.device_nickname}} ({{SelectedDevice.device_id}})</span><br>
-            <strong>Descripción:</strong> <span style="font-family: monospace">{{SelectedDevice.device_description}}</span><br>
-            <strong>API KEY:</strong> <span style="font-family: monospace">{{SelectedDevice.api_key}}</span>
+            <strong>ID de Dispositivo:</strong> <span style="font-family: monospace">{{SelectedApp.app_id}}</span><br>
+            <strong>Nombre de Dispositivo:</strong> <span style="font-family: monospace">{{SelectedApp.app_nickname}} ({{SelectedApp.app_id}})</span><br>
+            <strong>Descripción:</strong> <span style="font-family: monospace">{{SelectedApp.app_description}}</span><br>
+            <strong>API KEY:</strong> <span style="font-family: monospace">{{SelectedApp.api_key}}</span>
         </div>
 
 
         <div id="accordion">
             <h3>Introducción</h3>
             <div>
-                <p>En este documento encontrará información <strong>personalizada</strong> para su dispositivo IoT ({{SelectedDevice.device_nickname}}) en particular.</p>
+                <p>En este documento encontrará información <strong>personalizada</strong> para su dispositivo IoT ({{SelectedApp.app_nickname}}) en particular.</p>
                 <p>En las siguientes tres secciones se describe cómo utilizar pvCloud para subir y consumir datos usando su dispositivo IoT </p>
-                <p>Haga clic en el título de la sección que desee explorar para ver su contenido; o haga clic en el botón "<i style="color:red" class="glyphicon glyphicon-remove pvcloud-device-edit" data-ng-click="CloseAPIReference();"></i>" que se encuentra arriba a la derecha para volver a la lista de dispositivos.</p>
+                <p>Haga clic en el título de la sección que desee explorar para ver su contenido; o haga clic en el botón "<i style="color:red" class="glyphicon glyphicon-remove pvcloud-app-edit" data-ng-click="CloseAPIReference();"></i>" que se encuentra arriba a la derecha para volver a la lista de dispositivos.</p>
             </div>
             <h3>La forma simple con ARDUINO y NODEJS</h3>
             <div>
@@ -120,9 +120,9 @@
                 <p>pvCloud ofrece un programa personalizado para su dispositivo que puede descargar usando los siguientes comandos de LINUX.</p>
                 <p>Primero, descargue el programa personalizado para su dispositivo usando el comando de LINUX wget:</p>
                 <code style="text-align: left; display: inline-block; word-break: break-all">
-                    wget -O ~/pvcloud_api.js "{{URLBegin}}/pvcloud_backend/<strong>vse_api_generate.php</strong>?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}"
+                    wget -O ~/pvcloud_api.js "{{URLBegin}}/pvcloud_backend/<strong>vse_api_generate.php</strong>?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}"
                 </code><br><br>                
-                <a class="pull-right" href="{{URLBegin}}/pvcloud_backend/vse_api_generate.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}" title="También puede descargarlo en su PC para realizar pruebas">Descargar en su computador</a>
+                <a class="pull-right" href="{{URLBegin}}/pvcloud_backend/vse_api_generate.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}" title="También puede descargarlo en su PC para realizar pruebas">Descargar en su computador</a>
                 <br>
                 <hr>
                 <h4>Paso 2 de 3: Instale el módulo "request" de nodejs</h4>     
@@ -165,7 +165,7 @@
                 <p>Es una forma sencilla de enviar valores de un dispositivo IoT a pvCloud. El sistema recibe los siguientes parámetros:</p>
                 <ul>
                     <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+                    <li><strong>app_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
                     <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
                     <li><strong>label: </strong> este parámetro permite darle un nombre al dato que se está enviando. Por ejemplo "Sensor de Humedad"</li>
                     <li><strong>type: </strong> es un parámetro que acepta cualquier texto, pero que tiene como objetivo determinar el tipo de dato que se está almacenando para tomarlo en cuenta al momento de consumir los datos.</li>
@@ -174,14 +174,14 @@
                     <li><strong>annotations (opcional): </strong> es un parámetro para anotaciones adicionales</li>
                 </ul>
                 <h4>Ejemplo:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_add_value.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}&label=DIRECT+pvCloud+TEST&value=12345&type=NUNMERICO&captured_datetime={{SelectedDevice.CapturedDatetime}}" target="_blank">
+                <a href="{{URLBegin}}/pvcloud_backend/vse_add_value.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&label=DIRECT+pvCloud+TEST&value=12345&type=NUNMERICO&captured_datetime={{SelectedApp.CapturedDatetime}}" target="_blank">
                     <pre>{{URLBegin}}/pvcloud_backend/<strong>vse_add_value.php</strong>?account_id={{SelectedAccountID}}
-&device_id={{SelectedDevice.device_id}}
-&api_key={{SelectedDevice.api_key}}
+&app_id={{SelectedApp.app_id}}
+&api_key={{SelectedApp.api_key}}
 &label=DIRECT+pvCloud+TEST
 &value=12345
 &type=NUMERICO
-&captured_datetime={{SelectedDevice.CapturedDatetime}}</pre>
+&captured_datetime={{SelectedApp.CapturedDatetime}}</pre>
                 </a>
                 <hr>
                 <h3>#2 - Obtener el último valor <small>(vse_get_value_last.php)</small></h3>
@@ -189,22 +189,22 @@
                 <p>Parámetros:</p>
                 <ul>
                     <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+                    <li><strong>app_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
                     <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
                     <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema el ultimo valor de una etiqueta específica. Si se omite, el sistem devolverá el último valor de todos para el dispositivo en cuestión.</li>
                 </ul>        
                 <h4>Ejemplos:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
+                <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
                     <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}
-&device_id={{SelectedDevice.device_id}}
-&api_key={{SelectedDevice.api_key}}
+&app_id={{SelectedApp.app_id}}
+&api_key={{SelectedApp.api_key}}
 &optional_label=DIRECT+pvCloud+TEST</pre>  
                 </a><br><br>
                 <p>Sin el parámetro opcional sería así:</p>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}" target="_blank">
+                <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}" target="_blank">
                     <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}
-&device_id={{SelectedDevice.device_id}}
-&api_key={{SelectedDevice.api_key}}</pre>  
+&app_id={{SelectedApp.app_id}}
+&api_key={{SelectedApp.api_key}}</pre>  
                 </a>     
                 <hr>
                 <h3>#3 - Obtener lista de valores registrados <small>vse_get_values.php</small></h3>
@@ -212,24 +212,24 @@
                 <p>Parámetros:</p>
                 <ul>
                     <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+                    <li><strong>app_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
                     <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
                     <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema el ultimo valor de una etiqueta específica. Si se omite, el sistem devolverá el último valor de todos para el dispositivo en cuestión.</li>
                     <li><strong>optional_last_limit: </strong> este parámetro permite solicitar al sistema una cantidad determinada de registros a partir de los más recientes.</li>
                 </ul>        
                 <h4>Ejemplos:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}&optional_label=DIRECT+pvCloud+TEST&optional_last_limit=3" target="_blank">
+                <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&optional_label=DIRECT+pvCloud+TEST&optional_last_limit=3" target="_blank">
                     <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}
-&device_id={{SelectedDevice.device_id}}
-&api_key={{SelectedDevice.api_key}}
+&app_id={{SelectedApp.app_id}}
+&api_key={{SelectedApp.api_key}}
 &optional_label=DIRECT+pvCloud+TEST
 &optional_last_limit=3</pre>  
                 </a><br><br>
                 <p>Sin el parámetro opcional sería así:</p>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}" target="_blank">
+                <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}" target="_blank">
                     <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}
-&device_id={{SelectedDevice.device_id}}
-&api_key={{SelectedDevice.api_key}}</pre>  
+&app_id={{SelectedApp.app_id}}
+&api_key={{SelectedApp.api_key}}</pre>  
                 </a>     
                 <hr>        
                 <h3>#4 - Limpiar/Borrar Valores Registrados <small>vse_clear_values</small></h3>
@@ -237,23 +237,23 @@
                 <p>Parámetros:</p>
                 <ul>
                     <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>device_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
+                    <li><strong>app_id: </strong> es el identificador numérico asignado al dispositivo desde el cual usted está enviando los datos.</li>
                     <li><strong>api_key: </strong> es el código de autenticación asignado a su dispositivo. Este puede ser cambiado en las pantallas de administración</li>
                     <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema borrar los valores con una etiqueta específica. Si se omite, el sistem borrarán todos los valores para el dispositivo en cuestión.</li>
                 </ul>        
                 <h4>Ejemplos:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{SelectedAccountID}}&device_id={{SelectedDevice.device_id}}&api_key={{SelectedDevice.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
+                <a href="{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
                     <pre>{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{SelectedAccountID}}
-&device_id={{SelectedDevice.device_id}}
-&api_key={{SelectedDevice.api_key}}
+&app_id={{SelectedApp.app_id}}
+&api_key={{SelectedApp.api_key}}
 &optional_label=DIRECT+pvCloud+TEST</pre>  
                 </a><br><br>
                 <p>Sin el parámetro opcional sería así:</p>
                 <p class="bg-warning" role="alert" style="padding:10px"> (!) Nota: El siguiente ejemplo no contiene enlaces reales por que al acceder al enlace se eliminarían todos los datos del dispositivo</p>        
                 <a href="" target="_blank">
                     <pre>{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{SelectedAccountID}}
-&device_id={{SelectedDevice.device_id}}
-&api_key={{SelectedDevice.api_key}}</pre>  
+&app_id={{SelectedApp.app_id}}
+&api_key={{SelectedApp.api_key}}</pre>  
                 </a>                      
             </div>
             <h3>Recursos adicionales</h3>

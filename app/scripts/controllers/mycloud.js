@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $location, sessionService, UtilityService, $routeParams) {
-    $scope.$parent.ActiveView = "mydevices";
+    $scope.$parent.ActiveView = "myapps";
     $scope.Email = "";
     $scope.LoggedIn = false;
     $scope.SectionURL = "";
@@ -11,7 +11,7 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
     validateSession();
 
     if (!$routeParams.section)
-        $routeParams.section = "mydevices";
+        $routeParams.section = "myapps";
 
 
     $scope.SectionURL = "views/_mycloud_" + $routeParams.section + ".html";

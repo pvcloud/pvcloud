@@ -1,12 +1,12 @@
-angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, UtilityService, DeviceRegistryService, sessionService) {
-    console.log("This is my devices controller being invoked");
+angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, UtilityService, AppRegistryService, sessionService) {
+    console.log("This is my apps controller being invoked");
     console.log($scope);
-    $scope.AddingDevice = false;
-    $scope.AddDevice_device_nickname = "";
-    $scope.AddDevice_device_description = "";
-    $scope.SelectedDevice = undefined;
+    $scope.AddingApp = false;
+    $scope.AddApp_app_nickname = "";
+    $scope.AddApp_app_description = "";
+    $scope.SelectedApp = undefined;
     $scope.SelectedAccountID = sessionService.GetCurrentAccountID();
-    $scope.LoadingListOfDevicesComplete = false;
+    $scope.LoadingListOfAppsComplete = false;
     
     var protocol = window.location.protocol;
     //TODO: Making protocol for WGET to be HTTP until we find an easy way to install wget-ssl in Galileo
@@ -22,31 +22,31 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
         $scope.URLBegin = protocol + "//" + hostname;
     }
 
-    getListOfDevicesForAccountID();
+    getListOfAppsForAccountID();
 
-    $scope.NewDevicesMode = function () {
-        $scope.AddDevice_device_nickname = "";
-        $scope.AddDevice_device_description = "";
-        $scope.AddingDevice = true;
+    $scope.NewAppsMode = function () {
+        $scope.AddApp_app_nickname = "";
+        $scope.AddApp_app_description = "";
+        $scope.AddingApp = true;
     };
 
-    $scope.CancelNewDevicesMode = function () {
-        $scope.AddingDevice = false;
+    $scope.CancelNewAppsMode = function () {
+        $scope.AddingApp = false;
     };
 
-    $scope.AddDevice_Save = function () {
-        if (this.AddDevice_device_nickname !== undefined && this.AddDevice_device_nickname !== "") {
-            if (this.AddDevice_device_description !== undefined && this.AddDevice_device_description !== "") {
+    $scope.AddApp_Save = function () {
+        if (this.AddApp_app_nickname !== undefined && this.AddApp_app_nickname !== "") {
+            if (this.AddApp_app_description !== undefined && this.AddApp_app_description !== "") {
                 var account_id = sessionService.GetCurrentAccountID();
                 var token = sessionService.GetCurrentToken();
 
-                DeviceRegistryService.RegisterNewDevice(account_id, token, this.AddDevice_device_nickname, this.AddDevice_device_description).$promise.then(function (response) {
+                AppRegistryService.RegisterNewApp(account_id, token, this.AddApp_app_nickname, this.AddApp_app_description).$promise.then(function (response) {
                     UtilityService.ProcessServiceResponse(response,
                             function success(response) {
-                                var device = response.data;
-                                getListOfDevicesForAccountID();
-                                alert("Dispositivo registrado satisfactoriamente mediante el ID: " + device.device_id);
-                                $scope.AddingDevice = false;
+                                var app = response.data;
+                                getListOfAppsForAccountID();
+                                alert("Dispositivo registrado satisfactoriamente mediante el ID: " + app.app_id);
+                                $scope.AddingApp = false;
                             },
                             function error(response) {
                                 console.log(response);
@@ -65,30 +65,30 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
     };
 
 
-    $scope.EditDevice = function (device) {
-        var device_id = device.device_id;
-        device.device_nickname_edited = device.device_nickname;
-        device.device_description_edited = device.device_description;
-        device.api_key_edited = device.api_key;
-        device.deviceBeingEdited = true;
+    $scope.EditApp = function (app) {
+        var app_id = app.app_id;
+        app.app_nickname_edited = app.app_nickname;
+        app.app_description_edited = app.app_description;
+        app.api_key_edited = app.api_key;
+        app.appBeingEdited = true;
     };
 
-    $scope.EditDevice_Cancel = function (device) {
-        device.deviceBeingEdited = false;
+    $scope.EditApp_Cancel = function (app) {
+        app.appBeingEdited = false;
     };
 
-    $scope.EditDevice_Delete = function (device) {
-        var device_id = device.device_id;
+    $scope.EditApp_Delete = function (app) {
+        var app_id = app.app_id;
         var confirmation = confirm("De verdad quiere eliminar este dispositivo? Todos sus datos relacionados serán eliminados también.");
         if (confirmation) {
             var account_id = sessionService.GetCurrentAccountID();
             var token = sessionService.GetCurrentToken();
-            var device_id = device.device_id;
-            DeviceRegistryService.DeleteDevice(account_id, token, device_id).$promise.then(function (response) {
+            var app_id = app.app_id;
+            AppRegistryService.DeleteApp(account_id, token, app_id).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
-                            alert("Dispositivo " + device_id + "fue removido satisfactoriamente");
-                            getListOfDevicesForAccountID();
+                            alert("Dispositivo " + app_id + "fue removido satisfactoriamente");
+                            getListOfAppsForAccountID();
                         },
                         function error(response) {
                             console.log(response);
@@ -97,25 +97,25 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
                             console.log(response);
                         });
             });
-            device.deviceBeingEdited = false;
+            app.appBeingEdited = false;
         }
 
 
     };
 
-    $scope.EditDevice_NewAPIKey = function (device) {
+    $scope.EditApp_NewAPIKey = function (app) {
         var confirmation = confirm("Desear regenerar el API Key para este dispositivo?");
         if (confirmation === true) {
             var account_id = sessionService.GetCurrentAccountID();
             var token = sessionService.GetCurrentToken();
-            var device_id = device.device_id;
+            var app_id = app.app_id;
 
-            DeviceRegistryService.RegenerateAPIKey(account_id, token, device_id).$promise.then(function (response) {
+            AppRegistryService.RegenerateAPIKey(account_id, token, app_id).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
-                            alert("API Key was re-generated for device" + device_id);
-                            device.api_key = response.data.api_key;
-                            device.deviceBeingEdited = false;
+                            alert("API Key was re-generated for app" + app_id);
+                            app.api_key = response.data.api_key;
+                            app.appBeingEdited = false;
                         },
                         function error(response) {
                             console.log(response);
@@ -127,21 +127,21 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
         }
     };
 
-    $scope.EditDevice_Save = function (device) {
-        if (device.device_nickname_edited !== "" && device.device_description_edited !== "") {
-            device.device_nickname = device.device_nickname_edited;
-            device.device_description = device.device_description_edited;
+    $scope.EditApp_Save = function (app) {
+        if (app.app_nickname_edited !== "" && app.app_description_edited !== "") {
+            app.app_nickname = app.app_nickname_edited;
+            app.app_description = app.app_description_edited;
 
             var account_id = sessionService.GetCurrentAccountID();
             var token = sessionService.GetCurrentToken();
 
-            DeviceRegistryService.UpdateDevice(account_id, token, device.device_id, device.device_nickname, device.device_description).$promise.then(function (response) {
-                console.log("device_id");
-                console.log(device.device_id);
+            AppRegistryService.UpdateApp(account_id, token, app.app_id, app.app_nickname, app.app_description).$promise.then(function (response) {
+                console.log("app_id");
+                console.log(app.app_id);
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
-                            alert("Los datos se guardaron satisfactoriamente" + device.device_nickname);
-                            device = response.data;
+                            alert("Los datos se guardaron satisfactoriamente" + app.app_nickname);
+                            app = response.data;
                         },
                         function error(response) {
                             console.log(response);
@@ -151,15 +151,15 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
                         });
             });
 
-            device.deviceBeingEdited = false;
+            app.appBeingEdited = false;
         } else {
             alert("El nombre del dispositivo y la descripción no pueden estar vacíos");
         }
     };
 
-    $scope.ViewAPIReference = function (device) {
+    $scope.ViewAPIReference = function (app) {
         console.log("VIEW API REFERENCE");
-        $scope.SelectedDevice = device;
+        $scope.SelectedApp = app;
 
         var date = new Date();
         var fullYear = date.getFullYear();
@@ -170,22 +170,22 @@ angular.module('pvcloudApp').controller('_mycloud_mydevices', function ($scope, 
         var seconds = date.getSeconds();
         var fulldateFormat = fullYear + '-' + month + '-' + dayOfMonth + '+' + hours + ":" + minutes + ":" + seconds;
 
-        $scope.SelectedDevice.CapturedDatetime = fulldateFormat;
+        $scope.SelectedApp.CapturedDatetime = fulldateFormat;
     };
 
     $scope.CloseAPIReference = function () {
-        $scope.SelectedDevice = undefined;
+        $scope.SelectedApp = undefined;
     };
 
-    function getListOfDevicesForAccountID() {
+    function getListOfAppsForAccountID() {
         var token = sessionService.GetCurrentToken();
         var account_id = sessionService.GetCurrentAccountID();
 
-        DeviceRegistryService.GetDeviceListForAccountID(account_id, token).$promise.then(function (response) {
+        AppRegistryService.GetAppListForAccountID(account_id, token).$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
                     function success(response) {
-                        $scope.LoadingListOfDevicesComplete = true;
-                        $scope.Devices = response.data;
+                        $scope.LoadingListOfAppsComplete = true;
+                        $scope.Apps = response.data;
                         console.log(response);
                     },
                     function error(response) {

@@ -1,38 +1,38 @@
 'use strict';
 
-angular.module('pvcloudApp').factory('DeviceRegistryService', function ($resource, UtilityService) {
+angular.module('pvcloudApp').factory('AppRegistryService', function ($resource, UtilityService) {
     var baseURL = UtilityService.GetBackendBaseURL();
-    var deviceAddNewItemResource = $resource(baseURL + "device_register.php?account_id=:account_id&token=:token&device_nickname=:device_nickname&device_description=:device_description", {});
-    var deviceRegistryResource = $resource(baseURL + "device_get_list_by_account.php?account_id=:account_id&token=:token", {});
-    var deviceRegenerateAPIKeyResource = $resource(baseURL + "device_generate_api_key.php?account_id=:account_id&token=:token&device_id=:device_id", {});
-    var deviceUpdateResource = $resource(baseURL + "device_modify.php?account_id=:account_id&token=:token&device_id=:device_id&device_nickname=:device_nickname&device_description=:device_description", {});
-    var deviceDeleteResource = $resource(baseURL + "device_delete.php?account_id=:account_id&token=:token&device_id=:device_id", {});
+    var appAddNewItemResource = $resource(baseURL + "app_register.php?account_id=:account_id&token=:token&app_nickname=:app_nickname&app_description=:app_description", {});
+    var appRegistryResource = $resource(baseURL + "app_get_list_by_account.php?account_id=:account_id&token=:token", {});
+    var appRegenerateAPIKeyResource = $resource(baseURL + "app_generate_api_key.php?account_id=:account_id&token=:token&app_id=:app_id", {});
+    var appUpdateResource = $resource(baseURL + "app_modify.php?account_id=:account_id&token=:token&app_id=:app_id&app_nickname=:app_nickname&app_description=:app_description", {});
+    var appDeleteResource = $resource(baseURL + "app_delete.php?account_id=:account_id&token=:token&app_id=:app_id", {});
 
-    function getDeviceListForAccountID(account_id, token) {
-        return deviceRegistryResource.get({account_id: account_id, token: token});
+    function getAppListForAccountID(account_id, token) {
+        return appRegistryResource.get({account_id: account_id, token: token});
     }
 
-    function registerNewDevice(account_id, token, device_nickname, device_description) {
-        return deviceAddNewItemResource.get({account_id: account_id, token: token, device_nickname: device_nickname, device_description: device_description});
+    function registerNewApp(account_id, token, app_nickname, app_description) {
+        return appAddNewItemResource.get({account_id: account_id, token: token, app_nickname: app_nickname, app_description: app_description});
     }
 
-    function regenerateAPIKey(account_id, token, device_id) {
-        return deviceRegenerateAPIKeyResource.get({account_id: account_id, token: token, device_id: device_id});
+    function regenerateAPIKey(account_id, token, app_id) {
+        return appRegenerateAPIKeyResource.get({account_id: account_id, token: token, app_id: app_id});
     }
 
-    function updateDevice(account_id, token, device_id, device_nickname, device_description) {
-        return deviceUpdateResource.get({account_id: account_id, token: token, device_id: device_id, device_nickname: device_nickname, device_description: device_description});
+    function updateApp(account_id, token, app_id, app_nickname, app_description) {
+        return appUpdateResource.get({account_id: account_id, token: token, app_id: app_id, app_nickname: app_nickname, app_description: app_description});
     }
 
-    function deleteDevice(account_id, token, device_id) {
-        return deviceDeleteResource.get({account_id: account_id, token: token, device_id: device_id});
+    function deleteApp(account_id, token, app_id) {
+        return appDeleteResource.get({account_id: account_id, token: token, app_id: app_id});
     }
 
     return {
-        GetDeviceListForAccountID: getDeviceListForAccountID,
-        RegisterNewDevice: registerNewDevice,
+        GetAppListForAccountID: getAppListForAccountID,
+        RegisterNewApp: registerNewApp,
         RegenerateAPIKey: regenerateAPIKey,
-        UpdateDevice: updateDevice,
-        DeleteDevice: deleteDevice
+        UpdateApp: updateApp,
+        DeleteApp: deleteApp
     };
 });
