@@ -45,7 +45,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, Uti
                             function success(response) {
                                 var app = response.data;
                                 getListOfAppsForAccountID();
-                                alert("Dispositivo registrado satisfactoriamente mediante el ID: " + app.app_id);
+                                alert("App registrada satisfactoriamente mediante el ID: " + app.app_id);
                                 $scope.AddingApp = false;
                             },
                             function error(response) {
@@ -79,7 +79,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, Uti
 
     $scope.EditApp_Delete = function (app) {
         var app_id = app.app_id;
-        var confirmation = confirm("De verdad quiere eliminar este dispositivo? Todos sus datos relacionados serán eliminados también.");
+        var confirmation = confirm("De verdad quiere eliminar esta app? Todos sus datos relacionados serán eliminados también.");
         if (confirmation) {
             var account_id = sessionService.GetCurrentAccountID();
             var token = sessionService.GetCurrentToken();
@@ -87,7 +87,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, Uti
             AppRegistryService.DeleteApp(account_id, token, app_id).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
-                            alert("Dispositivo " + app_id + "fue removido satisfactoriamente");
+                            alert("App " + app_id + "fue removida satisfactoriamente");
                             getListOfAppsForAccountID();
                         },
                         function error(response) {
@@ -104,7 +104,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, Uti
     };
 
     $scope.EditApp_NewAPIKey = function (app) {
-        var confirmation = confirm("Desear regenerar el API Key para este dispositivo?");
+        var confirmation = confirm("Desear regenerar el API Key para esta app?");
         if (confirmation === true) {
             var account_id = sessionService.GetCurrentAccountID();
             var token = sessionService.GetCurrentToken();
@@ -153,7 +153,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, Uti
 
             app.appBeingEdited = false;
         } else {
-            alert("El nombre del dispositivo y la descripción no pueden estar vacíos");
+            alert("El nombre del app y la descripción no pueden estar vacíos");
         }
     };
 
