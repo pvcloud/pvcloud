@@ -1,10 +1,54 @@
 /* Space out content a bit */
+html{
+    height: 100%;
+}
 body {
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 50px;
+    height:100%;
+    min-height: 100%;
+        
 }
 a {
     cursor:pointer;
+}
+
+ul.nav-justified li a {
+    color:white;
+    font-weight: bolder;
+}
+ul.nav-justified li a:hover{
+    color:black;
+}
+
+.btn-transparent{
+    background-color: transparent;
+    border:white solid 2px;
+    color:white;
+}
+
+.btn-transparent{
+    background-color:transparent;
+    border:white solid 2px;
+    color:white;
+    width:250px!important;
+}
+
+.btn-transparent:hover{
+    border:#ffdcad solid 2px;
+    color: #ffdcad;
+}
+
+.footer a {
+    color:white
+}
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus{
+    background-color:transparent;
+    border-bottom: white solid 4px;
+}
+
+.panel-quicklinks{
+    margin-top: 150px;
 }
 
 #login_form, #recover_password_form{
@@ -36,10 +80,17 @@ a {
     margin-bottom:5px;
 }
 
+.fill{
+    height: 100%
+}
 .invite_a_friend{
     color:red !important;
     font-style: italic;
     font-weight: bold;
+}
+
+.ngview{
+    height: 100%;
 }
 
 .pvcloud-edit-toolbar{
@@ -165,9 +216,7 @@ span.glyphicon-copyright-mark{
 
 /* Custom page footer */
 .footer {
-    padding-top: 19px;
     color: #777;
-    border-top: 1px solid #e5e5e5;
     text-align: center; 
     border-style: none;    
 }

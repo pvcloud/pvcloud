@@ -19,6 +19,10 @@ angular
                         templateUrl: 'views/about.html',
                         controller: 'AboutCtrl'
                     })
+                    .when('/myapps', {
+                        templateUrl: 'views/_myapps.html',
+                        controller: 'myAppsCtrl'
+                    })
                     .when('/mycloud/:section/:article_id', {
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'

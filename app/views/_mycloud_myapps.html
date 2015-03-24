@@ -1,272 +1,30 @@
 <!-- CONTAINER FLUID -->
 <div data-ng-controller="_mycloud_myapps" class="container-fluid">
     <!--HEADING - REGISTRAR NUEVO APP-->
-    <div class="row" data-ng-if="SelectedApp === undefined">
+    <div class="row">
         <div class="col-sm-12">
-            <button class="btn btn-primary" style="float:right; margin:10px 0" title="Registrar nueva app" data-ng-click="NewAppsMode()"><i class="glyphicon glyphicon-plus"></i> Nuevo App</button>
-            <br><br><br>
-            <div data-ng-show="AddingApp" class="pull-right panel panel-info" style="width:100%; padding: 10px">
-                <div class="panel-heading">
-                    Nuevo App:
-                    <i class="glyphicon glyphicon-remove pull-right pvcloud-app-edit"  title="Cancelar Edición" data-ng-click="CancelNewAppsMode()"></i>
-                </div>                
-                <div class="panel-body success">
-
-                    <div class="pvcloud-edit-toolbar panel panel-default pull-right">
-                        <div class="panel-content">
-                            <i class="glyphicon glyphicon-floppy-save pvcloud-app-edit pull-right" style="color:green" data-ng-click="AddApp_Save()"  title="Guardar Cambios"></i>&nbsp;
-                        </div>
-                    </div>     
-
-
-                    <table style="width:60%" class="pvcloud-app-edit-form">
-                        <tr>
-                            <td style="text-align: right">Nombre:</td>
-                            <td><input data-ng-model="AddApp_app_nickname" type="text" style="width:100%" /></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right">Descripción:</td>
-                            <td>
-                                <textarea data-ng-model="AddApp_app_description" style="width:100%" rows="2"></textarea>
-
-                        </tr>
-                    </table>  
-                </div>
+            <div class="input-group col-sm-12">
+                <label for="txtSearchApps" class="input-group-addon"><i class="glyphicon glyphicon-search"></i></label>
+                <input id="txtSearchApps" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="AppsSearchPhrase" type="search" class="form-control inputtext"  placeholder="Digite una o más palabras para buscar" required>
             </div>
         </div>
     </div>
+    <br>
     <!--LISTA DE APPS-->
     <table class="table table-striped table-hover" data-ng-if="Apps && Apps.length > 0 && SelectedApp === undefined">
         <tr>
             <th>ID</th>
-            <th>Nombre de App</th>
-            <th style="text-align: center">API KEY</th>
-            <th></th>
+            <th>Nombre y Descripción</th>
         </tr>
         <tr id="tr_app_{{app.app_id}}" data-ng-repeat="app in Apps">
             <td class="td-app-info" style="vertical-align: middle">{{app.app_id}}</td>
-            <td class="td-app-info" colspan="{{app.appBeingEdited?3:1}}">
-                <i class="glyphicon glyphicon-remove pull-right pvcloud-app-edit" data-ng-show="app.appBeingEdited" data-ng-click="EditApp_Cancel(app)" title="Cancelar Edición"></i>
-                <div class="pvcloud-edit-toolbar panel panel-default pull-right" data-ng-show="app.appBeingEdited">
-                    <div class="panel-content">
-                        <i class="glyphicon glyphicon-refresh pvcloud-app-edit" style="color:orange" data-ng-click="EditApp_NewAPIKey(app)" title="Haga clic para generar un nuevo API KEY"  style="color:maroon"></i>&nbsp;
-                        <i class="glyphicon glyphicon-floppy-save pvcloud-app-edit" style="color:green" data-ng-click="EditApp_Save(app)"  title="Guardar Cambios"></i>&nbsp;
-                        <i class="glyphicon glyphicon-floppy-remove pvcloud-app-edit" style="color:red" data-ng-click="EditApp_Delete(app)" title="Eliminar App"></i>
-                    </div>
-                </div>
-                <span data-ng-show="!app.appBeingEdited">{{app.app_nickname}}</span>
-                <span data-ng-show="!app.appBeingEdited" class="badge success" title="Data records in pvCloud">{{app.app_id + 8}}</span>
-                <br data-ng-show="!app.appBeingEdited">
-                <small data-ng-show="!app.appBeingEdited" class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{app.app_description}}</small>
-
-                <div data-ng-show="app.appBeingEdited">
-                    <table style="width:60%" class="pvcloud-app-edit-form">
-                        <tr>
-                            <td style="text-align: right">Nombre:</td>
-                            <td><input type="text" data-ng-model="app.app_nickname_edited" style="width:100%" /></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right">Descripción:</td>
-                            <td>
-                                <textarea data-ng-model="app.app_description_edited" style="width:100%" rows="2"></textarea>
-
-                        </tr>
-                        <tr>
-                            <td style="text-align: right">API KEY:</td>
-                            <td><code>{{app.api_key_edited}}</code></td>
-                        </tr>                        
-                    </table>
-
-                </div>
-
-            </td>
-            <td data-ng-show="!app.appBeingEdited" class="td-app-info" style="text-align: center">
-                <code>{{app.api_key}}</code> 
-            </td>
-            <td data-ng-show="!app.appBeingEdited" class="td-app-info" style="font-size: 2em">
-                <i class="glyphicon glyphicon-pencil pvcloud-app-edit" data-ng-click="EditApp(app)" data-ng-show="!app.appBeingEdited" title="Editar app."></i>
-                <i class="glyphicon glyphicon-eye-open pvcloud-app-edit" title="Ver referencia del API" data-ng-click="ViewAPIReference(app)"></i>
+            <td class="td-app-info">
+                <a href="#/mycloud/myapps/{{app.app_id}}">{{app.app_nickname}}</a>
+                <span class="badge success" title="Data records in pvCloud">{{app.app_id + 8}}</span>
+                <br>
+                <small class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{app.app_description}}</small>
             </td>
         </tr>
     </table>
     <div data-ng-if="LoadingListOfAppsComplete && (!Apps || Apps.length === 0)">No hay apps registrados</div>
-    
-    <!--API DOCUMENTATION-->
-    <div style="text-align: justify; font-size:16px" data-ng-show="SelectedApp !== undefined">
-        <i style="color:red" class="glyphicon glyphicon-remove pull-right pvcloud-app-edit" data-ng-click="CloseAPIReference();"></i>
-        <h2 class="demoHeaders">Cómo usar pvCloud en su app</h2>
-        <div class="alert alert-info">
-            <strong>ID de App:</strong> <span style="font-family: monospace">{{SelectedApp.app_id}}</span><br>
-            <strong>Nombre de App:</strong> <span style="font-family: monospace">{{SelectedApp.app_nickname}} ({{SelectedApp.app_id}})</span><br>
-            <strong>Descripción:</strong> <span style="font-family: monospace">{{SelectedApp.app_description}}</span><br>
-            <strong>API KEY:</strong> <span style="font-family: monospace">{{SelectedApp.api_key}}</span>
-        </div>
-
-
-        <div id="accordion">
-            <h3>Introducción</h3>
-            <div>
-                <p>En este documento encontrará información <strong>personalizada</strong> para su app IoT ({{SelectedApp.app_nickname}}) en particular.</p>
-                <p>En las siguientes tres secciones se describe cómo utilizar pvCloud para subir y consumir datos usando su app IoT </p>
-                <p>Haga clic en el título de la sección que desee explorar para ver su contenido; o haga clic en el botón "<i style="color:red" class="glyphicon glyphicon-remove pvcloud-app-edit" data-ng-click="CloseAPIReference();"></i>" que se encuentra arriba a la derecha para volver a la lista de apps.</p>
-            </div>
-            <h3>La forma simple con ARDUINO y NODEJS</h3>
-            <div>
-                <p>En esta sección mostramos los pasos 1-2-3 para implementar PV Cloud en su app IoT compatible con Intel Galileo e Intel Edison.</p>
-                <h3>Requisitos</h3>
-                <p>Su app debe ser capaz de ejecutar LINUX y programas NODE.JS</p>
-                <h3>Resumen</h3>             
-                <h4>Paso 1 de 3: Descargar el programa pvcloud_api.js</h4>
-                <p>pvCloud ofrece un programa personalizado para su app que puede descargar usando los siguientes comandos de LINUX.</p>
-                <p>Primero, descargue el programa personalizado para su app usando el comando de LINUX wget:</p>
-                <code style="text-align: left; display: inline-block; word-break: break-all">
-                    wget -O ~/pvcloud_api.js "{{URLBegin}}/pvcloud_backend/<strong>vse_api_generate.php</strong>?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}"
-                </code><br><br>                
-                <a class="pull-right" href="{{URLBegin}}/pvcloud_backend/vse_api_generate.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}" title="También puede descargarlo en su PC para realizar pruebas">Descargar en su computador</a>
-                <br>
-                <hr>
-                <h4>Paso 2 de 3: Instale el módulo "request" de nodejs</h4>     
-                <code style="text-align: left; display: inline-block; word-break: break-all">
-                    cd ~ <br><br>
-                    npm install request
-                </code><br>                
-                <hr>
-                <h4>Paso 3 de 3: Cómo ejecutar comandos de pvCloud desde ARDUINO IDE:</h4>
-                <p>Una vez descargado el programa de NodeJS para pvCloud usted puede ejecutar comandos de pvCloud para su app simplemente haciendo alguna de las siguientes llamadas de sistema en ARDUINO IDE:</p>
-
-                <h5>ej1 - Subir un valor a pvCloud:</h5>
-                <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system ( "node ~/pvcloud_api.js action='add_value' value='123ABC' value_type='ANY_TYPE_IS_FINE' value_label='ANY LABEL WORKS' captured_datetime='2000-01-01+10:23'");
-                </code>
-
-                <h5>ej2 - Descargar lista de valores registrados desde pvCloud:</h5>
-                <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system ( "node ~/pvcloud_api.js action='get_values' value_label='ANY LABEL WORKS'");
-                </code>     
-
-                <h5>ej3 - Descargar último valor desde pvCloud</h5>
-                <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system ( "node ~/pvcloud_api.js action='get_last_value' value_label='ANY LABEL WORKS'");
-                </code>
-
-                <h5>ej4 - Eliminar valores de pvCloud</h5>
-                <code style="text-align: left; display: inline-block; word-break: break-all">
-                    system ("node ~/pvcloud_api.js action='clear_values' value_label='ANY LABEL WORKS'");
-                </code>                    
-
-            </div>
-            <h3>Detalles técnicos</h3>
-            <div>
-                <p>VSE son las siglas de <strong>Valor Simple Extendible</strong>; y es la funcionalidad que le da a pvCloud su poder a través de la simplicidad.</p>
-                <p>El API VSE consiste en una serie de CUATRO servicios en la nube que permiten a sus apps enviar y consumir datos hacia y desde pvCloud.</p>
-                <p>pvCloud ofrece cuatro funciones principales:</p>
-                <hr>
-                <h3>#1 - Agregar Valor <small>(vse_add_value.php)</small></h3>
-                <p>Es una forma sencilla de enviar valores de un app IoT a pvCloud. El sistema recibe los siguientes parámetros:</p>
-                <ul>
-                    <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>app_id: </strong> es el identificador numérico asignado al app desde el cual usted está enviando los datos.</li>
-                    <li><strong>api_key: </strong> es el código de autenticación asignado a su app. Este puede ser cambiado en las pantallas de administración</li>
-                    <li><strong>label: </strong> este parámetro permite darle un nombre al dato que se está enviando. Por ejemplo "Sensor de Humedad"</li>
-                    <li><strong>type: </strong> es un parámetro que acepta cualquier texto, pero que tiene como objetivo determinar el tipo de dato que se está almacenando para tomarlo en cuenta al momento de consumir los datos.</li>
-                    <li><strong>value: </strong> corresponde al valor en sí que se desea almacenar. Nótese que soporta valores alfanuméricos e incluso descriptores JSON.</li>
-                    <li><strong>captured_datetime: </strong> la fecha y hora en que el dato fue capurado por el app. Este es un parámetro requerido.</li>
-                    <li><strong>annotations (opcional): </strong> es un parámetro para anotaciones adicionales</li>
-                </ul>
-                <h4>Ejemplo:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_add_value.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&label=DIRECT+pvCloud+TEST&value=12345&type=NUNMERICO&captured_datetime={{SelectedApp.CapturedDatetime}}" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/<strong>vse_add_value.php</strong>?account_id={{SelectedAccountID}}
-&app_id={{SelectedApp.app_id}}
-&api_key={{SelectedApp.api_key}}
-&label=DIRECT+pvCloud+TEST
-&value=12345
-&type=NUMERICO
-&captured_datetime={{SelectedApp.CapturedDatetime}}</pre>
-                </a>
-                <hr>
-                <h3>#2 - Obtener el último valor <small>(vse_get_value_last.php)</small></h3>
-                <p>Este método obtiene del servidor el último valor registrado para un app dado, ya sea para un "label" específico; o el último valor de todos los registrados para el app.</p>
-                <p>Parámetros:</p>
-                <ul>
-                    <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>app_id: </strong> es el identificador numérico asignado al app desde el cual usted está enviando los datos.</li>
-                    <li><strong>api_key: </strong> es el código de autenticación asignado a su app. Este puede ser cambiado en las pantallas de administración</li>
-                    <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema el ultimo valor de una etiqueta específica. Si se omite, el sistem devolverá el último valor de todos para el app en cuestión.</li>
-                </ul>        
-                <h4>Ejemplos:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}
-&app_id={{SelectedApp.app_id}}
-&api_key={{SelectedApp.api_key}}
-&optional_label=DIRECT+pvCloud+TEST</pre>  
-                </a><br><br>
-                <p>Sin el parámetro opcional sería así:</p>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{SelectedAccountID}}
-&app_id={{SelectedApp.app_id}}
-&api_key={{SelectedApp.api_key}}</pre>  
-                </a>     
-                <hr>
-                <h3>#3 - Obtener lista de valores registrados <small>vse_get_values.php</small></h3>
-                <p>Este método devuelve una lista de todos los valores registrados, ya sea para una etiqueta de valor (optional_label) o todos los datos en general registrados por el app si se omite el parámetro de "optional_label".</p>
-                <p>Parámetros:</p>
-                <ul>
-                    <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>app_id: </strong> es el identificador numérico asignado al app desde el cual usted está enviando los datos.</li>
-                    <li><strong>api_key: </strong> es el código de autenticación asignado a su app. Este puede ser cambiado en las pantallas de administración</li>
-                    <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema el ultimo valor de una etiqueta específica. Si se omite, el sistem devolverá el último valor de todos para el app en cuestión.</li>
-                    <li><strong>optional_last_limit: </strong> este parámetro permite solicitar al sistema una cantidad determinada de registros a partir de los más recientes.</li>
-                </ul>        
-                <h4>Ejemplos:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&optional_label=DIRECT+pvCloud+TEST&optional_last_limit=3" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}
-&app_id={{SelectedApp.app_id}}
-&api_key={{SelectedApp.api_key}}
-&optional_label=DIRECT+pvCloud+TEST
-&optional_last_limit=3</pre>  
-                </a><br><br>
-                <p>Sin el parámetro opcional sería así:</p>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{SelectedAccountID}}
-&app_id={{SelectedApp.app_id}}
-&api_key={{SelectedApp.api_key}}</pre>  
-                </a>     
-                <hr>        
-                <h3>#4 - Limpiar/Borrar Valores Registrados <small>vse_clear_values</small></h3>
-                <p>Este método realiza un borrado permanente de los valores registrados para un app específico, ya sea para una etiqueta de valor (optional_label) específica, o la eliminación de todos los valores almacenados por el app.</p>
-                <p>Parámetros:</p>
-                <ul>
-                    <li><strong>account_id: </strong> es el identificador numérico asignado a su cuenta de usuario de pvCloud.</li>
-                    <li><strong>app_id: </strong> es el identificador numérico asignado al app desde el cual usted está enviando los datos.</li>
-                    <li><strong>api_key: </strong> es el código de autenticación asignado a su app. Este puede ser cambiado en las pantallas de administración</li>
-                    <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema borrar los valores con una etiqueta específica. Si se omite, el sistem borrarán todos los valores para el app en cuestión.</li>
-                </ul>        
-                <h4>Ejemplos:</h4>
-                <a href="{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{SelectedAccountID}}&app_id={{SelectedApp.app_id}}&api_key={{SelectedApp.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{SelectedAccountID}}
-&app_id={{SelectedApp.app_id}}
-&api_key={{SelectedApp.api_key}}
-&optional_label=DIRECT+pvCloud+TEST</pre>  
-                </a><br><br>
-                <p>Sin el parámetro opcional sería así:</p>
-                <p class="bg-warning" role="alert" style="padding:10px"> (!) Nota: El siguiente ejemplo no contiene enlaces reales por que al acceder al enlace se eliminarían todos los datos del app</p>        
-                <a href="" target="_blank">
-                    <pre>{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{SelectedAccountID}}
-&app_id={{SelectedApp.app_id}}
-&api_key={{SelectedApp.api_key}}</pre>  
-                </a>                      
-            </div>
-            <h3>Recursos adicionales</h3>
-            <div>En esta sección colocaremos otros recursos sobre el fundamento técnico de pvCloud</div>
-        </div>           
-        <hr>
-
-
-    </div>
 </div>
-<script>
-    $("#accordion").accordion({
-        heightStyle: "content",
-        collapsible: true
-    });
-</script>

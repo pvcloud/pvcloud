@@ -1,26 +1,35 @@
-<div class="container-fluid">
-    <div data-ng-if="LoggedIn">
-        <!-- HEADING -->
-        <div class="page-header text-muted">
-            <h1>{{Email}} - <small><a data-ng-click="Logout()" class="pull-right">logout <i class="glyphicon glyphicon-lock"></i></a></small></h1>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="panel panel-default">
-            <!-- TABS -->
-            <div class="panel-body">
-                <ul class="nav nav-tabs">
-                    <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps">Mis Apps</a></li>
-                    <li role="presentation" ng-class="{active: Section === 'inviteafriend'}"><a class="invite_a_friend" href="#/mycloud/inviteafriend">Invitar a un amigo</a></li>
-                    <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork">Mi Red</a></li>
-                    <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount">Mi Cuenta</a></li>
-                    
-                </ul>   
-                <div class="row">
-                    <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                
-                </div>
-
+<div class="container-fluid" style="min-height: 100%">
+    <div class="row" data-ng-if="LoggedIn" style="height: 100%; display:block">
+        <div class="col-md-6" style="vertical-align: middle">
+            <h2 class="pull-left" style="color:white">Welcome to pvCloud</h2>
+            <div class="panel-quicklinks">
+                <button data-ng-click="GoToNewApp()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; "><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Agregar Nueva App</button>
+                <br>
+                <button data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;Invitar un Amigo</button>
+                <br>
+                <button data-ng-click="Logout()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;Logout</button>
             </div>
+        </div>
+        <div class="col-md-6">
+            <ul class="nav navbar nav-justified nav-pills">
+                <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps">MIS APPS</a></li>
+                <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork">MI RED</a></li>
+                <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount">MI CUENTA</a></li>
+                <li role="presentation" ng-class="{active: Section === 'pvcloud'}"><a href="#/mycloud/pvcloud">pvCLOUD</a></li>
+            </ul>
+            <!-- CONTENT -->
+            <div class="panel panel-default">
+                <!-- TABS -->
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                
+                    </div>
+
+                </div>
+            </div>            
+            
         </div>
     </div>
 </div>
+<div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a></div>

@@ -7,6 +7,8 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
     $scope.SectionURL = "";
     $scope.Section = "";
     $scope.Logout = logout;
+    $scope.GoToNewApp = gotoNewApp;
+    $scope.GoToInviteAFriend = goToInviteAFriend;
 
     validateSession();
 
@@ -21,6 +23,12 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
     console.log($scope.SectionURL);
 
 
+    function goToInviteAFriend(){
+        $location.path("/mycloud/mynetwork/inviteafriend");
+    }
+    function gotoNewApp(){
+        $location.path("/mycloud/myapps/new");
+    }
     function logout() {
         if (confirm("¿Está seguro que desea cerrar su sesión?")) {
             console.log("LOGOUT IS CALLED HERE!!!!!!");
