@@ -1,0 +1,45 @@
+<!-- CONTAINER FLUID -->
+<div data-ng-controller="_mycloud_myapps_edit" class="container-fluid">
+
+    <ol class="breadcrumb">
+        <li><a href="#/mycloud/myapps">My Apps</a></li>
+        <li class="active">{{AppName}}({{ArticleID}})</li>
+    </ol>
+
+    <ul class="nav nav-tabs nav-justified">
+        <li role="presentation" class="active"><a href="#">Lo&nbsp;Básico</a></li>
+        <li role="presentation"><a href="#">Docs&nbsp;&amp;&nbsp;Drivers</a></li>
+        <li role="presentation"><a href="#">Páginas</a></li>
+        <li role="presentation"><a href="#">Datos</a></li>
+    </ul>
+
+    <!-- BASIC DATA-->
+    <div class="container-fluid" data-ng-if="CurrentTab=='basics'">
+        <br>
+        <form>
+            <div class="form-group">
+                <label for="txtNombre">Nombre del App</label>
+                <input type="text" class="form-control" id="txtNombre" placeholder="Digite aquí el nombre de su app.">
+            </div>
+            <div class="form-group">
+                <label for="txtDescripcion">Descripción</label>
+                <textarea class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="txtAPIKEY">API KEY</label>
+                <span class="form-control" id="txtAPIKEY" ><code>1234-5678-9101112-13141516</code><button class="btn btn-danger btn-xs pull-right"><i class="glyphicon glyphicon-refresh"></i></button></span>
+            </div>            
+            <div class="form-group">
+                <label for="selVisibility">Visibilidad</label>
+                <select class="form-control" id="selVisbility" >
+                    <option selected>Privado</option>
+                    <option>Compartido</option>
+                    <option>Público</option>
+                </select>
+            </div>            
+
+            
+            <button class="btn btn-success"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
+        </form>        
+    </div>
+</div>

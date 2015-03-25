@@ -12,11 +12,20 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
 
     validateSession();
 
+    console.log($routeParams);
+
     if (!$routeParams.section)
         $routeParams.section = "myapps";
+    
 
 
-    $scope.SectionURL = "views/_mycloud_" + $routeParams.section + ".html";
+    $scope.SectionURL = "views/_mycloud_" + $routeParams.section;
+    
+    if($routeParams.article_id){
+        $scope.SectionURL += "_edit";
+    }
+    
+    $scope.SectionURL += ".html";
     $scope.Section = $routeParams.section;
 
     console.log("SECTION URL:");

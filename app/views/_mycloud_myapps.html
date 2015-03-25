@@ -5,7 +5,7 @@
         <div class="col-sm-12">
             <div class="input-group col-sm-12">
                 <label for="txtSearchApps" class="input-group-addon"><i class="glyphicon glyphicon-search"></i></label>
-                <input id="txtSearchApps" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="AppsSearchPhrase" type="search" class="form-control inputtext"  placeholder="Digite una o más palabras para buscar" required>
+                <input id="txtSearchApps" data-ng-model="txtSearchApps" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="AppsSearchPhrase" type="search" class="form-control inputtext"  placeholder="Digite una o más palabras para filtrar la lista" required>
             </div>
         </div>
     </div>
@@ -16,7 +16,7 @@
             <th>ID</th>
             <th>Nombre y Descripción</th>
         </tr>
-        <tr id="tr_app_{{app.app_id}}" data-ng-repeat="app in Apps">
+        <tr id="tr_app_{{app.app_id}}" data-ng-repeat="app in Apps | filter: txtSearchApps">
             <td class="td-app-info" style="vertical-align: middle">{{app.app_id}}</td>
             <td class="td-app-info">
                 <a href="#/mycloud/myapps/{{app.app_id}}">{{app.app_nickname}}</a>
