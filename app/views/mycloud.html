@@ -1,7 +1,8 @@
 <div class="container-fluid" style="min-height: 100%">
     <div class="row" data-ng-if="LoggedIn" style="height: 100%; display:block">
+        <!-- QUICK LINKS -->
         <div class="col-md-6" style="vertical-align: middle">
-            <h2 class="pull-left" style="color:white">Welcome to pvCloud</h2>
+            <h2 class="pull-left" style="color:white">Bienvenidos a pvCloud</h2>
             <div class="panel-quicklinks">
                 <button data-ng-click="GoToNewApp()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; "><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Agregar Nueva App</button>
                 <br>
@@ -10,6 +11,8 @@
                 <button data-ng-click="Logout()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;Logout</button>
             </div>
         </div>
+        
+        <!-- WORKSPACE -->
         <div class="col-md-6 main-navigation">
             <ul class="nav navbar nav-justified nav-pills">
                 <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps"><span>MIS APPS</span></a></li>
@@ -19,9 +22,7 @@
             </ul>
             <!-- CONTENT -->
             <div class="panel panel-default">
-                <!-- TABS -->
                 <div class="panel-body">
-
                     <div class="row">
                         <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                
                     </div>

@@ -7,7 +7,7 @@ body {
     padding-bottom: 50px;
     height:100%;
     min-height: 100%;
-        
+
 }
 a {
     cursor:pointer;
@@ -23,7 +23,7 @@ a {
 
 .main-navigation > .nav-pills > li.active > a,.main-navigation > .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus{
     background-color:transparent;
-    
+
     cursor:default;
 }
 .main-navigation > .nav-pills > li.active > a > span{
@@ -52,7 +52,17 @@ a {
 .footer a {
     color:white
 }
+.login-form-links{
+    float:right;
+}
 
+.login-form-button{
+    float:left;
+}
+
+.login-form-separator{
+    display:none;
+}
 .panel-quicklinks{
     margin-top: 150px;
 }
@@ -284,23 +294,30 @@ span.glyphicon-copyright-mark{
         text-align: left;
         margin-top:20px;
     }    
-    
+
     .crmakers-logo{
         width:50px;
         position:absolute;
         top:25px;
         left:20px
     }
-    
+
     .jumbotron p{
         font-size: 0.8em
     }
-    
+
     .login-form-buttons a{
         display:inline-block;
         margin-top:1em
     }
-    
+
+    .login-form-links,.login-form-button{
+        float:none!important;
+    }
+
+    .login-form-separator{
+        display:block;
+    }
     .login-form-buttons button{
         font-size:1em!important
     }
