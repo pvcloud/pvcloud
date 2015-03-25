@@ -13,6 +13,44 @@ a {
     cursor:pointer;
 }
 
+.main-standard-navigation {
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.navbar-default{
+    background-color:transparent;
+    border-style: none;
+}
+
+.navbar-default .navbar-nav > li > a{
+    color:white;
+}
+
+.navbar-default .navbar-nav > li > a:hover{
+    color:gray;
+}
+
+.navbar-default .navbar-brand {
+    color:white
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+    background-color:transparent;
+
+    color:white;
+    border-bottom-width: 3px;
+
+}
+
+.navbar-default .navbar-nav > .active > a > span {
+    border-bottom:white solid 3px;
+}
+
+.navbar-brand{
+    font-size: 1.5em;
+}
+
 .main-navigation > ul.nav-justified li a {
     color:white;
     font-weight: bolder;
@@ -67,7 +105,7 @@ a {
     display:none;
 }
 .panel-quicklinks{
-    margin-top: 150px;
+    margin-top: 50px;
 }
 .panel-default{
     background-color:  rgba(255,255,255,0.85);
@@ -317,7 +355,7 @@ span.glyphicon-copyright-mark{
     .login-form-links,.login-form-button{
         float:none!important;
     }
-    
+
     .login-form-links{
         display:block;
         margin-top:1em;
@@ -329,4 +367,9 @@ span.glyphicon-copyright-mark{
     .login-form-buttons button{
         font-size:1em!important
     }
+
+    .panel-quicklinks{
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }    
 }
