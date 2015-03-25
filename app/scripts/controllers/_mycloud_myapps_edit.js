@@ -6,6 +6,8 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
         Pages: 'pages',
         Data: 'data'
     };
+    
+    $scope.CleanForm = true;
 
 
     checkForDevelopmentRedirection();
@@ -26,7 +28,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
                 $scope.AppName = $scope.Application.app_nickname;
                 $scope.AppDescription = $scope.Application.app_description;
                 $scope.AppAPIKEY = $scope.Application.api_key;
-                $scope.AppVisibility = 1;
+                $scope.AppVisibility = $scope.Application.visibility_type_id;
 
             });
         } else {

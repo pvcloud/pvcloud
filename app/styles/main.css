@@ -30,6 +30,9 @@ a {
     border-bottom: white solid 4px;
 }
 
+.nav-pills{
+    font-size: 1.5em;
+}
 
 .btn-transparent{
     background-color: transparent;
@@ -314,17 +317,16 @@ span.glyphicon-copyright-mark{
     .login-form-links,.login-form-button{
         float:none!important;
     }
+    
+    .login-form-links{
+        display:block;
+        margin-top:1em;
+    }
 
     .login-form-separator{
         display:block;
     }
     .login-form-buttons button{
         font-size:1em!important
-    }
-}
-
-@media screen and (max-width:400px){
-    .login-form-buttons .pipe{
-        display:none
     }
 }
