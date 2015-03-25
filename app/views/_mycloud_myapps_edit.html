@@ -6,40 +6,51 @@
         <li class="active">{{AppName}}({{ArticleID}})</li>
     </ol>
 
-    <ul class="nav nav-tabs nav-justified">
-        <li role="presentation" class="active"><a href="#">Lo&nbsp;Básico</a></li>
-        <li role="presentation"><a href="#">Docs&nbsp;&amp;&nbsp;Drivers</a></li>
-        <li role="presentation"><a href="#">Páginas</a></li>
-        <li role="presentation"><a href="#">Datos</a></li>
+    <ul class="nav nav-tabs" data-ng-class="{'nav-justified':ApplicationID!=undefined}">
+        <li role="presentation" data-ng-class="{active:CurrentTab==Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Lo&nbsp;Básico</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab==Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.DocsNDrivers)">Docs&nbsp;&amp;&nbsp;Drivers</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab==Tabs.Pages}"><a data-ng-click="SwitchToTab(Tabs.Pages)">Páginas</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab==Tabs.Data}"><a data-ng-click="SwitchToTab(Tabs.Data)">Datos</a></li>
     </ul>
 
     <!-- BASIC DATA-->
-    <div class="container-fluid" data-ng-if="CurrentTab=='basics'">
+    <div class="container-fluid" data-ng-show="CurrentTab==Tabs.Basics">
         <br>
         <form>
             <div class="form-group">
                 <label for="txtNombre">Nombre del App</label>
-                <input type="text" class="form-control" id="txtNombre" placeholder="Digite aquí el nombre de su app.">
+                <input type="text" class="form-control" id="txtNombre" placeholder="Digite aquí el nombre de su app." data-ng-model="AppName">
             </div>
             <div class="form-group">
                 <label for="txtDescripcion">Descripción</label>
-                <textarea class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4"></textarea>
+                <textarea class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4" data-ng-model="AppDescription"></textarea>
             </div>
             <div class="form-group">
                 <label for="txtAPIKEY">API KEY</label>
-                <span class="form-control" id="txtAPIKEY" ><code>1234-5678-9101112-13141516</code><button class="btn btn-danger btn-xs pull-right"><i class="glyphicon glyphicon-refresh"></i></button></span>
+                <span class="form-control" id="txtAPIKEY" ><code>{{AppAPIKEY}}</code><button class="btn btn-danger btn-xs pull-right"><i class="glyphicon glyphicon-refresh"></i></button></span>
             </div>            
-            <div class="form-group">
-                <label for="selVisibility">Visibilidad</label>
-                <select class="form-control" id="selVisbility" >
-                    <option selected>Privado</option>
-                    <option>Compartido</option>
-                    <option>Público</option>
+            <div class="form-group" style="display:none">
+                <label for="selVisibility">Visibilidad {{AppVisibility}}</label>
+                <select class="form-control" id="selVisbility" data-ng-model="AppVisibility">
+                    <option selected value="1">Privado</option>
+                    <option value="2">Compartido</option>
+                    <option value="3">Público</option>
                 </select>
             </div>            
 
             
             <button class="btn btn-success"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
+            <button class="btn btn-link">Cancelar</button>
         </form>        
     </div>
+    <!--DOCS AND DRIVERS-->
+    <div class="container-fluid" data-ng-show="CurrentTab==Tabs.DocsNDrivers"> DOCS AND DRIVERS SPACE</div>
+    
+    <!--PAGES-->
+    <div class="container-fluid" data-ng-show="CurrentTab==Tabs.Pages"> Pages </div>
+    
+    <!--PVCLOUD-->
+    <div class="container-fluid" data-ng-show="CurrentTab==Tabs.Data"> DOCS AND DRIVERS SPACE</div>
+    
+    
 </div>
