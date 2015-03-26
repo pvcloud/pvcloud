@@ -14,31 +14,31 @@
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
+        <link rel="stylesheet" href="jqueryui-themes/smoothness/jquery-ui.min.css"/>
+        <script type="text/javascript">
+            var port = window.location.port;
+            var protocol = window.location.protocol;
+
+            console.log({port: port, protocol: protocol});
+
+            if (port != 9000) {
+                if (protocol !== "https:") {
+                    var currentURL = window.location.href;
+                    var newURL = currentURL.replace("http", "https").replace(":8080", "").replace(":9000", "");
+                    window.location.href = newURL;
+                }
+            }
+        </script>
+
     </head>
-    <body ng-app="pvcloudApp">
+    <body ng-app="pvcloudApp" style="background-image: url('images/background01.jpg'); background-repeat: no-repeat; background-size: auto 2000px;">
         <!--[if lt IE 7]>
           <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
         <!-- Add your site or application content here -->
-        <div class="container">
-            <div class="header">
-                <ul class="nav nav-pills pull-right">
-                    <li ng-class="{active:ActiveView==='main'}" ><a ng-href="#">Principal</a></li>
-                    <li ng-class="{active:ActiveView==='my_cloud'}"><a ng-href="#/my_cloud">Mi Nube</a></li>
-                    <li ng-class="{active:ActiveView==='about'}"><a ng-href="#/about">Quienes Somos</a></li>
-                    <li ng-class="{active:ActiveView==='contact'}"><a ng-href="#/contact">Contáctenos</a></li>
-                </ul>
-                <h3 class="text-muted">pvCloud</h3>
-            </div>
 
-            <div ng-view=""></div>
-
-            <div class="footer" style="text-align: center">
-                <p><span class="glyphicon glyphicon-copyright-mark"></span>Copyright 2014 - Jose Nunez</p>
-            </div>
-        </div>
-
+        <div ng-view="" class="ngview"></div>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
         <script>
@@ -70,6 +70,7 @@
         <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="bower_components/jqueryui/jquery-ui.js"></script>
         <script src="bower_components/angular-resource/angular-resource.js"></script>
         <script src="bower_components/angular-cookies/angular-cookies.js"></script>
         <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
@@ -83,8 +84,27 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
-        <script src="scripts/controllers/my_cloud.js"></script>
+        <script src="scripts/controllers/mycloud.js"></script>
+        <script src="scripts/controllers/_mycloud_myapps.js"></script>
+        <script src="scripts/controllers/_mycloud_myapps_edit.js"></script>
+        <script src="scripts/controllers/_mycloud_myapps_edit_pages.js"></script>
+        <script src="scripts/controllers/_mycloud_myaccount.js"></script>
         <script src="scripts/controllers/contact.js"></script>
+        <script src="scripts/controllers/account_add_complete.js"></script>
+        <script src="scripts/controllers/passwordrecovery.js"></script>
+        <script src="scripts/services/sessionService.js"></script>
+        <script src="scripts/services/accountService.js"></script>
+        <script src="scripts/services/appsRegistryService.js"></script>
+        <script src="scripts/services/utilityService.js"></script>
+        <script src="scripts/controllers/_mycloud_inviteafriend.js"></script>
         <!-- endbuild -->
+
+        <script>
+            $(document).ready(function () {
+
+
+            });
+
+        </script>
     </body>
 </html>

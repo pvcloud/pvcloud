@@ -1,0 +1,63 @@
+<div class="container-fluid" style="min-height: 100%">
+    <nav class="navbar navbar-default main-standard-navigation">
+        <div class="container-fluid" >
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">pvCloud</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps"><span>MIS&nbsp;APPS</span></a></li>
+                    <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork"><span>MI&nbsp;RED</span></a></li>
+                    <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount"><span>MI&nbsp;CUENTA</span></a></li>
+                    <li role="presentation" ng-class="{active: Section === 'pvcloud'}"><a href="#/mycloud/pvcloud"><span>¿QUIENES&nbsp;SOMOS?</span></a></li>
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>    
+
+    <div class="row" data-ng-if="LoggedIn" style="height: 100%; display:block">
+        <!-- QUICK LINKS -->
+        <div class="col-md-6" style="vertical-align: middle">
+            <div class="panel-quicklinks">
+                <button data-ng-click="GoToNewApp()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; "><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Agregar Nueva App</button>
+                <br>
+                <button data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;Invitar un Amigo</button>
+                <br>
+                <button data-ng-click="Logout()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;Logout</button>
+            </div>
+        </div>
+
+        <!-- WORKSPACE -->
+        <div class="col-md-6 main-navigation">
+            <!--
+            <ul class="nav navbar nav-justified nav-pills text-uppercase">
+                <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps"><span>MIS&nbsp;APPS</span></a></li>
+                <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork"><span>MI&nbsp;RED</span></a></li>
+                <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount"><span>MI&nbsp;CUENTA</span></a></li>
+                <li role="presentation" ng-class="{active: Section === 'pvcloud'}"><a href="#/mycloud/pvcloud"><span>pvCLOUD</span></a></li>
+            </ul>
+            -->
+            <!-- CONTENT -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                
+                    </div>
+
+                </div>
+            </div>            
+
+        </div>
+    </div>
+</div>
+<div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a></div>

@@ -6,3 +6,10 @@ bower_components
 /nbproject/private/
 /nbproject/
 /pvcloud.zip
+
+#################
+## WebStorm
+#################
+
+.idea/
+/dist.zip

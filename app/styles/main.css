@@ -1,10 +1,195 @@
 /* Space out content a bit */
+html{
+    height: 100%;
+}
 body {
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 50px;
+    height:100%;
+    min-height: 100%;
+
 }
 a {
     cursor:pointer;
+}
+
+.main-standard-navigation {
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.navbar-default{
+    background-color:transparent;
+    border-style: none;
+}
+
+.navbar-default .navbar-nav > li > a{
+    color:white;
+}
+
+.navbar-default .navbar-nav > li > a:hover{
+    color:gray;
+}
+
+.navbar-default .navbar-brand {
+    color:white
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+    background-color:transparent;
+
+    color:white;
+    border-bottom-width: 3px;
+
+}
+
+.navbar-default .navbar-nav > .active > a > span {
+    border-bottom:white solid 3px;
+}
+
+.navbar-brand{
+    font-size: 1.5em;
+}
+
+.main-navigation > ul.nav-justified li a {
+    color:white;
+    font-weight: bolder;
+}
+.main-navigation > ul.nav-justified li a:hover{
+    color:black;
+}
+
+.main-navigation > .nav-pills > li.active > a,.main-navigation > .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus{
+    background-color:transparent;
+
+    cursor:default;
+}
+.main-navigation > .nav-pills > li.active > a > span{
+    border-bottom: white solid 4px;
+}
+
+.nav-pills{
+    font-size: 1.5em;
+}
+
+.btn-transparent{
+    background-color: transparent;
+    border:white solid 2px;
+    color:white;
+}
+
+.btn-transparent{
+    background-color:transparent;
+    border:white solid 2px;
+    color:white;
+    width:250px!important;
+}
+
+.btn-transparent:hover{
+    border:#ffdcad solid 2px;
+    color: #ffdcad;
+}
+
+.footer a {
+    color:white
+}
+.login-form-links{
+    float:right;
+}
+
+.login-form-button{
+    float:left;
+}
+
+.login-form-separator{
+    display:none;
+}
+.panel-quicklinks{
+    margin-top: 50px;
+}
+.panel-default{
+    background-color:  rgba(255,255,255,0.85);
+}
+
+#login_form, #recover_password_form{
+    background-color:rgba(255,255,255,0.5)    
+}
+
+#login_form div.login-form-buttons,
+#recover_password_form div.login-form-buttons{
+    margin:20px auto;
+}
+
+#login_form .input-group, #recover_password_form .input-group{
+    width:100%;
+}
+#account_accordion input, #account_accordion button {
+    margin:3px;
+}
+#newAccountPanel{
+    display:none;
+    text-align: justify;
+}
+
+#newAccountPanel p{
+    font-size:1em;
+}
+
+.alert {
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+.fill{
+    height: 100%
+}
+.invite_a_friend{
+    color:red !important;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.ngview{
+    height: 100%;
+}
+
+.pvcloud-edit-toolbar{
+    padding-left:10px;
+    padding-right: 10px;
+    font-size:1.9em;
+    margin-right:15px
+}
+
+.pvcloud-close-button {
+    cursor:pointer;
+    color:maroon;
+}
+
+.pvcloud-close-button:hover{
+    color:red;
+}
+
+.pvcloud-edit-toolbar i{
+    margin:5px
+}
+.pvcloud-home p {
+    text-align: justify;
+}
+
+.pvcloud-home input{
+    width:100%;
+}
+
+.pvcloud-app-edit{
+    cursor:pointer;
+}
+
+input, textarea {
+    padding:5px;
+}
+
+.pvcloud-app-edit:hover{
+    color:green;
 }
 #flecha-ingresar{
     display:inline-block;
@@ -39,7 +224,7 @@ a {
     width:70px;   
 }
 
-.pv-control-register, .pv-control-recover-password, .pv-control-back-to-login-link , .pv-input-password2{
+#recover_password_form {
     display:none;
 }
 
@@ -91,9 +276,13 @@ span.glyphicon-copyright-mark{
 
 /* Custom page footer */
 .footer {
-    padding-top: 19px;
     color: #777;
-    border-top: 1px solid #e5e5e5;
+    text-align: center; 
+    border-style: none;    
+}
+
+.footer .panel{
+    background-color: rgba(255,255,255,0.9);
 }
 
 .container-narrow > hr {
@@ -104,10 +293,11 @@ span.glyphicon-copyright-mark{
 .jumbotron {
     text-align: center;
     border-bottom: 1px solid #e5e5e5;
+    background-color: rgba(255,255,255,0.6);    
 }
 .jumbotron .btn {
     font-size: 21px;
-    padding: 14px 24px;
+
 }
 
 /* Supporting marketing content */
@@ -144,5 +334,42 @@ span.glyphicon-copyright-mark{
     #pv-credentials .pv-credentials-addon-actions {
         text-align: left;
         margin-top:20px;
+    }    
+
+    .crmakers-logo{
+        width:50px;
+        position:absolute;
+        top:25px;
+        left:20px
+    }
+
+    .jumbotron p{
+        font-size: 0.8em
+    }
+
+    .login-form-buttons a{
+        display:inline-block;
+        margin-top:1em
+    }
+
+    .login-form-links,.login-form-button{
+        float:none!important;
+    }
+
+    .login-form-links{
+        display:block;
+        margin-top:1em;
+    }
+
+    .login-form-separator{
+        display:block;
+    }
+    .login-form-buttons button{
+        font-size:1em!important
+    }
+
+    .panel-quicklinks{
+        margin-top: 16px;
+        margin-bottom: 16px;
     }    
 }
