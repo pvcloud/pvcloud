@@ -8,9 +8,15 @@ angular.module('pvcloudApp').factory('AppRegistryService', function ($resource, 
     var appRegenerateAPIKeyResource = $resource(baseURL + "app_generate_api_key.php?account_id=:account_id&token=:token&app_id=:app_id", {});
     var appUpdateResource = $resource(baseURL + "app_modify.php?account_id=:account_id&token=:token&app_id=:app_id&app_nickname=:app_nickname&app_description=:app_description&visibility_type_id=:visibility_type_id", {});
     var appDeleteResource = $resource(baseURL + "app_delete.php?account_id=:account_id&token=:token&app_id=:app_id", {});
+    
+    var appPagesResource = $resource(baseURL + "app_get_pages.php?account_id=:account_id&token=:token&app_id=:app_id", {});
 
     function getAppListForAccountID(account_id, token) {
         return appRegistryResource.get({account_id: account_id, token: token});
+    }
+    
+    function getPagesListForAppID(account_id, token, app_id){
+        return appPagesResource.get({account_id: account_id, token: token, app_id:app_id});
     }
 
     function getAppByID(account_id, token, app_id) {
@@ -39,6 +45,8 @@ angular.module('pvcloudApp').factory('AppRegistryService', function ($resource, 
         RegisterNewApp: registerNewApp,
         RegenerateAPIKey: regenerateAPIKey,
         UpdateApp: updateApp,
-        DeleteApp: deleteApp
+        DeleteApp: deleteApp,
+        GetPagesListForAppID:getPagesListForAppID
+        
     };
 });

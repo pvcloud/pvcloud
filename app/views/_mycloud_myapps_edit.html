@@ -7,7 +7,7 @@
     </ol>
 
     <ul data-ng-show="ApplicationID" class="nav nav-tabs" data-ng-class="{'nav-justified':ApplicationID != undefined}">
-        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Lo&nbsp;Básico</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición</a></li>
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.DocsNDrivers)">Docs&nbsp;&amp;&nbsp;Drivers</a></li>
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Pages}"><a data-ng-click="SwitchToTab(Tabs.Pages)">Páginas</a></li>
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Data}"><a data-ng-click="SwitchToTab(Tabs.Data)">Datos</a></li>
@@ -63,7 +63,7 @@
     </div>
 
     <!--PAGES-->
-    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Pages"> Pages </div>
+    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Pages" data-ng-include="'views/_mycloud_myapps_edit_pages.html'"> Pages </div>
 
     <!--PVCLOUD-->
     <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Data">
