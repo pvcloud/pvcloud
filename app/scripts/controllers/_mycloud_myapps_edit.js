@@ -6,7 +6,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
         Pages: 'pages',
         Data: 'data'
     };
-
+    $scope.AccountID = sessionService.GetCurrentAccountID();
     $scope.FormIsClean = true;
 
     $scope.SetFormDirty = function () {
@@ -101,6 +101,8 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
 
         }
     };
+    
+    
 
     checkForDevelopmentRedirection();
 
@@ -122,7 +124,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
                     UtilityService.ProcessServiceResponse(response,
                             function success(response) {
                                 var app = response.data;
-                                loadAppToForm(app);
+                                $location.path("/mycloud/myapps/" + app.app_id);
                                 alert("Los datos se almacenaron satisfactoriamente.");
                             },
                             function error(response) {
@@ -216,11 +218,12 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
         var hostname = window.location.host;
         var port = window.location.port;
 
-        if (port === 9000) {
+        if (port === 9000 || port === '9000') {
             $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080";
         } else {
             $scope.URLBegin = protocol + "//" + hostname;
         }
+        
     }
 
 
