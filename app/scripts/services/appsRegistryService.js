@@ -11,17 +11,22 @@ angular.module('pvcloudApp').factory('AppRegistryService', function ($resource, 
     
     var appPagesResource = $resource(baseURL + "app_get_pages.php?account_id=:account_id&token=:token&app_id=:app_id", {});
     var pageResource = $resource(baseURL + "page_get_by_id.php?page_id=:page_id&token=:token", {});
-    var pageUpdateResource = $resource(baseURL + "page_modify.php?account_id=:account_id&token=:token&page_id=:app_id&title=:title&description=:description&visibility_type_id=:visibility_type_id", {});
+    var pageUpdateResource = $resource(baseURL + "page_modify.php?account_id=:account_id&token=:token&page_id=:page_id&title=:title&description=:description&visibility_type_id=:visibility_type_id", {});
 
     function getPageByID(account_id, token, page_id){
         return pageResource.get({account_id: account_id, token: token, page_id: page_id});
     }
+    
     function getAppListForAccountID(account_id, token) {
         return appRegistryResource.get({account_id: account_id, token: token});
     }
     
     function getPagesListForAppID(account_id, token, app_id){
         return appPagesResource.get({account_id: account_id, token: token, app_id:app_id});
+    }
+    
+    function updatePage(account_id, token, page_id, title, description, visibility_type_id) {
+        return pageUpdateResource.get({account_id: account_id, token: token, page_id: page_id, title: title, description: description, visibility_type_id: visibility_type_id});
     }
 
     function getAppByID(account_id, token, app_id) {
@@ -52,6 +57,7 @@ angular.module('pvcloudApp').factory('AppRegistryService', function ($resource, 
         UpdateApp: updateApp,
         DeleteApp: deleteApp,
         GetPagesListForAppID:getPagesListForAppID,
-        GetPageByID: getPageByID
+        GetPageByID: getPageByID,
+        UpdatePage: updatePage  
     };
 });

@@ -23,15 +23,18 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         var pageToSave = {
             page_id: $scope.PageID,
             app_id: $scope.AppID,
-            title: $scope.AppName,
-            description: $scope.Page,
+            title: $scope.PageTitle,
+            description: $scope.PageDescription,
             visibility_type_id: $scope.PageVisibility
         };
+
+        console.log("PAGE TO SAVE");
+        console.log(pageToSave);
 
         if (pageToSave.page_id !== undefined && pageToSave.page_id > 0) {
             updatePage(pageToSave);
         } else {
-            createApp(pageToSave);
+            createPage(pageToSave);
         }
 
 
@@ -75,20 +78,23 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
 
     initialize();
 
-    function createApp(appToAdd) {
-        if (appToAdd.app_nickname !== undefined && appToAdd.app_nickname !== "") {
-            if (appToAdd.app_description !== undefined && appToAdd.app_description !== "") {
+    function createPage(pageToSave) {
+        if (pageToSave.title !== undefined && pageToSave.title !== "") {
+            if (pageToSave.description !== undefined && pageToSave.description !== "") {
+
                 var account_id = sessionService.GetCurrentAccountID();
                 var token = sessionService.GetCurrentToken();
 
-                AppRegistryService.RegisterNewApp(
+                AppRegistryService.RegisterNewPage(
                         account_id,
                         token,
-                        appToAdd.app_nickname,
-                        appToAdd.app_description,
-                        appToAdd.visibility_type_id
+                        pageToSave.page_id,
+                        pageToSave.app_id,
+                        pageToSave.title,
+                        pageToSave.description,
+                        pageToSave.visibility_type_id
                         ).$promise.then(function (response) {
-                    UtilityService.ProcessServiceResponse(response,
+                            UtilityService.ProcessServiceResponse(response,
                             function success(response) {
                                 var app = response.data;
                                 $location.path("/mycloud/myapps/" + app.app_id);
@@ -100,7 +106,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                             function exception(response) {
                                 console.log(response);
                             });
-                });
+                        });
             } else {
                 $scope.ValidationError_Description = "El campo de Descripción es requerido y está vacío.";
             }
@@ -110,6 +116,8 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
     }
 
     function updatePage(pageToSave) {
+        console.log("PAGE TO SAVE IN updatePage");
+        console.log(pageToSave);
         if (pageToSave.title !== undefined && pageToSave.title !== "") {
             if (pageToSave.description !== undefined && pageToSave.description !== "") {
                 var account_id = sessionService.GetCurrentAccountID();
@@ -119,7 +127,6 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                         account_id,
                         token,
                         pageToSave.page_id,
-                        pageToSave.app_id,
                         pageToSave.title,
                         pageToSave.description,
                         pageToSave.visibility_type_id
@@ -141,7 +148,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                 $scope.ValidationError_Description = "El campo de Descripción es requerido y está vacío.";
             }
         } else {
-            $scope.ValidationError_Name = "El nombre de la applicación es requerido y está vacío";
+            $scope.ValidationError_Name = "El título de la página es requerido y está vacío";
         }
     }
 
@@ -158,13 +165,9 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         $scope.ArticleID = $routeParams.article_id;
         $scope.SubArticleID = $routeParams.subarticle_id;
 
-        if ($routeParams.article_id !== "new") {
-            data = getDataFromServer();
 
-        } else {
-            $scope.ApplicationID = undefined;
-            $scope.AppVisibility = 1;
-        }
+        getDataFromServer();
+
 
         $scope.CurrentTab = $scope.Tabs.Basics;
 
@@ -179,10 +182,22 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
 
         AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
             var app = appResponse.data;
-            AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
-                var page = pageResponse.data;
+
+            if (page_id === "new") {
+                var page = {
+                    page_id: "new",
+                    app_id: app_id,
+                    title: "",
+                    description: "",
+                    visibility_type_id: 1
+                };
                 loadDataToForm(app, page);
-            });
+            } else {
+                AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
+                    var page = pageResponse.data;
+                    loadDataToForm(app, page);
+                });
+            }
         });
     }
 
@@ -190,10 +205,10 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         $scope.Page = page;
         $scope.PageID = page.page_id;
         $scope.PageTitle = page.title;
-        $scope.CurrentPageTitle = page.title;   
+        $scope.CurrentPageTitle = page.title;
         $scope.PageDescription = page.description;
         $scope.PageVisibility = page.visibility_type_id;
-        
+
         $scope.App = app;
         $scope.AppID = app.app_id;
         $scope.AppName = app.app_nickname;
