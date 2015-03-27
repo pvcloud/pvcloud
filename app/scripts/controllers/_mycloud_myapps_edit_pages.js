@@ -9,10 +9,10 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit_pages', function (
     var app_id = $routeParams.article_id;
 
     $scope.GoToPageDef = function () {
-        $location.path("/mycloud/myapps/" + app_id + "/pagedef/new");
+        $location.path("/mycloud/pagesdef/" + app_id + "/new");
     };
     $scope.GoToEditPage = function (page_id) {
-        $location.path("/mycloud/myapps/" + app_id + "/pagedef/" + page_id);
+        $location.path("/mycloud/pagesdef/" + app_id + "/" + page_id);
     };
 
     function processDevRedirects() {

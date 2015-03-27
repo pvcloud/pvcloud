@@ -1,13 +1,5 @@
-angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope, UtilityService, AppRegistryService, sessionService, $routeParams, $location) {
-    console.log("This is _mycloud_myapps_edit controller being invoked");
-    $scope.Tabs = {
-        Basics: 'basics',
-        DocsNDrivers: 'docs_n_drivers',
-        Pages: 'pages',
-        Data: 'data'
-    };
-    $scope.AccountID = sessionService.GetCurrentAccountID();
-    $scope.FormIsClean = true;
+angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, UtilityService, AppRegistryService, sessionService, $routeParams, $location) {
+    console.log("This is _mycloud_pagesdef controller being invoked");
 
     $scope.SetFormDirty = function () {
         $scope.FormIsClean = false;
@@ -19,31 +11,31 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
                 return;
             }
         }
-        $location.path("/mycloud/myapps");
+        $location.path("/mycloud/myapps/" + $scope.AppID + "/tab_pages");
     };
 
-    $scope.SaveApp = function () {
+    $scope.SavePage = function () {
 
         $scope.ValidationError_Name = "";
         $scope.ValidationError_Description = "";
 
 
-        var appToSave = {
-            app_id: $scope.ApplicationID,
-            app_nickname: $scope.AppName,
-            app_description: $scope.AppDescription,
-            api_key: $scope.AppAPIKEY,
-            visibility_type_id: $scope.AppVisibility
+        var pageToSave = {
+            page_id: $scope.PageID,
+            app_id: $scope.AppID,
+            title: $scope.AppName,
+            description: $scope.Page,
+            visibility_type_id: $scope.PageVisibility
         };
 
-        if (appToSave.app_id !== undefined && appToSave.app_id > 0) {
-            updateApp(appToSave);
+        if (pageToSave.page_id !== undefined && pageToSave.page_id > 0) {
+            updatePage(pageToSave);
         } else {
-            createApp(appToSave);
+            createApp(pageToSave);
         }
 
 
-        console.log(appToSave);
+        console.log(pageToSave);
 
     };
 
@@ -75,34 +67,9 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
 
     };
 
-    $scope.RecreateAPIKEY = function () {
-        if (confirm("¿Está seguro que desea continuar?\nEste paso no tiene vuelta atrás. Al regenerar el API KEY todos los dispositivos y sistemas conectados a su APP dejarán de funcionar hasta que descargue nuevamente el controlador correspondiente en cada uno o actualice cada uno con el nuevo API KEY")) {
-
-            var account_id = sessionService.GetCurrentAccountID();
-            var token = sessionService.GetCurrentToken();
-            var app_id = $scope.Application.app_id;
-
-            AppRegistryService.RegenerateAPIKey(account_id, token, app_id).$promise.then(function (response) {
-                UtilityService.ProcessServiceResponse(response,
-                        function success(response) {
-                            loadAppToForm(response.data);
-                            setTimeout(function () {
-                                alert("El API KEY de esta aplicación ha sido regenerado.");
-                            }, 500);
-
-                        },
-                        function error(response) {
-                            console.log(response);
-                        },
-                        function exception(response) {
-                            console.log(response);
-                        });
-            });
-
-        }
+    $scope.SwitchToTab = function (tab) {
+        $scope.CurrentTab = tab;
     };
-    
-    
 
     checkForDevelopmentRedirection();
 
@@ -141,24 +108,26 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
             $scope.ValidationError_Name = "El nombre de la applicación es requerido y está vacío";
         }
     }
-    function updateApp(appToSave) {
-        if (appToSave.app_nickname !== undefined && appToSave.app_nickname !== "") {
-            if (appToSave.app_description !== undefined && appToSave.app_description !== "") {
+
+    function updatePage(pageToSave) {
+        if (pageToSave.title !== undefined && pageToSave.title !== "") {
+            if (pageToSave.description !== undefined && pageToSave.description !== "") {
                 var account_id = sessionService.GetCurrentAccountID();
                 var token = sessionService.GetCurrentToken();
 
-                AppRegistryService.UpdateApp(
+                AppRegistryService.UpdatePage(
                         account_id,
                         token,
-                        appToSave.app_id,
-                        appToSave.app_nickname,
-                        appToSave.app_description,
-                        appToSave.visibility_type_id
+                        pageToSave.page_id,
+                        pageToSave.app_id,
+                        pageToSave.title,
+                        pageToSave.description,
+                        pageToSave.visibility_type_id
                         ).$promise.then(function (response) {
                     UtilityService.ProcessServiceResponse(response,
                             function success(response) {
-                                var app = response.data;
-                                loadAppToForm(app);
+                                var page = response.data;
+                                loadDataToForm($scope.App, page);
                                 alert("Los datos se almacenaron satisfactoriamente.");
                             },
                             function error(response) {
@@ -177,64 +146,74 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
     }
 
     function initialize() {
+        $scope.Tabs = {
+            Basics: 'basics',
+            Widgets: 'widgets',
+            WidgetConfig: 'widgetconfig'
+        };
+
+        $scope.FormIsClean = true;
+
+        $scope.AccountID = sessionService.GetCurrentAccountID();
         $scope.ArticleID = $routeParams.article_id;
         $scope.SubArticleID = $routeParams.subarticle_id;
-        
-
 
         if ($routeParams.article_id !== "new") {
-            var token = sessionService.GetCurrentToken();
-            var account_id = sessionService.GetCurrentAccountID();
-            $scope.ApplicationID = $routeParams.article_id;
-            AppRegistryService.GetAppByID(account_id, token, $scope.ApplicationID).$promise.then(function (response) {
-                loadAppToForm(response.data);
-            });
+            data = getDataFromServer();
+
         } else {
             $scope.ApplicationID = undefined;
             $scope.AppVisibility = 1;
         }
 
-        switch ($scope.SubArticleID){
-            case "tab_pages":
-                $scope.CurrentTab = $scope.Tabs.Pages;
-                break;
-            default:
-                $scope.CurrentTab = $scope.Tabs.Basics;
-        }
+        $scope.CurrentTab = $scope.Tabs.Basics;
 
-        $scope.SwitchToTab = function (tab) {
-            $scope.CurrentTab = tab;
-        };
+
     }
 
-    function loadAppToForm(app) {
-        $scope.Application = app;
-        $scope.ApplicationID = app.app_id;
+    function getDataFromServer() {
+        var account_id = sessionService.GetCurrentAccountID();
+        var token = sessionService.GetCurrentToken();
+        var app_id = $routeParams.article_id;
+        var page_id = $routeParams.subarticle_id;
+
+        AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
+            var app = appResponse.data;
+            AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
+                var page = pageResponse.data;
+                loadDataToForm(app, page);
+            });
+        });
+    }
+
+    function loadDataToForm(app, page) {
+        $scope.Page = page;
+        $scope.PageID = page.page_id;
+        $scope.PageTitle = page.title;
+        $scope.CurrentPageTitle = page.title;   
+        $scope.PageDescription = page.description;
+        $scope.PageVisibility = page.visibility_type_id;
+        
+        $scope.App = app;
+        $scope.AppID = app.app_id;
         $scope.AppName = app.app_nickname;
-        $scope.AppCurrentName = app.app_nickname;
         $scope.AppDescription = app.app_description;
         $scope.AppAPIKEY = app.api_key;
         $scope.AppVisibility = app.visibility_type_id;
         $scope.FormIsClean = true;
+
     }
 
     function checkForDevelopmentRedirection() {
         var protocol = window.location.protocol;
-        //TODO: Making protocol for WGET to be HTTP until we find an easy way to install wget-ssl in Galileo
-        //pvcloud_api.js driver will anyway interact ONLY with HTTPS
-
-        protocol = "http:";
         var hostname = window.location.host;
         var port = window.location.port;
 
         if (port === 9000 || port === '9000') {
-            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080";
+            $scope.BackendURLBegin = protocol + "//" + window.location.hostname + ":8080";
         } else {
-            $scope.URLBegin = protocol + "//" + hostname;
+            $scope.BackendURLBegin = protocol + "//" + hostname;
         }
-        
     }
-
-
 });
 

@@ -19,7 +19,7 @@ angular
                         templateUrl: 'views/about.html',
                         controller: 'AboutCtrl'
                     })
-                    .when('/mycloud/:section/:article_id/:subsection/:subarticle_id',{
+                    .when('/mycloud/:section/:article_id/:subarticle_id',{
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
                     })                  

@@ -1,11 +1,13 @@
 <!-- CONTAINER FLUID -->
 <div data-ng-controller="_mycloud_myapps_edit" class="container-fluid">
 
+    <!-- BREADCRUMB -->
     <ol class="breadcrumb">
         <li><a href="#/mycloud/myapps">My Apps</a></li>
         <li class="active">{{AppCurrentName}}(ID: {{ArticleID}})</li>
     </ol>
 
+    <!-- TABS -->
     <ul data-ng-show="ApplicationID" class="nav nav-tabs" data-ng-class="{'nav-justified':ApplicationID != undefined}">
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición</a></li>
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.DocsNDrivers)">Docs&nbsp;&amp;&nbsp;Drivers</a></li>
@@ -55,6 +57,7 @@
             </div>            
         </form>        
     </div>
+    
     <!--DOCS AND DRIVERS-->
     <div class="container-fluid" data-ng-show="CurrentTab == Tabs.DocsNDrivers"> 
 

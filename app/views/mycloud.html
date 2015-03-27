@@ -1,4 +1,7 @@
+<!-- CONTENT -->
 <div class="container-fluid" style="min-height: 100%">
+    
+    <!--NAV BAR AND SANDWITCH-->
     <nav class="navbar navbar-default main-standard-navigation">
         <div class="container-fluid" >
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -15,16 +18,16 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps"><span>MIS&nbsp;APPS</span></a></li>
+                    <li role="presentation" ng-class="{active: Section === 'myapps' || Section === 'pagesdef'}"><a href="#/mycloud/myapps"><span>MIS&nbsp;APPS</span></a></li>
                     <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork"><span>MI&nbsp;RED</span></a></li>
                     <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount"><span>MI&nbsp;CUENTA</span></a></li>
                     <li role="presentation" ng-class="{active: Section === 'pvcloud'}"><a href="#/mycloud/pvcloud"><span>¿QUIENES&nbsp;SOMOS?</span></a></li>
-
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>    
 
+    <!-- MAIN SECTIONS -->
     <div class="row" data-ng-if="LoggedIn" style="height: 100%; display:block">
         <!-- QUICK LINKS -->
         <div class="col-md-6" style="vertical-align: middle">
@@ -39,25 +42,17 @@
 
         <!-- WORKSPACE -->
         <div class="col-md-6 main-navigation">
-            <!--
-            <ul class="nav navbar nav-justified nav-pills text-uppercase">
-                <li role="presentation" ng-class="{active: Section === 'myapps'}"><a href="#/mycloud/myapps"><span>MIS&nbsp;APPS</span></a></li>
-                <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork"><span>MI&nbsp;RED</span></a></li>
-                <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount"><span>MI&nbsp;CUENTA</span></a></li>
-                <li role="presentation" ng-class="{active: Section === 'pvcloud'}"><a href="#/mycloud/pvcloud"><span>pvCLOUD</span></a></li>
-            </ul>
-            -->
-            <!-- CONTENT -->
+            <!-- PARTIAL VIEW FOR SECTIONS -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                
                     </div>
-
                 </div>
             </div>            
-
         </div>
     </div>
 </div>
+
+<!-- FOOTER -->
 <div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a></div>
