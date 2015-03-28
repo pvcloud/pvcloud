@@ -42,18 +42,18 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
 
     };
 
-    $scope.DeleteApp = function () {
+    $scope.DeletePage = function () {
 
-        var app_id = $scope.Application.app_id;
-        var confirmation = confirm("De verdad quiere eliminar esta app?\n Todos sus datos relacionados serán eliminados también.");
+        var page_id = $scope.PageID;
+        var confirmation = confirm("¿De verdad quiere eliminar esta página?\n Todos sus widgets serán eliminados también.");
         if (confirmation) {
             var account_id = sessionService.GetCurrentAccountID();
             var token = sessionService.GetCurrentToken();
-            AppRegistryService.DeleteApp(account_id, token, app_id).$promise.then(function (response) {
+            AppRegistryService.DeletePage(account_id, token, page_id).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
-                            alert("App #" + app_id + " fue removida satisfactoriamente");
-                            $location.path("/mycloud/myapps");
+                            alert("Page " + response.data.title + " fue removida satisfactoriamente");
+                            $scope.Cancelar();
                         },
                         function error(response) {
                             console.log(response);
@@ -62,12 +62,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                             console.log(response);
                         });
             });
-            app.appBeingEdited = false;
         }
-
-
-        console.log(appToSave);
-
     };
 
     $scope.SwitchToTab = function (tab) {
@@ -79,39 +74,42 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
     initialize();
 
     function createPage(pageToSave) {
-        if (pageToSave.title !== undefined && pageToSave.title !== "") {
-            if (pageToSave.description !== undefined && pageToSave.description !== "") {
+        if (pageToSave.app_id !== undefined && pageToSave.app_id > 0) {
+            if (pageToSave.title !== undefined && pageToSave.title !== "") {
+                if (pageToSave.description !== undefined && pageToSave.description !== "") {
 
-                var account_id = sessionService.GetCurrentAccountID();
-                var token = sessionService.GetCurrentToken();
+                    var account_id = sessionService.GetCurrentAccountID();
+                    var token = sessionService.GetCurrentToken();
 
-                AppRegistryService.RegisterNewPage(
-                        account_id,
-                        token,
-                        pageToSave.page_id,
-                        pageToSave.app_id,
-                        pageToSave.title,
-                        pageToSave.description,
-                        pageToSave.visibility_type_id
-                        ).$promise.then(function (response) {
-                            UtilityService.ProcessServiceResponse(response,
-                            function success(response) {
-                                var app = response.data;
-                                $location.path("/mycloud/myapps/" + app.app_id);
+                    AppRegistryService.CreatePage(
+                            account_id,
+                            token,
+                            pageToSave.app_id,
+                            pageToSave.title,
+                            pageToSave.description,
+                            pageToSave.visibility_type_id
+                            ).$promise.then(function (response) {
+                        UtilityService.ProcessServiceResponse(response,
+                                function success(response) {
+                                var page = response.data;
+                                loadDataToForm($scope.App, page);
                                 alert("Los datos se almacenaron satisfactoriamente.");
-                            },
-                            function error(response) {
-                                console.log(response);
-                            },
-                            function exception(response) {
-                                console.log(response);
-                            });
-                        });
+                                },
+                                function error(response) {
+                                    console.log(response);
+                                },
+                                function exception(response) {
+                                    console.log(response);
+                                });
+                    });
+                } else {
+                    $scope.ValidationError_Description = "El campo de Descripción es requerido y está vacío.";
+                }
             } else {
-                $scope.ValidationError_Description = "El campo de Descripción es requerido y está vacío.";
+                $scope.ValidationError_Name = "El nombre de la página es requerido y está vacío";
             }
         } else {
-            $scope.ValidationError_Name = "El nombre de la applicación es requerido y está vacío";
+            $scope.ValidationError_Name = "Se requiere una aplicación relacionada, y el ID suministrado es inválido.";
         }
     }
 

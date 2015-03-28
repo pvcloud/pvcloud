@@ -44,16 +44,23 @@
             </div>               
 
             <button class="btn btn-success" data-ng-click="SavePage()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
-            <button class="btn btn-danger" data-ng-if="ApplicationID" data-ng-click="DeleteApp()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
+            <button class="btn btn-danger" data-ng-if="PageID" data-ng-click="DeletePage()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
             <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Regresar al App':'Cancelar'}}</button>          
         </form>        
     </div>
     
-    <!--DOCS AND DRIVERS-->
+    <!-- WIDGETS -->
     <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Widgets"> 
-
-        <div data-ng-include="'views/_mycloud_myapps_edit_dd.html'"></div>
+        CRUD of WIDGETS GOES HERE
+        <!--<div data-ng-include="'views/_mycloud_myapps_edit_dd.html'"></div>-->
 
     </div>
+    
+    <!-- WIDGETS CONFIG -->
+    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.WidgetConfig"> 
+        CONFIGURATION of WIDGETS GOES HERE
+        <!--<div data-ng-include="'views/_mycloud_myapps_edit_dd.html'"></div>-->
+
+    </div>    
 </div>
 
