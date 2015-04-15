@@ -2,7 +2,8 @@
 
 angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location, UtilityService, AccountService, sessionService) {
 
-    console.log("InitatingModule")
+    $scope.PageLabels = {Ingresar : "Login"};
+    console.log("InitatingModule");
     validateSession();
     $scope.ErrorMessages = [];
     $scope.UIReady = false;
