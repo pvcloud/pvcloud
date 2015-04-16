@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
     <p>En este tab pronto estaremos colocando funciones para que el usuario pueda crear su propia red de inventores.</p>
     <ul>
         <li>Invitar a alguien</li>
@@ -6,7 +6,7 @@
         <li>Conocer el estado de mis amigos</li>
     </ul>
 
-    <!--
+    
     <div>
         <h2>Invitar a un amigo</h2>
         <p>Por favor escriba la cuenta de correo electrónico de la persona que desea invitar a ser parte de pvCloud</p>
@@ -15,5 +15,36 @@
         <button>Invitar</button>    
     </div>
     
-    -->
+    
+</div> -->
+
+<!-- CONTAINER FLUID -->
+<div data-ng-controller="_mycloud_mynetwork" class="container-fluid">
+    <!--HEADING - CONNECTIONS PENDING-->
+    <div class="row">
+        <div class="col-sm-12">
+           
+ 
+        </div>
+    </div>
+    <br>
+    <!--CONNECTION LIST-->
+    <table class="table table-striped table-hover">
+        <tr>
+            
+            <th>Mis Conexiones
+                <a data-ng-click="GoToNewConnection()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Conexion</a>
+            </th>
+        </tr>
+        <tr  data-ng-repeat="cn in connections.connections">
+            <td class="td-app-info">
+                <span >{{cn.Name}}</span>&nbsp;&nbsp;
+                <span >{{cn.email}}</span>&nbsp;&nbsp;
+                <i class="glyphicon glyphicon-envelope"></i>
+                <br>
+                
+            </td>
+        </tr>
+    </table>
+
 </div>
