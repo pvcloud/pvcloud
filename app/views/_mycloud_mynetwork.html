@@ -21,10 +21,17 @@
 <!-- CONTAINER FLUID -->
 <div data-ng-controller="_mycloud_mynetwork" class="container-fluid">
     <!--HEADING - CONNECTIONS PENDING-->
-    <div class="row">
+    <div class="row" data-ng-if="pending">
         <div class="col-sm-12">
-           
- 
+        <!--<div  data-ng-repeat="cn in pending.connections">
+            <div class="td-app-info">
+                <span >{{cn.Name}}</span>&nbsp;&nbsp;
+                <span >{{cn.email}}</span>&nbsp;&nbsp;
+                <br>
+                
+            </div>
+        </div> -->
+        Sofia quiere ser parte de tu red.
         </div>
     </div>
     <br>
@@ -33,7 +40,7 @@
         <tr>
             
             <th>Mis Conexiones
-                <a data-ng-click="GoToNewConnection()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Conexion</a>
+                <a data-ng-click="GoToNewConnection()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-user'></i> Nueva Conexion</a>
             </th>
         </tr>
         <tr  data-ng-repeat="cn in connections.connections">

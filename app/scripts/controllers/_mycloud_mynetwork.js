@@ -16,7 +16,7 @@ angular.module('pvcloudApp')
     {"email":"example3@intel.com", "Name":"Karla"}
 ]}
     
-    $scope.connections1 ={"connections":[
+    $scope.pending ={"connections":[
     {"email":"example4@intel.com", "Name":"Jorge"},
     {"email":"example5@intel.com", "Name":"Sofia"},
     {"email":"example6@intel.com", "Name":"Marta"}
