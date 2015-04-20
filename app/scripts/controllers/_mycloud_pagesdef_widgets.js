@@ -1,7 +1,7 @@
-angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($scope, UtilityService, AppRegistryService, sessionService, $routeParams, $location) {
+angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($scope, WidgetService, sessionService, $routeParams, $location) {
 
     console.log("This is _mycloud_pagesdef_widgets controller being invoked");
-
+    $scope.Widgets = [];
     initialize();
 
     function initialize() {
@@ -14,11 +14,17 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
         var wsParameters = {
             account_id: sessionService.GetCurrentAccountID(),
             token: sessionService.GetCurrentToken(),
-            app_id: $routeParams.article_id,
             page_id: $routeParams.subarticle_id
         };
         
         console.log(wsParameters);
+        
+        WidgetService.GetWidgetsOfPageID(wsParameters.account_id, wsParameters.token, wsParameters.page_id).$promise.then(function(response){
+            console.log(response);
+            if(response.status==="OK"){
+                $scope.Widgets=response.data;
+            }
+        });
 
 //        AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
 //            var app = appResponse.data;

@@ -18,12 +18,12 @@
                 <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Página</a>
             </th>
         </tr>
-        <tr id="tr_page_{{page.page_id}}" data-ng-repeat="page in Pages| filter: txtSearchPages">
-            <td class="td-app-info" style="vertical-align: middle">{{page.page_id}}</td>
+        <tr id="tr_page_{{widget.widget_id}}" data-ng-repeat="widget in Widgets| filter: txtSearchPages">
+            <td class="td-app-info" style="vertical-align: middle">{{widget.widget_id}}</td>
             <td class="td-app-info">
-                <a data-ng-click="GoToEditPage(page.page_id)">{{page.title}}</a>&nbsp;&nbsp;
+                <a data-ng-click="GoToEditWidgetConfig(widget.widget_id)">{{widget.title}}</a>&nbsp;&nbsp;
                 <br>
-                <small class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{page.description}}</small>
+                <small class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{widget.description}}</small>
             </td>
         </tr>
     </table>
