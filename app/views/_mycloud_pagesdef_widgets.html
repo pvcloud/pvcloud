@@ -5,7 +5,8 @@
             <br>
             <div class="input-group" style="width:100%">
                 <label for="txtSearchWidgets" class="input-group-addon"><i class="glyphicon glyphicon-search"></i></label>
-                <input id="txtSearchWidgets" data-ng-model="txtSearchWidgets" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Widgets  SearchPhrase" type="search" class="form-control inputtext"  placeholder="Digite una o más palabras para filtrar la lista" required>
+                
+                <input id="txtSearchWidgets" data-ng-model="WidgetsSearchPhrase" type="search" class="form-control inputtext"  placeholder="Digite una o más palabras para filtrar la lista" required>
             </div>
         </div>
     </div>
@@ -15,10 +16,10 @@
         <tr>
             <th>ID</th>
             <th>Nombre y Descripción 
-                <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Página</a>
+                <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-plus'></i> Agregar Widget </a>
             </th>
         </tr>
-        <tr id="tr_page_{{widget.widget_id}}" data-ng-repeat="widget in Widgets| filter: txtSearchPages">
+        <tr id="tr_page_{{widget.widget_id}}" data-ng-repeat="widget in Widgets| filter: WidgetsSearchPhrase">
             <td class="td-app-info" style="vertical-align: middle">{{widget.widget_id}}</td>
             <td class="td-app-info">
                 <a data-ng-click="GoToEditWidgetConfig(widget.widget_id)">{{widget.title}}</a>&nbsp;&nbsp;
