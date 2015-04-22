@@ -11,8 +11,7 @@
     <!-- TABS -->
     <ul data-ng-show="PageID!=='new'" class="nav nav-tabs" data-ng-class="{'nav-justified':PageID != undefined}">
         <li role="presentation" data-ng-show="PageID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Página</a></li>
-        <li role="presentation" data-ng-show="PageID" data-ng-class="{active:CurrentTab == Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.Widgets)">Widgets</a></li>
-        <li role="presentation" data-ng-show="PageID" data-ng-class="{active:CurrentTab == Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.WidgetConfig)">Widgets&nbsp;config</a></li>
+        <li role="presentation" data-ng-show="PageID" data-ng-class="{active:CurrentTab == Tabs.Widgets}"><a data-ng-click="SwitchToTab(Tabs.Widgets)">Widgets</a></li>
     </ul>
 
     <!-- BASIC DATA-->
@@ -51,16 +50,9 @@
     
     <!-- WIDGETS -->
     <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Widgets"> 
-        CRUD of WIDGETS GOES HERE
-        <!--<div data-ng-include="'views/_mycloud_myapps_edit_dd.html'"></div>-->
+        <div data-ng-include="'views/_mycloud_pagesdef_widgets.html'"></div>
 
     </div>
     
-    <!-- WIDGETS CONFIG -->
-    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.WidgetConfig"> 
-        CONFIGURATION of WIDGETS GOES HERE
-        <!--<div data-ng-include="'views/_mycloud_myapps_edit_dd.html'"></div>-->
-
-    </div>    
 </div>
 
