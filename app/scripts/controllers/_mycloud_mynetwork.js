@@ -22,6 +22,12 @@ angular.module('pvcloudApp')
     {"email":"example6@intel.com", "Name":"Marta"}
 ]}
     
+    $scope.decidelater = false;
+    
+    $scope.DecideLater = function (item) {
+            $scope.decidelater = true;
+    };
+    
    
         
 

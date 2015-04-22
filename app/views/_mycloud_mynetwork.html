@@ -21,17 +21,34 @@
 <!-- CONTAINER FLUID -->
 <div data-ng-controller="_mycloud_mynetwork" class="container-fluid">
     <!--HEADING - CONNECTIONS PENDING-->
-    <div class="row" data-ng-if="pending">
+    <div class="row" data-ng-if="pending && !decidelater">
         <div class="col-sm-12">
-        <!--<div  data-ng-repeat="cn in pending.connections">
-            <div class="td-app-info">
-                <span >{{cn.Name}}</span>&nbsp;&nbsp;
-                <span >{{cn.email}}</span>&nbsp;&nbsp;
-                <br>
-                
+            <p>Invitaciones Pendients
+            <button type="button" class="btn btn-default btn-sm" data-ng-click="DecideLater()">Decidir mas tarde</button>
+            </p>
+         
+            <div  class="alert alert-warning" class="pending-connections" data-ng-repeat="pnd in pending.connections">
+               
+                <div class="media">
+                   <div class="pull-left">
+                      <i class="glyphicon glyphicon-user"></i>
+                   </div>
+                   <div class="media-body">
+                            <p>{{pnd.Name}} &nbsp;&nbsp;  {{pnd.email}}
+                                <span class="btn-connections">
+                                    <button type="button" class="btn btn-success btn-sm">Aceptar</button>
+                                    <button type="button" class="btn btn-danger btn-sm">No Gracias</button>
+                                </span>
+                           </p>
+                       <p></p>
+                   </div>
+                </div>
+
+               
             </div>
-        </div> -->
-        Sofia quiere ser parte de tu red.
+            
+     
+        
         </div>
     </div>
     <br>
