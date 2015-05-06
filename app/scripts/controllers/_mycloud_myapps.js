@@ -1,4 +1,4 @@
-angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, UtilityService, AppRegistryService, sessionService) {
+angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, $rootScope, UtilityService, AppRegistryService, sessionService) {
     console.log("This is my apps controller being invoked");
     console.log($scope);
     $scope.AddingApp = false;
@@ -8,6 +8,12 @@ angular.module('pvcloudApp').controller('_mycloud_myapps', function ($scope, Uti
     $scope.SelectedAccountID = sessionService.GetCurrentAccountID();
     $scope.LoadingListOfAppsComplete = false;
     
+    
+    
+    $scope.PageLabels = $rootScope.PageLabels;
+    
+    
+   
     var protocol = window.location.protocol;
     //TODO: Making protocol for WGET to be HTTP until we find an easy way to install wget-ssl in Galileo
     //pvcloud_api.js driver will anyway interact ONLY with HTTPS

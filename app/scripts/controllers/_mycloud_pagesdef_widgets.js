@@ -2,6 +2,12 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
 
     console.log("This is _mycloud_pagesdef_widgets controller being invoked");
     $scope.Widgets = [];
+    $scope.GoToEditWidget=function(widget_id){
+      $location.path("/mycloud/widgetsdef/" + app_id + "/" + page_id + "/" + widget_id);  
+    };
+    
+    
+    
     initialize();
 
     function initialize() {

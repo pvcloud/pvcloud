@@ -2,6 +2,13 @@
 
 angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
 
+    var pageLabels =  {
+        Ingresar: "Entrar",
+        Salir: "Logout",
+        MisApps: "My Apps",
+        NombreYDescripcion: "Nome e descrição"
+    };
+
     function getBackendBaseURL() {
         var baseURL = "";
         
@@ -43,8 +50,13 @@ angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
         }
     }
     
+    function getLabels(){
+        return pageLabels;
+    }
+    
     return {
         ProcessServiceResponse: processServiceResponse,
-        GetBackendBaseURL:getBackendBaseURL
+        GetBackendBaseURL:getBackendBaseURL,
+        GetLabels: getLabels
     };
 });

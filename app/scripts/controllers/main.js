@@ -1,14 +1,15 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location, UtilityService, AccountService, sessionService) {
+angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $rootScope, $location, UtilityService, AccountService, sessionService) {
 
-    $scope.PageLabels = {Ingresar : "Login"};
     console.log("InitatingModule");
     validateSession();
     $scope.ErrorMessages = [];
     $scope.UIReady = false;
 
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
+
+    $rootScope.PageLabels = UtilityService.GetLabels();
 
     if ($location.port() !== 9000) {
         if ($location.protocol() !== "https") {
