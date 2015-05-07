@@ -3,9 +3,9 @@
         <h1>pvCloud</h1>
         <p class="lead" style='text-align: center'>
             <img class="crmakers-logo" src="images/crmakers.png" alt="CRMK"><br>
-            El poder de lo simple en el Internet de las Cosas
+            {{PageLabels.main.slogan}}
         </p>
-        
+
         <!-- ERROR MESSAGES -->
         <div class="row" data-ng-show="ErrorMessages.length > 0">
             <div class="col-md-12">
@@ -27,22 +27,22 @@
             <!-- USER NAME FIELD -->
             <div class="input-group">
                 <label for="username" class="input-group-addon">@</label>
-                <input id="username" name="username" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Email" type="text" class="form-control inputtext"  placeholder="Digite su email aquí" required>
+                <input id="username" name="username" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Email" type="text" class="form-control inputtext"  placeholder="{{PageLabels.main.email_palceholder}}" required>
             </div>
 
             <!-- PASSWORD FIELD -->
             <div class="input-group" style="width:100%">
                 <label for="password" class=" input-group-addon" >***</label>
-                <input id="password" name="password" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Pwd" type="password" class="form-control" placeholder="Digite su clave de acceso aquí">
+                <input id="password" name="password" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Pwd" type="password" class="form-control" placeholder="{{PageLabels.main.password_placeholder}}">
             </div>
 
             <!-- BUTTONS AND SWITCH MODE LINKS -->
             <div class='login-form-buttons'>
-                <input value="{{PageLabels.Ingresar}}" type="button"  style="width:200px" class="btn btn-success login-form-button" data-ng-click="Login()">
+                <input value="{{PageLabels.main.login_button}}" type="button"  style="width:200px" class="btn btn-success login-form-button" data-ng-click="Login()">
                 <br class="login-form-separator">
                 <span class="login-form-links">
-                    <a data-ng-click="SwitchToNewAccountInfoMode();" >¿Cómo obtener una cuenta?</a> <span class='pipe'>|</span>
-                    <a data-ng-click="SwitchToPasswordRecoveryMode();" >Olvidé mi clave </a>
+                    <a data-ng-click="SwitchToNewAccountInfoMode();" >{{PageLabels.main.how_to_get_account_link}}</a> <span class='pipe'>|</span>
+                    <a data-ng-click="SwitchToPasswordRecoveryMode();">{{PageLabels.main.forgot_my_password_link}}</a>
                 </span>
             </div>
         </form>
@@ -73,7 +73,15 @@
                 <p>Si alguno de tus amigos tiene una cuenta de pvCloud, habla con él o ella y pídele que te invite! :-)</p>
             </div>
         </div>
-        
-        
+
+        <div style="float:right">
+            <a title="Español" data-ng-click="SwitchLanguage('ES')"><img class="language-options" src="../images/flag_cr.png"><img></a>
+            &nbsp;&nbsp;
+            <a title="English" data-ng-click="SwitchLanguage('EN')"><img class="language-options" src="../images/flag_us.png"><img></a>
+
+        </div>
+
+
     </div>
 </div>
+

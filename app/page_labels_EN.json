@@ -1,0 +1,27 @@
+{
+    "main":{
+        "slogan":"The power of simplicity in the Internet of the Things",
+        "email_palceholder":"Type your email here",
+        "password_placeholder":"Type your password here",
+        "login_button":"Login",
+        "how_to_get_account_link":"How do I get an account?",
+        "forgot_my_password_link":"I forgot my password",
+        "wrong_credentials_message":"Wrong credentials",
+        "invalid_parameters_message":"Invalid parameters"      
+    },
+    "mycloud": {
+        "menu_my_apps":"MY APPS",
+        "menu_my_network":"MY NETWORK",
+        "menu_my_account":"MY ACCOUNT",
+        "menu_about":"About Us",
+        "myapps_search_placeholder":"Type one or more words to filter the list",
+        "myapps_id":"ID",
+        "myapps_name_and_description":"Name and Description",
+        "myapps_new_app":"New App",
+        "quick_links_new_app":"Add New App",
+        "quick_links_invite_a_friend":"Invite a Friend",
+        "quick_links_logour":"Logout",
+        "footer_brought_by":"Brought to you by"
+    }
+    
+}

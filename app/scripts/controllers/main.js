@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $rootScope, $location, UtilityService, AccountService, sessionService) {
+angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location, UtilityService, LabelsService, AccountService, sessionService) {
 
     console.log("InitatingModule");
     validateSession();
@@ -9,7 +9,12 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $rootScope
 
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
 
-    $rootScope.PageLabels = UtilityService.GetLabels();
+    LabelsService.GetLabels("EN", function (labels) {
+        $scope.PageLabels = labels;
+    });
+
+
+    console.log($scope.PageLabels);
 
     if ($location.port() !== 9000) {
         if ($location.protocol() !== "https") {
@@ -20,6 +25,11 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $rootScope
         }
     }
 
+    $scope.SwitchLanguage = function (lang_code) {
+        LabelsService.GetLabels(lang_code, function (labels) {
+            $scope.PageLabels = labels;
+        });
+    };
     $scope.RecoverPassword_Click = function () {
         if (!$scope.Email)
             return;

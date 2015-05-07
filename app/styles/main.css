@@ -26,6 +26,15 @@ a {
 .navbar-default .navbar-nav > li > a{
     color:white;
 }
+.language-options{
+    margin-top:10px;
+    display:inline-block;
+}
+
+.language-options:hover{
+    width:30px;
+    transition-duration: 1s;
+}
 
 .navbar-default .navbar-nav > li > a:hover{
     color:gray;

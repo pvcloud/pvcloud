@@ -23,6 +23,11 @@
                     <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork"><span>MI&nbsp;RED</span></a></li>
                     <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount"><span>MI&nbsp;CUENTA</span></a></li>
                     <li role="presentation" ng-class="{active: Section === 'pvcloud'}"><a href="#/mycloud/pvcloud"><span>¿QUIENES&nbsp;SOMOS?</span></a></li>
+                    <li>
+                        <img class="language-options" src="../images/flag_cr.png"><img>
+                        &nbsp;&nbsp;
+                        <img class="language-options" src="../images/flag_us.png"><img>
+                    </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -58,5 +63,8 @@
 <!-- FOOTER -->
 <div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a>
     <div class="pull-right" style="color:white">Logged in as <strong>{{Email}}</strong>&nbsp;</div>
-
+    <select>
+        <option value="ES" selected>Español</option>
+        <option value="EN">English</option>
+    </select>
 </div>

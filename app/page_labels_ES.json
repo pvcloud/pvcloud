@@ -1,0 +1,27 @@
+{
+    "main":{
+        "slogan":"El poder de lo simple en la Internet de las Cosas",
+        "email_palceholder":"Digite su email aquí",
+        "password_placeholder":"Digite su contraseña aquí",
+        "login_button":"Ingresar",
+        "how_to_get_account_link":"¿Cómo obtener una cuenta?",
+        "forgot_my_password_link":"Olvidé mi clave",
+        "wrong_credentials_message":"Credenciales Equivocadas",
+        "invalid_parameters_message":"Parámetros Inválidos"      
+    },
+    "mycloud": {
+        "menu_my_apps":"MIS APPS",
+        "menu_my_network":"MI RED",
+        "menu_my_account":"MI CUENTA",
+        "menu_about":"¿QUIENES SOMOS?",
+        "myapps_search_placeholder":"Digite una o más palabras para filtrar la lista",
+        "myapps_id":"ID",
+        "myapps_name_and_description":"Nombre y Descripción",
+        "myapps_new_app":"Nueva App",
+        "quick_links_new_app":"Agregar Nueva App",
+        "quick_links_invite_a_friend":"Invitar a un Amigo",
+        "quick_links_logour":"Salir",
+        "footer_brought_by":"pvCloud llega a tí gracias a"
+    }
+    
+}

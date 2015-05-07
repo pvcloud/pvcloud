@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope,$rootScope, $location, sessionService, UtilityService, $routeParams) {
+angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsService, $location, sessionService, UtilityService, $routeParams) {
     $scope.$parent.ActiveView = "myapps";
     $scope.Email = "";
     $scope.LoggedIn = false;
@@ -9,10 +9,12 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope,$rootSco
     $scope.Logout = logout;
     $scope.GoToNewApp = gotoNewApp;
     $scope.GoToInviteAFriend = goToInviteAFriend;
-    
-    
-    $rootScope.PageLabels = UtilityService.GetLabels();
-    console.log($rootScope.PageLabels);    
+
+
+    LabelsService.GetLabels("ES", function (labels) {
+        $scope.PageLabels = labels;
+    });
+
 
     validateSession();
 
