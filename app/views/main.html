@@ -57,20 +57,20 @@
 
             <!-- CONTROLS -->
             <div class='login-form-buttons'>
-                <button data-ng-disabled="!Email" data-ng-click='RecoverPassword_Click();' class="btn btn-lg btn-warning pv-control-recover-password pull-left">Recuperar Contraseña</button>
+                <button data-ng-disabled="!Email" data-ng-click='RecoverPassword_Click();' class="btn btn-lg btn-warning pv-control-recover-password pull-left">{{PageLabels.main.forgot_my_password_button}}</button>
                 <span class="pull-right">
-                    <a data-ng-click="SwitchToLoginMode();" class="pv-control-back-to-login-link" > Cancelar </a>
+                    <a data-ng-click="SwitchToLoginMode();" class="pv-control-back-to-login-link" > {{PageLabels.main.forgot_my_password_cancel}} </a>
                 </span>
             </div>
         </form>    
 
         <div id="newAccountPanel" class='panel panel-info'>
-            <div class="panel-heading"><i data-ng-click="SwitchToLoginMode();" class="glyphicon glyphicon-remove pull-right pvcloud-close-button"></i>Cómo abrir una cuenta</div>
+            <div class="panel-heading"><i data-ng-click="SwitchToLoginMode();" class="glyphicon glyphicon-remove pull-right pvcloud-close-button"></i>{{PageLabels.main.how_to_get_account_link}}</div>
             <div class="panel-body">
-                <p>Muchísimas gracias por tu interés en la plataforma pvCloud.</p>
-                <p>pvCloud se encuentra en modo "BETA"; es decir, todavía estamos validando el producto antes de lanzarlo formalmente.</p>
-                <p>En este momento las cuentas de pvCloud se están abriendo unicamente mediante invitación de miembros actuales de la plataforma.</p>
-                <p>Si alguno de tus amigos tiene una cuenta de pvCloud, habla con él o ella y pídele que te invite! :-)</p>
+                <p>{{PageLabels.main.how_to_get_account_p1}}</p>
+                <p>{{PageLabels.main.how_to_get_account_p2}}</p>
+                <p>{{PageLabels.main.how_to_get_account_p3}}</p>
+                <p>{{PageLabels.main.how_to_get_account_p4}}</p>
             </div>
         </div>
 

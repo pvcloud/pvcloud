@@ -5,7 +5,7 @@ angular.module('pvcloudApp').factory('LabelsService', function ($resource, Utili
     var currentLanguageCode = "";
     var currentLabels = undefined;
 
-    function getLabels(langCode, callback) {
+    function getLanguageLabels(langCode, callback) {
         if (langCode === currentLanguageCode && currentLabels !== undefined) {
             callback(currentLabels);
         } else {
@@ -19,7 +19,19 @@ angular.module('pvcloudApp').factory('LabelsService', function ($resource, Utili
         }
     }
 
+    function getLabels(callback) {
+        console.log("GET LABELS");
+        console.log(currentLabels);
+        console.log(currentLanguageCode);
+        if (!currentLabels) {
+            getLanguageLabels('ES', callback);
+        } else {
+            callback(currentLabels);
+        }
+    }
+
     return {
+        GetLanguageLabels: getLanguageLabels,
         GetLabels: getLabels
     };
 });

@@ -29,7 +29,9 @@ a {
 .language-options{
     margin-top:10px;
     display:inline-block;
+    cursor:pointer;
 }
+
 
 .language-options:hover{
     width:30px;
