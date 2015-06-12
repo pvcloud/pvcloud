@@ -1,40 +1,6 @@
 <!-- CONTAINER FLUID -->
 <div data-ng-controller="_myappsCtrl" class="container-fluid">
     <!--HEADING - REGISTRAR NUEVO APP-->
-    <div class="row" data-ng-if="SelectedApp === undefined">
-        <div class="col-sm-12">
-            <button class="btn btn-primary" style="float:right; margin:10px 0" title="Registrar nueva app" data-ng-click="NewAppsMode()"><i class="glyphicon glyphicon-plus"></i> Nuevo App</button>
-            <br><br><br>
-            <div data-ng-show="AddingApp" class="pull-right panel panel-info" style="width:100%; padding: 10px">
-                <div class="panel-heading">
-                    Nuevo App:
-                    <i class="glyphicon glyphicon-remove pull-right pvcloud-app-edit"  title="Cancelar Edición" data-ng-click="CancelNewAppsMode()"></i>
-                </div>                
-                <div class="panel-body success">
-
-                    <div class="pvcloud-edit-toolbar panel panel-default pull-right">
-                        <div class="panel-content">
-                            <i class="glyphicon glyphicon-floppy-save pvcloud-app-edit pull-right" style="color:green" data-ng-click="AddApp_Save()"  title="Guardar Cambios"></i>&nbsp;
-                        </div>
-                    </div>     
-
-
-                    <table style="width:60%" class="pvcloud-app-edit-form">
-                        <tr>
-                            <td style="text-align: right">Nombre:</td>
-                            <td><input data-ng-model="AddApp_app_nickname" type="text" style="width:100%" /></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right">Descripción:</td>
-                            <td>
-                                <textarea data-ng-model="AddApp_app_description" style="width:100%" rows="2"></textarea>
-
-                        </tr>
-                    </table>  
-                </div>
-            </div>
-        </div>
-    </div>
     <!--LISTA DE APPS-->
     <table class="table table-striped table-hover" data-ng-if="Apps && Apps.length > 0 && SelectedApp === undefined">
         <tr>

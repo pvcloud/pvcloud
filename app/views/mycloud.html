@@ -23,7 +23,7 @@
                     <li role="presentation" ng-class="{active: Section === 'mynetwork'}"><a href="#/mycloud/mynetwork"><span>{{PageLabels.mycloud.menu_my_network}}</span></a></li>
                     <li role="presentation" ng-class="{active: Section === 'myaccount'}"><a href="#/mycloud/myaccount"><span>{{PageLabels.mycloud.menu_my_account}}</span></a></li>
                     <li role="presentation" ng-class="{active: Section === 'pvcloud'}"><a href="#/mycloud/pvcloud"><span>{{PageLabels.mycloud.menu_about}}</span></a></li>
-                    <li>
+                    <li class="language-options-menu-container">
                         <img src="../images/flag_cr.png" title="Español" class="language-options" data-ng-click="SwitchLanguage('ES')">
                         &nbsp;&nbsp;
                         <img src="../images/flag_us.png" title="English" class="language-options" data-ng-click="SwitchLanguage('EN')">
@@ -38,11 +38,11 @@
         <!-- QUICK LINKS -->
         <div class="col-md-6" style="vertical-align: middle">
             <div class="panel-quicklinks">
-                <button data-ng-click="GoToNewApp()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; "><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Agregar Nueva App</button>
+                <button data-ng-click="GoToNewApp()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; "><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_new_app}}</button>
                 <br>
-                <button data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;Invitar un Amigo</button>
+                <button data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_invite_a_friend}}</button>
                 <br>
-                <button data-ng-click="Logout()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;Logout</button>
+                <button data-ng-click="Logout()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_logout}}</button>
             </div>
         </div>
 
@@ -61,10 +61,4 @@
 </div>
 
 <!-- FOOTER -->
-<div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a>
-    <div class="pull-right" style="color:white">Logged in as <strong>{{Email}}</strong>&nbsp;</div>
-    <select>
-        <option value="ES" selected>Español</option>
-        <option value="EN">English</option>
-    </select>
-</div>
+<div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a></div>

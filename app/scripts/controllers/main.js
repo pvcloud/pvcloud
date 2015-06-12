@@ -12,7 +12,7 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
     LabelsService.GetLabels(function (labels) {
         $rootScope.PageLabels = labels;
     });
-    
+
     $scope.SwitchLanguage = function (lang_code) {
         LabelsService.GetLanguageLabels(lang_code, function (labels) {
             $rootScope.PageLabels = labels;
@@ -89,14 +89,22 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
         console.log({Email: $scope.Email, Pwd: $scope.Pwd});
         sessionService.Login($scope.Email, $scope.Pwd).$promise.then(function (response) {
             console.log(response);
-            if (response.status === "OK") {
-                sessionService.SetToken(response.data.token, response.data.email, response.data.account_id);
-                $("#login_form").submit();
+
+
+            switch (response.status) {
+                case "OK":
+                    $scope.CredentialsError = false;
+                    sessionService.SetToken(response.data.token, response.data.email, response.data.account_id);
+                    $location.path("/mycloud");                     
+                    break;
+                    
+                case "ERROR":
+                    $scope.CredentialsError = true;
+                    break;
+                case "EXCEPTION":
+                    break;
             }
-            else
-            {
-                $scope.ErrorMessages.push(response.message);
-            }
+
         });
     }
 

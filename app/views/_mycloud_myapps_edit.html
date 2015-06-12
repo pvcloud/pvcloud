@@ -9,7 +9,7 @@
 
     <!-- TABS -->
     <ul data-ng-show="ApplicationID" class="nav nav-tabs" data-ng-class="{'nav-justified':ApplicationID != undefined}">
-        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">{{PageLabels._mycloud_myapps_edit.basics_tab}}</a></li>
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.DocsNDrivers)">Docs&nbsp;&amp;&nbsp;Drivers</a></li>
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Pages}"><a data-ng-click="SwitchToTab(Tabs.Pages)">Páginas</a></li>
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Data}"><a data-ng-click="SwitchToTab(Tabs.Data)">Datos</a></li>
@@ -21,7 +21,7 @@
         <form>
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
-                <label for="txtNombre">Nombre del App </label>
+                <label for="txtNombre">{{PageLabels._mycloud_myapps_edit.app_name}}</label>
                 <input type="text" class="form-control" id="txtNombre" placeholder="Digite aquí el nombre de su app." data-ng-change="SetFormDirty()" data-ng-model="AppName">
             </div>
 
@@ -29,7 +29,7 @@
 
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
-                <label for="txtDescripcion">Descripción</label>
+                <label for="txtDescripcion">{{PageLabels._mycloud_myapps_edit.app_description}}</label>
                 <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4" data-ng-model="AppDescription"></textarea>
             </div>
             <div class="form-group">

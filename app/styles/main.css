@@ -26,16 +26,20 @@ a {
 .navbar-default .navbar-nav > li > a{
     color:white;
 }
+
+.language-options-menu-container{
+    padding-top:12px;
+}
 .language-options{
-    margin-top:10px;
-    display:inline-block;
+    display:inline;
     cursor:pointer;
+    opacity: .6;
 }
 
 
 .language-options:hover{
-    width:30px;
-    transition-duration: 1s;
+    opacity: 1;
+
 }
 
 .navbar-default .navbar-nav > li > a:hover{
@@ -352,6 +356,11 @@ span.glyphicon-copyright-mark{
         text-align: left;
         margin-top:20px;
     }    
+
+
+    .language-options-menu-container{
+        padding-left:20px;
+    }
 
     .crmakers-logo{
         width:50px;

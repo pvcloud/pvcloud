@@ -27,8 +27,13 @@
         "myapps_new_app":"New App",
         "quick_links_new_app":"Add New App",
         "quick_links_invite_a_friend":"Invite a Friend",
-        "quick_links_logour":"Logout",
+        "quick_links_logout":"Logout",
         "footer_brought_by":"Brought to you by"
+    },
+    "_mycloud_myapps_edit":{
+        "app_name":"Name",
+        "app_description":"Description",
+        "basics_tab":"Definition"
     }
     
 }

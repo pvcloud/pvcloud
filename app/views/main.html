@@ -7,6 +7,14 @@
         </p>
 
         <!-- ERROR MESSAGES -->
+        
+        <div class="row" data-ng-show="CredentialsError">
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert">
+                        <i class="glyphicon glyphicon-warning-sign pull-left"></i>{{PageLabels.main.wrong_credentials_message}}  
+                </div>
+            </div>
+        </div>        
         <div class="row" data-ng-show="ErrorMessages.length > 0">
             <div class="col-md-12">
                 <div class="alert alert-danger" role="alert">
@@ -19,7 +27,6 @@
 
         <!-- LOGIN FORM -->
         <form id="login_form" 
-              action="/pvcloud_backend/post_account_login.php" 
               method="POST" 
               autocomplete="on" 
               class="panel panel-body form-group">

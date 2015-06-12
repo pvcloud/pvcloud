@@ -27,8 +27,13 @@
         "myapps_new_app":"Nueva App",
         "quick_links_new_app":"Agregar Nueva App",
         "quick_links_invite_a_friend":"Invitar a un Amigo",
-        "quick_links_logour":"Salir",
+        "quick_links_logout":"Salir",
         "footer_brought_by":"pvCloud llega a tí gracias a"
+    },
+    "_mycloud_myapps_edit":{
+        "app_name":"Nombre",
+        "app_description":"Descripción",
+        "basics_tab":"Definición"
     }
     
 }
