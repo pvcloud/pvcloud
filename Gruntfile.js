@@ -18,7 +18,7 @@ module.exports = function (grunt) {
     // Configurable paths for the application
     var appConfig = {
         app: require('./bower.json').appPath || 'app',
-        dist: 'c:/xampp/htdocs/pvcloud'
+        dist: 'dist'
     };
 
     // Define the configuration for all the tasks
@@ -63,9 +63,9 @@ module.exports = function (grunt) {
         // The actual grunt server settings
         connect: {
             options: {
-                port: 9000,
+                port: process.env.PORT,
                 // Change this to '0.0.0.0' to access the server from outside.
-                hostname: 'localhost',
+                hostname: process.env.IP,
                 livereload: 35729
             },
             livereload: {
