@@ -8,7 +8,7 @@ angular.module('pvcloudApp').factory('UtilityService', function ($resource) {
         if (window.location.host === "localhost:9000") {
             baseURL = "http://localhost:8080/pvcloud_backend/";
         } else {
-            baseURL = "/pvcloud_backend/";
+            baseURL = "/backend/";
         }
 
         return baseURL;
