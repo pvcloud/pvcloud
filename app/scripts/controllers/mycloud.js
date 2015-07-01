@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $location, sessionService, UtilityService, $routeParams) {
+angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsService, $location, sessionService, UtilityService, $routeParams, $rootScope) {
     $scope.$parent.ActiveView = "myapps";
     $scope.Email = "";
     $scope.LoggedIn = false;
@@ -10,32 +10,43 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
     $scope.GoToNewApp = gotoNewApp;
     $scope.GoToInviteAFriend = goToInviteAFriend;
 
+    LabelsService.GetLabels(function (labels) {
+        $rootScope.PageLabels = labels;
+    });
+
+    $scope.SwitchLanguage = function (lang_code) {
+        LabelsService.GetLanguageLabels(lang_code, function (labels) {
+            $rootScope.PageLabels = labels;
+        });
+    };
+
     validateSession();
 
     console.log($routeParams);
 
-    if (!$routeParams.section)
-        $routeParams.section = "myapps";
-    
+    setSection();
 
+    function setSection() {
+        var section = $routeParams.section || "myapps";
+        var article_id = $routeParams.article_id;
+        var subarticle_id = $routeParams.subarticle_id;
 
-    $scope.SectionURL = "views/_mycloud_" + $routeParams.section;
-    
-    if($routeParams.article_id){
-        $scope.SectionURL += "_edit";
+        $scope.SectionURL = "views/_mycloud_" + section;
+
+        if (section === "myapps" && article_id) {
+            $scope.SectionURL += "_edit";
+        }
+
+        $scope.SectionURL += ".html";
+        $scope.Section = section;
+
+        console.log("SECTION URL:");
+        console.log($scope.SectionURL);
     }
-    
-    $scope.SectionURL += ".html";
-    $scope.Section = $routeParams.section;
-
-    console.log("SECTION URL:");
-    console.log($scope.SectionURL);
-
-
-    function goToInviteAFriend(){
+    function goToInviteAFriend() {
         $location.path("/mycloud/mynetwork/inviteafriend");
     }
-    function gotoNewApp(){
+    function gotoNewApp() {
         $location.path("/mycloud/myapps/new");
     }
     function logout() {
@@ -43,13 +54,13 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, $locati
             console.log("LOGOUT IS CALLED HERE!!!!!!");
             var account_id = sessionService.GetCurrentAccountID();
             var token = sessionService.GetCurrentToken();
-            
-            console.log({account_id:account_id, token:token});
+
+            console.log({account_id: account_id, token: token});
             sessionService.Logout(account_id, token);
             $location.path("/");
         }
     }
-    
+
     function validateSession() {
         sessionService.ValidateSession().$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,

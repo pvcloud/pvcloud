@@ -13,3 +13,4 @@ bower_components
 
 .idea/
 /dist.zip
+/app/backend/DA/da_conf.php

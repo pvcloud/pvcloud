@@ -3,10 +3,18 @@
         <h1>pvCloud</h1>
         <p class="lead" style='text-align: center'>
             <img class="crmakers-logo" src="images/crmakers.png" alt="CRMK"><br>
-            El poder de lo simple en el Internet de las Cosas
+            {{PageLabels.main.slogan}}
         </p>
-        
+
         <!-- ERROR MESSAGES -->
+        
+        <div class="row" data-ng-show="CredentialsError">
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert">
+                        <i class="glyphicon glyphicon-warning-sign pull-left"></i>{{PageLabels.main.wrong_credentials_message}}  
+                </div>
+            </div>
+        </div>        
         <div class="row" data-ng-show="ErrorMessages.length > 0">
             <div class="col-md-12">
                 <div class="alert alert-danger" role="alert">
@@ -19,7 +27,6 @@
 
         <!-- LOGIN FORM -->
         <form id="login_form" 
-              action="/pvcloud_backend/post_account_login.php" 
               method="POST" 
               autocomplete="on" 
               class="panel panel-body form-group">
@@ -27,22 +34,22 @@
             <!-- USER NAME FIELD -->
             <div class="input-group">
                 <label for="username" class="input-group-addon">@</label>
-                <input id="username" name="username" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Email" type="text" class="form-control inputtext"  placeholder="Digite su email aquí" required>
+                <input id="username" name="username" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Email" type="text" class="form-control inputtext"  placeholder="{{PageLabels.main.email_palceholder}}" required>
             </div>
 
             <!-- PASSWORD FIELD -->
             <div class="input-group" style="width:100%">
                 <label for="password" class=" input-group-addon" >***</label>
-                <input id="password" name="password" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Pwd" type="password" class="form-control" placeholder="Digite su clave de acceso aquí">
+                <input id="password" name="password" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="Pwd" type="password" class="form-control" placeholder="{{PageLabels.main.password_placeholder}}">
             </div>
 
             <!-- BUTTONS AND SWITCH MODE LINKS -->
             <div class='login-form-buttons'>
-                <input type="button" value="Ingresar" style="width:200px" class="btn btn-success login-form-button" data-ng-click="Login()">
+                <input value="{{PageLabels.main.login_button}}" type="button"  style="width:200px" class="btn btn-success login-form-button" data-ng-click="Login()">
                 <br class="login-form-separator">
                 <span class="login-form-links">
-                    <a data-ng-click="SwitchToNewAccountInfoMode();" >¿Cómo obtener una cuenta?</a> <span class='pipe'>|</span>
-                    <a data-ng-click="SwitchToPasswordRecoveryMode();" >Olvidé mi clave </a>
+                    <a data-ng-click="SwitchToNewAccountInfoMode();" >{{PageLabels.main.how_to_get_account_link}}</a> <span class='pipe'>|</span>
+                    <a data-ng-click="SwitchToPasswordRecoveryMode();">{{PageLabels.main.forgot_my_password_link}}</a>
                 </span>
             </div>
         </form>
@@ -57,23 +64,31 @@
 
             <!-- CONTROLS -->
             <div class='login-form-buttons'>
-                <button data-ng-disabled="!Email" data-ng-click='RecoverPassword_Click();' class="btn btn-lg btn-warning pv-control-recover-password pull-left">Recuperar Contraseña</button>
+                <button data-ng-disabled="!Email" data-ng-click='RecoverPassword_Click();' class="btn btn-lg btn-warning pv-control-recover-password pull-left">{{PageLabels.main.forgot_my_password_button}}</button>
                 <span class="pull-right">
-                    <a data-ng-click="SwitchToLoginMode();" class="pv-control-back-to-login-link" > Cancelar </a>
+                    <a data-ng-click="SwitchToLoginMode();" class="pv-control-back-to-login-link" > {{PageLabels.main.forgot_my_password_cancel}} </a>
                 </span>
             </div>
         </form>    
 
         <div id="newAccountPanel" class='panel panel-info'>
-            <div class="panel-heading"><i data-ng-click="SwitchToLoginMode();" class="glyphicon glyphicon-remove pull-right pvcloud-close-button"></i>Cómo abrir una cuenta</div>
+            <div class="panel-heading"><i data-ng-click="SwitchToLoginMode();" class="glyphicon glyphicon-remove pull-right pvcloud-close-button"></i>{{PageLabels.main.how_to_get_account_link}}</div>
             <div class="panel-body">
-                <p>Muchísimas gracias por tu interés en la plataforma pvCloud.</p>
-                <p>pvCloud se encuentra en modo "BETA"; es decir, todavía estamos validando el producto antes de lanzarlo formalmente.</p>
-                <p>En este momento las cuentas de pvCloud se están abriendo unicamente mediante invitación de miembros actuales de la plataforma.</p>
-                <p>Si alguno de tus amigos tiene una cuenta de pvCloud, habla con él o ella y pídele que te invite! :-)</p>
+                <p>{{PageLabels.main.how_to_get_account_p1}}</p>
+                <p>{{PageLabels.main.how_to_get_account_p2}}</p>
+                <p>{{PageLabels.main.how_to_get_account_p3}}</p>
+                <p>{{PageLabels.main.how_to_get_account_p4}}</p>
             </div>
         </div>
-        
-        
+
+        <div style="float:right">
+            <a title="Español" data-ng-click="SwitchLanguage('ES')"><img class="language-options" src="images/flag_cr.png"><img></a>
+            &nbsp;&nbsp;
+            <a title="English" data-ng-click="SwitchLanguage('EN')"><img class="language-options" src="images/flag_us.png"><img></a>
+
+        </div>
+
+
     </div>
 </div>
+

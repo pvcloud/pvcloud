@@ -178,6 +178,9 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
 
     function initialize() {
         $scope.ArticleID = $routeParams.article_id;
+        $scope.SubArticleID = $routeParams.subarticle_id;
+        
+
 
         if ($routeParams.article_id !== "new") {
             var token = sessionService.GetCurrentToken();
@@ -191,7 +194,13 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
             $scope.AppVisibility = 1;
         }
 
-        $scope.CurrentTab = $scope.Tabs.Basics;
+        switch ($scope.SubArticleID){
+            case "tab_pages":
+                $scope.CurrentTab = $scope.Tabs.Pages;
+                break;
+            default:
+                $scope.CurrentTab = $scope.Tabs.Basics;
+        }
 
         $scope.SwitchToTab = function (tab) {
             $scope.CurrentTab = tab;

@@ -1,0 +1,39 @@
+{
+    "main":{
+        "slogan":"El poder de lo simple en la Internet de las Cosas",
+        "email_palceholder":"Digite su email aquí",
+        "password_placeholder":"Digite su contraseña aquí",
+        "login_button":"Ingresar",
+        "how_to_get_account_link":"¿Cómo obtener una cuenta?",
+        "how_to_get_account_title":"Cómo Abrir una Cuenta",
+        "how_to_get_account_p1":"¡Muchas gracias por su interés en la plataforma pvCloud!.",
+        "how_to_get_account_p2":"pvCloud se encuentra en modo \"BETA\"; esto significa que estamos validando el producto antes de lanzarlo al público directamente.",
+        "how_to_get_account_p3":"Actualemten las cuentas de pvCloud se están creando mediante un proceso de invitación de parte de usuarios activos actuales.",
+        "how_to_get_account_p4":"Si alguno de tus amigos tiene una cuenta, ¡pídele que te invite! :-)",
+        "forgot_my_password_link":"Olvidé mi clave",
+        "forgot_my_password_button":"Recuperar Contraseña",
+        "forgot_my_password_cancel":"Cancelar",
+        "wrong_credentials_message":"Credenciales Equivocadas",
+        "invalid_parameters_message":"Parámetros Inválidos"      
+    },
+    "mycloud": {
+        "menu_my_apps":"MIS APPS",
+        "menu_my_network":"MI RED",
+        "menu_my_account":"MI CUENTA",
+        "menu_about":"¿QUIENES SOMOS?",
+        "myapps_search_placeholder":"Digite una o más palabras para filtrar la lista",
+        "myapps_id":"ID",
+        "myapps_name_and_description":"Nombre y Descripción",
+        "myapps_new_app":"Nueva App",
+        "quick_links_new_app":"Agregar Nueva App",
+        "quick_links_invite_a_friend":"Invitar a un Amigo",
+        "quick_links_logout":"Salir",
+        "footer_brought_by":"pvCloud llega a tí gracias a"
+    },
+    "_mycloud_myapps_edit":{
+        "app_name":"Nombre",
+        "app_description":"Descripción",
+        "basics_tab":"Definición"
+    }
+    
+}
