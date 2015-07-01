@@ -7,11 +7,11 @@
         </p>
 
         <!-- ERROR MESSAGES -->
-        
+
         <div class="row" data-ng-show="CredentialsError">
             <div class="col-md-12">
                 <div class="alert alert-danger" role="alert">
-                        <i class="glyphicon glyphicon-warning-sign pull-left"></i>{{PageLabels.main.wrong_credentials_message}}  
+                    <i class="glyphicon glyphicon-warning-sign pull-left"></i>{{PageLabels.main.wrong_credentials_message}}  
                 </div>
             </div>
         </div>        
@@ -85,10 +85,14 @@
             <a title="Español" data-ng-click="SwitchLanguage('ES')"><img class="language-options" src="images/flag_cr.png"><img></a>
             &nbsp;&nbsp;
             <a title="English" data-ng-click="SwitchLanguage('EN')"><img class="language-options" src="images/flag_us.png"><img></a>
-
         </div>
-
-
     </div>
 </div>
 
+<script type="text/javascript">
+            $(document).ready(function () {
+                setTimeout(function () {
+                    $("#username").focus();
+                }, 1000);
+            });
+</script>
