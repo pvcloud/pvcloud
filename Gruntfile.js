@@ -137,7 +137,15 @@ module.exports = function (grunt) {
                         ]
                     }]
             },
-            server: '.tmp'
+            server: '.tmp',
+            winlocal: {
+                files: [{
+                        dot: true,
+                        src: [
+                            'c:\\xampp\\htdocs\\pvcloud/{,*/}*'
+                        ]
+                    }]
+            }
         },
         // Add vendor prefixed styles
         autoprefixer: {
@@ -292,6 +300,7 @@ module.exports = function (grunt) {
                             '*.{ico,png,txt}',
                             '.htaccess',
                             '*.html',
+                            '*.json',
                             'views/{,*/}*.html',
                             'images/{,*/}*.{webp}',
                             'fonts/*',
@@ -313,6 +322,19 @@ module.exports = function (grunt) {
                         src: 'fonts/*',
                         dest: '<%= yeoman.dist %>'
                     }]
+            },
+            winlocal: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.dist %>',
+                        dest: 'c:\\xampp\\htdocs\\pvcloud',
+                        src: [
+                            '.htaccess',
+                            './**'
+                        ]
+                    }
+                ]
             },
             styles: {
                 expand: true,
@@ -388,6 +410,11 @@ module.exports = function (grunt) {
         'filerev',
         'usemin',
         'htmlmin'
+    ]);
+
+    grunt.registerTask('pushlocalwin', [
+        'clean:winlocal',
+        'copy:winlocal'
     ]);
 
     grunt.registerTask('default', [
