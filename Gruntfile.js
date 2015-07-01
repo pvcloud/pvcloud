@@ -297,7 +297,10 @@ module.exports = function (grunt) {
                             'fonts/*',
                             'jqueryui-themes/{,*/}*.css',
                             'jqueryui-themes/smoothness/images{,*/}*.png',
-                            'jqueryui-themes/smoothness/images{,*/}*.gif'
+                            'jqueryui-themes/smoothness/images{,*/}*.gif',
+                            'backend/*.*',
+                            'backend/DA/*.*',
+                            'backend/inc/*.*'
                         ]
                     }, {
                         expand: true,
