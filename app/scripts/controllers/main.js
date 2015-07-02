@@ -6,6 +6,7 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
     validateSession();
     $scope.ErrorMessages = [];
     $scope.UIReady = false;
+    $scope.FunctionMode = "LOGIN";
 
     $scope.SwitchToPasswordRecoveryMode = switchToPWRecoveryMode;
 
@@ -42,6 +43,10 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
             switch ($scope.FunctionMode) {
                 case "RECOVER_PASSWORD":
                     $scope.RecoverPassword_Click();
+                    break;
+                    
+                case "LOGIN":
+                    $scope.Login();
                     break;
             }
         }
