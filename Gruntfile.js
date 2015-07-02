@@ -18,7 +18,7 @@ module.exports = function (grunt) {
     // Configurable paths for the application
     var appConfig = {
         app: require('./bower.json').appPath || 'app',
-        dist: 'c:/xampp/htdocs/pvcloud'
+        dist: 'dist'
     };
 
     // Define the configuration for all the tasks
@@ -137,7 +137,15 @@ module.exports = function (grunt) {
                         ]
                     }]
             },
-            server: '.tmp'
+            server: '.tmp',
+            winlocal: {
+                files: [{
+                        dot: true,
+                        src: [
+                            'c:\\xampp\\htdocs\\pvcloud/{,*/}*'
+                        ]
+                    }]
+            }
         },
         // Add vendor prefixed styles
         autoprefixer: {
@@ -292,12 +300,16 @@ module.exports = function (grunt) {
                             '*.{ico,png,txt}',
                             '.htaccess',
                             '*.html',
+                            '*.json',
                             'views/{,*/}*.html',
                             'images/{,*/}*.{webp}',
                             'fonts/*',
                             'jqueryui-themes/{,*/}*.css',
                             'jqueryui-themes/smoothness/images{,*/}*.png',
-                            'jqueryui-themes/smoothness/images{,*/}*.gif'
+                            'jqueryui-themes/smoothness/images{,*/}*.gif',
+                            'backend/*.*',
+                            'backend/DA/*.*',
+                            'backend/inc/*.*'
                         ]
                     }, {
                         expand: true,
@@ -310,6 +322,19 @@ module.exports = function (grunt) {
                         src: 'fonts/*',
                         dest: '<%= yeoman.dist %>'
                     }]
+            },
+            winlocal: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.dist %>',
+                        dest: 'c:\\xampp\\htdocs\\pvcloud',
+                        src: [
+                            '.htaccess',
+                            './**'
+                        ]
+                    }
+                ]
             },
             styles: {
                 expand: true,
@@ -385,6 +410,11 @@ module.exports = function (grunt) {
         'filerev',
         'usemin',
         'htmlmin'
+    ]);
+
+    grunt.registerTask('pushlocalwin', [
+        'clean:winlocal',
+        'copy:winlocal'
     ]);
 
     grunt.registerTask('default', [
