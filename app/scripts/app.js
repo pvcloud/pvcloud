@@ -35,6 +35,10 @@ angular
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
                     })
+                    .when('/pmchart', {
+                        templateUrl: 'views/pmchart.html',
+                        controller: 'PMChartController'
+                    })
                     .when('/pages', {
                         templateUrl: 'views/pages.html',
                         controller: 'PagesCtrl'
