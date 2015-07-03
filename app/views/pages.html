@@ -1,3 +1,7 @@
+
+       
+
+        
 <!doctype html>
 <html class="no-js">
     <head>
@@ -38,7 +42,24 @@
 
         <!-- Add your site or application content here -->
 
-        <div ng-view="" class="ngview"></div>
+       
+            <div class="row" ng-controller="PMFlotController">
+              <div class="col-lg-6">
+                 <div id="panelChart1" class="panel panel-default">
+                    <div class="panel-heading">
+                       <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss" tool-refresh="traditional"></paneltool>
+                       <div class="panel-title">Area</div>
+                    </div>
+                    <div collapse="panelChart1" class="panel-wrapper">
+                       <div class="panel-body">
+                          <div data-source="{{testData}}" class="chart-area flot-chart"></div>
+                          <!--div data-source="chart/area.json" class="chart-area flot-chart"></div-->
+                       </div>
+                    </div>
+                 </div>
+              </div>
+            </div>
+        
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
         <script>
@@ -77,15 +98,6 @@
         <script src="bower_components/angular-animate/angular-animate.js"></script>
         <script src="bower_components/angular-touch/angular-touch.js"></script>
         <script src="bower_components/angular-route/angular-route.js"></script>
-        
-        <script src="bower_components/flot/jquery.flot.js"></script>
-        <!--<script src="bower_components/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>-->
-        <script src="bower_components/flot/jquery.flot.resize.js"></script>
-        <script src="bower_components/flot/jquery.flot.pie.js"></script>
-        <script src="bower_components/flot/jquery.flot.time.js"></script>
-        <script src="bower_components/flot/jquery.flot.categories.js"></script>
-        <script src="bower_components/flot/jquery.flot.time.js"></script>
-        <!--<script src="bower_components/flot-spline/js/jquery.flot.spline.min.js"></script>-->
         <!-- endbower -->
         <!-- endbuild -->
 
@@ -95,7 +107,6 @@
         <script src="scripts/controllers/about.js"></script>
         <script src="scripts/controllers/mycloud.js"></script>
         <script src="scripts/controllers/pages.js"></script>
-        <script src="scripts/controllers/pmchart.js"></script>
         <script src="scripts/controllers/_mycloud_myapps.js"></script>
         <script src="scripts/controllers/_mycloud_myapps_edit.js"></script>
         <script src="scripts/controllers/_mycloud_myapps_edit_pages.js"></script>
