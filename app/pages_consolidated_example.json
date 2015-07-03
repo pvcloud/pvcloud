@@ -1,0 +1,43 @@
+{
+    "page_id": "1",
+    "title": "My Page",
+    "description": "my description goes here",
+    "widgets": [
+        {
+            "title": "widget title",
+            "description": "my widget description",
+            "widget_type_id": "1",
+            "refresh_frequency_sec": "10",
+            "order": "1",
+            "widget_configs": [
+                {
+                    "vse_label": "Z1",
+                    "friendly_label": "ZONA UNO",
+                    "simple_object_property": "",
+                    "options_json": "{\"color\":\"red\",\"outline\":\"dotted\"}",
+                    "widget_ispec": [
+                        {
+                            "comparison_operator_cd": "=",
+                            "comparison_value": "30",
+                            "text": "GOOD",
+                            "icon_class": "glyphicon-ok",
+                            "color": "#00FF00"
+                        }
+                    ]
+                },
+                {
+                    "vse_label": "Z2",
+                    "friendly_label": "ZONA DOS",
+                    "simple_object_property": "",
+                    "options_json": "{\"color\":\"green\",\"outline\":\"solid\"}"
+                },
+                {
+                    "vse_label": "Z3",
+                    "friendly_label": "ZONA Tres",
+                    "simple_object_property": "",
+                    "options_json": "{\"color\":\"blue\",\"outline\":\"plus\"}"
+                }
+            ]
+        }
+    ]
+}
