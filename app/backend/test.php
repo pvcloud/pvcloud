@@ -364,10 +364,9 @@ class TEST_DAWidgetConfig{
         $newWidgetConfig = new be_widget_config();
         $newWidgetConfig->widget_id = 1;
         $newWidgetConfig->vse_label = "TEST";
-        $newWidgetConfig->read_frequency = 10;
         $newWidgetConfig->simple_object_property = "";
         $newWidgetConfig->friendly_label = "PRUEBA";
-        
+        $newWidgetConfig->options_json = "";
         ReportInfo("Widget to create:");
         print_r($newWidgetConfig);
         $savedWidgetConfig = da_widget_config::InsertWidgetConfig($newWidgetConfig);
@@ -375,6 +374,32 @@ class TEST_DAWidgetConfig{
         if ( is_numeric($savedWidgetConfig->widget_config_id) && $savedWidgetConfig->widget_config_id != $newWidgetConfig->widget_config_id && $savedWidgetConfig->widget_config_id > 0){
             ReportSuccess("Widget Config Created Successfully");
             print_r($savedWidgetConfig);
+            
+            $savedWidgetConfig->vse_label = "MODIFIED";
+            $savedWidgetConfig->options_json = "{'color':'red'}";
+            //sleep(2);
+            ReportInfo("Widget Config Modification:");
+            print_r($savedWidgetConfig);
+            $modifiedWidgetConfig = da_widget_config::UpdateWidgetConfig($savedWidgetConfig);
+            
+            if($modifiedWidgetConfig->vse_label == "MODIFIED"
+               && $modifiedWidgetConfig->options_json == "{'color':'red'}")
+            {
+                
+                 ReportSuccess("Widget Modified Sucessfully");
+            }
+            else
+            {
+                  ReportError("Modification failed :(");
+            }
+            
+            
+            ReportInfo("Modification Result:");
+            print_r($modifiedWidgetConfig);
+        }
+        else
+        {
+            ReportError("Insertion failed :(");
         }
     }   
 }
