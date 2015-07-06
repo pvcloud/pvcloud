@@ -412,7 +412,7 @@ module.exports = function (grunt) {
         'htmlmin'
     ]);
 
-    grunt.registerTask('pushlocalwin', [
+    grunt.registerTask('minion', [
         'clean:winlocal',
         'copy:winlocal'
     ]);
