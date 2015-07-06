@@ -39,6 +39,10 @@ angular
                         templateUrl: 'views/pmchart.html',
                         controller: 'PMChartController'
                     })
+                    .when('/page/:pageId', {
+                        templateUrl: 'views/page.html',
+                        controller: 'PageController'
+                    }) 
                     .when('/pages', {
                         templateUrl: 'views/pages.html',
                         controller: 'PagesCtrl'
