@@ -7,8 +7,11 @@ class be_widget_config  {
     public $vse_label = "";
     public $simple_object_property = "";
     public $friendly_label = 0;
+    public $read_frequency = 0;
     public $options_json = "";
-    //public $read_frequency = 0;
+    public $created_datetime = NULL;
+    public $modified_datetime = NULL;
+    public $deleted_datetime = NULL;
 
 }
 
@@ -21,11 +24,11 @@ class da_widget_config {
      */
     public static function InsertWidgetConfig($widgetConfigEntry) {
         
-        $sqlCommand = "INSERT INTO widget_config (widget_id, vse_label, simple_object_property, friendly_label , read_frequency )"
-                . "VALUES (?,?,?,?,?)";
+        $sqlCommand = "INSERT INTO widget_config (widget_id, vse_label, simple_object_property, friendly_label , options_json, created_datetime )"
+                . "VALUES (?,?,?,?,?,NOW())";
 
-        //ToDO :S
-        $paramTypeSpec = "isssi";
+        
+        $paramTypeSpec = "issss";
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
@@ -43,7 +46,8 @@ class da_widget_config {
                 $widgetConfigEntry->vse_label, 
                 $widgetConfigEntry->simple_object_property, 
                 $widgetConfigEntry->friendly_label, 
-                $widgetConfigEntry->options_json )) {
+                $widgetConfigEntry->options_json
+                 )) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -72,17 +76,16 @@ class da_widget_config {
      * @return \be_widget_config
      */
     public static function UpdateWidgetConfig($widgetConfigEntry) {
-        $sqlCommand = "UPDATE accounts "
+        $sqlCommand = "UPDATE widget_config "
                 . " SET widget_id = ?,"
                 . " vse_label = ?,"
                 . " simple_object_property = ?,"
-                . " email = ?,"
                 . " friendly_label = ?,"
                 . " options_json = ?"
                 . " WHERE widget_config_id = ? ";
 
-        //ToDO :S
-        $paramTypeSpec = "iissi";
+     
+        $paramTypeSpec = "issssi";
         
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
@@ -100,7 +103,7 @@ class da_widget_config {
                 $widgetConfigEntry->vse_label,
                 $widgetConfigEntry->simple_object_property, 
                 $widgetConfigEntry->friendly_label, 
-                $widgetConfigEntry->options_json,
+                $widgetConfigEntry->options_json, 
                 $widgetConfigEntry->widget_config_id)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
@@ -113,7 +116,7 @@ class da_widget_config {
 
         $stmt->close();
 
-        $savedWidgetConfig = da_account::GetWidgetConfigByID($widgetConfigEntry->widget_config_id);
+        $savedWidgetConfig = da_widget_config::GetWidgetConfigByID($widgetConfigEntry->widget_config_id);
         return $savedWidgetConfig;
 
     }
@@ -163,10 +166,10 @@ class da_widget_config {
     
     public static function GetWidgetConfigByID($widget_config_id) {
          
-        $sqlCommand = "SELECT widget_config_id, widget_id, vse_label, simple_object_property, friendly_label , options_json"
+        $sqlCommand = "SELECT widget_config_id, widget_id, vse_label, simple_object_property, friendly_label , options_json, created_datetime, modified_datetime, deleted_datetime"
                 . " FROM widget_config "
                 . " WHERE widget_config_id = ?";
-        
+    
         $paramTypeSpec = "i";
 
         $mysqli = DA_Helper::mysqli_connect();
@@ -191,7 +194,7 @@ class da_widget_config {
         }
 
         $result = new be_widget_config();
-        $stmt->bind_result($result->widget_config_id, $result->widget_id, $result->vse_label, $result->simple_object_property, $result->friendly_label, $result->options_json);
+        $stmt->bind_result($result->widget_config_id, $result->widget_id, $result->vse_label, $result->simple_object_property, $result->friendly_label, $result->options_json, $result->created_datetime, $result->modified_datetime, $result->deleted_datetime);
 
         if (!$stmt->fetch()) {
             $result = NULL;
