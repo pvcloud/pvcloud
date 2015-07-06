@@ -205,4 +205,50 @@ class da_widget_config {
         return $result;
     }
     
+    public static function GetWidgetConfigListByID($widget_id) {
+         
+        $sqlCommand = "SELECT widget_config_id, widget_id, vse_label, simple_object_property, friendly_label, options_json"
+                . " FROM widget_config "
+                . " WHERE widget_id = ?";
+        
+        $paramTypeSpec = "i";
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->bind_param($paramTypeSpec, $widget_id)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $result = new be_widget_config();
+        $stmt->bind_result($result->widget_config_id, $result->widget_id, $result->vse_label, $result->simple_object_property, $result->friendly_label, $result->options_json);
+
+        $arrayResult = [];
+        while ($stmt->fetch()) {
+            $arrayResult[] = json_decode(json_encode($result));
+        }
+
+        // if (!$stmt->fetch()) {
+        //     $result = NULL;
+        // }
+
+        $stmt->close();
+
+        return $arrayResult;
+    }
+    
 }

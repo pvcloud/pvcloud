@@ -1,60 +1,49 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('PMChartController', function ($scope, LabelsService, $location, sessionService, UtilityService, $routeParams, $rootScope, $window) {
-    console.log("PagesCtrl LOADED :-)");
-    $scope.Titulo = "MY PAGE";
-    // $scope.testData = [{
-//   "label": "Uniques",
-//   "color": "#aad874",
-//   "data": [
-//     ["Mar", 50],
-//     ["Apr", 84],
-//     ["May", 52],
-//     ["Jun", 88],
-//     ["Jul", 69],
-//     ["Aug", 92],
-//     ["Sep", 58]
-//   ]
-// }, {
-//   "label": "Recurrent",
-//   "color": "#7dc7df",
-//   "data": [
-//     ["Mar", 13],
-//     ["Apr", 44],
-//     ["May", 44],
-//     ["Jun", 27],
-//     ["Jul", 38],
-//     ["Aug", 11],
-//     ["Sep", 39]
-//   ]
-// }];
-$scope.testData = [{
-    "label": "Canal 1",
-  "color": "#aad874",
-  "data": [
-    [1,50],
-    [2,84],
-    [3,52],
-    [4,88],
-    [5,69],
-    [6,92]]
-}];
+angular.module('pvcloudApp').controller('PageController', function ($scope, LabelsService, $location, sessionService, PageService, vseValuesService, UtilityService, $routeParams, $rootScope, $window) {
+    console.log("PageController LOADED :-)");
+    $scope.page = null;
+    $scope.pageId = $routeParams.pageId;
+    
+    $scope.accountId = sessionService.GetCurrentAccountID();
+    $scope.token = sessionService.GetCurrentToken();
+    $scope.labelValues = [];
 
-$scope.testData1 = [{
-  "label": "Canal 2",
-  "color": "#768294",
-  "data": [
-    ["Mar", 31],
-    ["Apr", 59],
-    ["May", 59],
-    ["Jun", 93],
-    ["Jul", 66],
-    ["Aug", 86],
-    ["Sep", 60],
-    ["Oct", 60],
-    ["Nov", 80]
-  ]
-}];
+//     $scope.copyDataForFlot = function(data) {
+//         var result = {
+//             label: "Canal 1",
+//             color: "#aad874",
+//             data: []
+//         };
+//         if (!data || data.length > 0) {
+//           var vseValue =  -1;
+// 			for (var i = 0; i < data.length; ++i) {
+// 			    vseValue =  data[i].vse_value;
+// 			    if (isNaN(vseValue) && vseValue!==null) {
+// 			        vseValue = parseInt(vseValue);
+// 			    }
+// 				result.data.push([data[i].created_datetime,vseValue]);
+
+// 			}
+//         }
+//         return result;
+//     };
+    
+    $scope.copyDataForFlot = function(data) {
+         var res = [];
+        if (!data || data.length > 0) {
+           var vseValue =  -1;
+			for (var i = 0; i < data.length; ++i) {
+			    vseValue =  data[i].vse_value;
+			    if (isNaN(vseValue) && vseValue!==null) {
+			        vseValue = parseInt(vseValue);
+			    }
+				res.push([i+1,vseValue]);
+
+			}
+        }
+        return res;
+    };
     
     $window.FlotChart = function (element, url) {
         // Properties
@@ -66,25 +55,30 @@ $scope.testData1 = [{
           var self = this;
           
           // support params (option), (option, method, callback) or (option, callback)
-          callback = (method && $.isFunction(method)) ? method : callback;
-          method = (method && typeof method == 'string') ? method : 'GET';
+         
     
           self.option = option; // save options
-           $.plot( self.element, $scope.testData, option );
+        //   $.plot( self.element, $scope.testData, option );
+           //https://pvcloud-janunezc.c9.io/app/backend/vse_get_values.php?optional_vse_label=PM_CANAL_1&optional_last_limit=10&app_id=1&account_id=1&token=34b2abb7abddefd870544f8f5a27795bca2dd552&api_key=09b508f1bdc25b6ec65af3f9b9d1eb357b87776d
+          vseValuesService.GetValues("PM_CANAL_1",30,1, $scope.accountId, $scope.token,"09b508f1bdc25b6ec65af3f9b9d1eb357b87776d").$promise.then(function (response) {
+            UtilityService.ProcessServiceResponse(response,
+                    function success(response) {
+                        console.log("SUCCESS @ page");
+                        $scope.labelValues = response.data;
+                        $.plot( self.element, $scope.copyDataForFlot(response.data), option );
+                    },
+                    function error(response) {
+                        console.log("ERROR @ page " + response);
+                        $location.path("/");
+                    },
+                    function exception(response) {
+                        console.log("EXCEPTION @ myClpageoud");
+                        alert("Disculpas por la interrupción. Ocurrió un problema.");
+                        $location.path("/");
+                    });
+        });
     
-        //   $http({
-        //       url:      self.url,
-        //       cache:    false,
-        //       method:   method
-        //   }).success(function (data) {
-              
-        //       $.plot( self.element, data, option );
-              
-        //       if(callback) callback();
-    
-        //   }).error(function(){
-        //     $.error('Bad chart request.');
-        //   });
+        
     
           return this; // chain-ability
     
@@ -108,6 +102,29 @@ $scope.testData1 = [{
     };
 
   };
+  
+  $scope.initPageData = function() {
+      
+      PageService.GetPage($scope.accountId, $scope.token,$scope.pageId).$promise.then(function (response) {
+            UtilityService.ProcessServiceResponse(response,
+                    function success(response) {
+                        console.log("SUCCESS @ page");
+                        $scope.page = response.data;
+                    },
+                    function error(response) {
+                        console.log("ERROR @ page " + response);
+                        $location.path("/");
+                    },
+                    function exception(response) {
+                        console.log("EXCEPTION @ myClpageoud");
+                        alert("Disculpas por la interrupción. Ocurrió un problema.");
+                        $location.path("/");
+                    });
+        });
+  }
+  
+  $scope.initPageData();
+  
     
     angular.element(document).ready(function () {
 
@@ -145,7 +162,6 @@ $scope.testData1 = [{
                     },
                     yaxis: {
                         min: 0,
-                        max:100,
                         tickColor: '#eee',
                         position: 'left',
                         tickFormatter: function (v) {

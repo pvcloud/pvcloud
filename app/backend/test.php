@@ -25,7 +25,9 @@ require_once './DA/da_widget_config.php';
         //TEST_DAVSEValue::Test();
         //TEST_DAInvitation::test_da_invitation();
 
-        TEST_DAWidgetConfig::test();
+        //TEST_DAWidgetConfig::test();
+        
+        TEST_WidgetData::Test();
         ReportInfo("Tests Finished!");
         ?> 
     </body>
@@ -342,6 +344,17 @@ class TEST_DAVSEValue {
         
     }
 
+}
+
+class TEST_WidgetData {
+    public static function Test(){
+        ReportInfo("TESTING GetEntriesDorWidget...");
+        $result = da_vse_data::GetEntriesForWidget(1,0,0);
+        
+        print_r($result);
+        
+        ReportInfo("FINISHED TEST");
+    }
 }
 
 class TEST_DAInvitation {

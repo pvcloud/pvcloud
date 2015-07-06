@@ -13,3 +13,4 @@ angular.module('pvcloudApp').factory('WidgetService', function ($resource, Utili
         GetWidgetsOfPageID: getWidgetsOfPageID
     };
 });
+

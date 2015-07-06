@@ -11,6 +11,7 @@ class be_widget {
     public $created_datetime = NULL;
     public $modified_datetime = NULL;
     public $deleted_datetime = NULL;
+    public $refresh_frequency_sec = 0;
 
 }
 
@@ -22,8 +23,8 @@ class da_widgets {
      * @return array of be_widget
      */
     public static function GetWidgetsOfPage($page_id) {
-        $sqlCommand = "SELECT widget_id,page_id, widget_type_id, title, description, `order`, created_datetime, modified_datetime, deleted_datetime  "
-                . "FROM page_widgets "
+        $sqlCommand = "SELECT widget_id,page_id, widget_type_id, title, description, `order`, created_datetime, modified_datetime, deleted_datetime,refresh_frequency_sec  "
+                . "FROM widgets "
                 . "WHERE page_id = ? AND deleted_datetime IS NULL "
                 . "ORDER BY `order`, widget_id DESC ";
 
@@ -46,7 +47,7 @@ class da_widgets {
 
         $widgetEntry = new be_widget();
 
-        $stmt->bind_result($widgetEntry->widget_id, $widgetEntry->page_id, $widgetEntry->widget_type_id, $widgetEntry->title, $widgetEntry->description, $widgetEntry->order, $widgetEntry->created_datetime, $widgetEntry->modified_datetime, $widgetEntry->deleted_datetime);
+        $stmt->bind_result($widgetEntry->widget_id, $widgetEntry->page_id, $widgetEntry->widget_type_id, $widgetEntry->title, $widgetEntry->description, $widgetEntry->order, $widgetEntry->created_datetime, $widgetEntry->modified_datetime, $widgetEntry->deleted_datetime, $widgetEntry->refresh_frequency_sec);
 
         $arrayResult = [];
         while ($stmt->fetch()) {
@@ -64,8 +65,8 @@ class da_widgets {
      * @return \be_widget
      */
     public static function GetWidget($widget_id) {
-        $sqlCommand = "SELECT widget_id,page_id, widget_type_id, title, description, `order`, created_datetime, modified_datetime, deleted_datetime  "
-                . "FROM page_widgets "
+        $sqlCommand = "SELECT widget_id,page_id, widget_type_id, title, description, `order`, created_datetime, modified_datetime, deleted_datetime, refresh_frequency_sec  "
+                . "FROM widgets "
                 . "WHERE widget_id = ? ";
 
         $mysqli = DA_Helper::mysqli_connect();
@@ -89,8 +90,8 @@ class da_widgets {
             throw new Exception($msg, $stmt->errno);
         }
 
-        $widgetEntry = new be_page();
-        $stmt->bind_result($widgetEntry->widget_id, $widgetEntry->page_id, $widgetEntry->widget_type_id, $widgetEntry->title, $widgetEntry->description, $widgetEntry->order, $widgetEntry->created_datetime, $widgetEntry->modified_datetime, $widgetEntry->deleted_datetime);
+        $widgetEntry = new be_widget();
+        $stmt->bind_result($widgetEntry->widget_id, $widgetEntry->page_id, $widgetEntry->widget_type_id, $widgetEntry->title, $widgetEntry->description, $widgetEntry->order, $widgetEntry->created_datetime, $widgetEntry->modified_datetime, $widgetEntry->deleted_datetime, $widgetEntry->refresh_frequency_sec);
 
         if (!$stmt->fetch()) {
             $widgetEntry = NULL;
@@ -99,6 +100,7 @@ class da_widgets {
         $stmt->close();
 
         return $widgetEntry;
+        return null;
     }
 
     /**
@@ -108,7 +110,7 @@ class da_widgets {
      */
     public static function AddWidget($widget) {
         
-        $sqlCommand = "INSERT INTO page_widgets (page_id, widget_type_id, title, description, `order`, created_datetime )"
+        $sqlCommand = "INSERT INTO widgets (page_id, widget_type_id, title, description, refresh_frequency_sec, `order`, created_datetime )"
                 . "VALUES (?,?,?,?,?, NOW())";
 
         $paramTypeSpec = "iissi";
@@ -124,7 +126,7 @@ class da_widgets {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec,$widget->page_id, $widget->widget_type_id, $widget->title, $widget->description, $widget->order )) {
+        if (!$stmt->bind_param($paramTypeSpec,$widget->page_id, $widget->widget_type_id, $widget->title, $widget->description, $widget->refresh_frequency_sec,$widget->order )) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -161,8 +163,8 @@ class da_widgets {
      * @return \be_widget
      */
     public static function UpdateWidget($widget) {
-        $sqlCommand = "UPDATE page_widgets "
-                . " SET page_id= ?, widget_type_id= ?, title= ?, description= ?, `order`= ? "
+        $sqlCommand = "UPDATE widgets "
+                . " SET page_id= ?, widget_type_id= ?, title= ?, description= ?, refresh_frequency_sec=?,`order`= ? "
                 . " WHERE widget_id = ? ";
 
         $paramTypeSpec = "iissii";
@@ -178,7 +180,7 @@ class da_widgets {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec, $widget->page_id, $widget->widget_type_id, $widget->title, $widget->description, $widget->order, $widget->widget_id)) {
+        if (!$stmt->bind_param($paramTypeSpec, $widget->page_id, $widget->widget_type_id, $widget->title, $widget->description, $widget->refresh_frequency_sec,$widget->order, $widget->widget_id)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -200,7 +202,7 @@ class da_widgets {
      * @return \be_widget
      */
     public static function RemoveWidget($widget_id) {
-        $sqlCommand = "UPDATE page_widgets "
+        $sqlCommand = "UPDATE widgets "
                 . " SET deleted_datetime = NOW() "
                 . " WHERE widget_id = ? ";
 
