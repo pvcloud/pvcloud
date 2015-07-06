@@ -106,6 +106,51 @@ class da_vse_data {
 
         return $arrayResult;
     }
+    
+    public static function GetEntriesForWidget($widget_id, $optional_max_limit, $last_entry_id) {
+        $sqlCommand = "SELECT  d.entry_id, d.app_id, d.vse_label, d.vse_value, d.vse_type,vse_annotations, d.captured_datetime, d.created_datetime "
+                . " FROM vse_data d"
+                . " INNER JOIN pages p ON p.app_id = d.app_id "
+                . " INNER JOIN widgets w on w.page_id = p.page_id "
+                . " WHERE w.widget_id  = ? AND d.vse_label in (select vse_label from widget_config where widget_id = ?) AND d.entry_id > ? "
+                . " ORDER BY entry_id DESC ";
+
+
+        if (isset($optional_max_limit) && $optional_max_limit != NULL && is_numeric($optional_max_limit) && $optional_max_limit > 0) {
+            $sqlCommand .= " LIMIT $optional_max_limit ";
+        }
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+        }
+
+        if (!$stmt->bind_param("iii", $widget_id, $widget_id, $last_entry_id)) {
+            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+        }
+
+        if (!$stmt->execute()) {
+            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        }
+
+        $entry = new be_vse_data();
+
+        $stmt->bind_result(
+                $entry->entry_id, $entry->app_id, $entry->vse_label, $entry->vse_value, $entry->vse_type, $entry->vse_annotations, $entry->captured_datetime, $entry->created_datetime);
+
+        $arrayResult = [];
+        while ($stmt->fetch()) {
+            $arrayResult[] = json_decode(json_encode($entry));
+        }
+
+        $stmt->close();
+
+        return $arrayResult;
+    }    
 
     /**
      * 

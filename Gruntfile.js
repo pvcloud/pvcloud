@@ -145,7 +145,15 @@ module.exports = function (grunt) {
                             'c:\\xampp\\htdocs\\pvcloud/{,*/}*'
                         ]
                     }]
-            }
+            },
+            winbackend: {
+                files: [{
+                        dot: true,
+                        src: [
+                            'c:\\xampp\\htdocs\\pvcloud\\backend/{,*/}*'
+                        ]
+                    }]
+            }            
         },
         // Add vendor prefixed styles
         autoprefixer: {
@@ -336,6 +344,19 @@ module.exports = function (grunt) {
                     }
                 ]
             },
+            winbackend: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>\\backend',
+                        dest: 'c:\\xampp\\htdocs\\pvcloud\\backend',
+                        src: [
+                            '.htaccess',
+                            './**'
+                        ]
+                    }
+                ]
+            },
             styles: {
                 expand: true,
                 cwd: '<%= yeoman.app %>/styles',
@@ -412,11 +433,14 @@ module.exports = function (grunt) {
         'htmlmin'
     ]);
 
-    grunt.registerTask('pushlocalwin', [
+    grunt.registerTask('minion', [
         'clean:winlocal',
         'copy:winlocal'
     ]);
-
+    grunt.registerTask('gru', [
+        'clean:winbackend',
+        'copy:winbackend'
+    ]);
     grunt.registerTask('default', [
         'newer:jshint',
         'test',
