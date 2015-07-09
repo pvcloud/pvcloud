@@ -33,7 +33,7 @@ function execute() {
         $parameters = collectParameters();
 
         if (validate($parameters)) {
-            $entries = da_vse_data::GetEntries($parameters->widget_id, $parameters->optional_vse_label, $parameters->optional_max_limit);
+            $entries = da_vse_data::GetEntriesForWidget($parameters->widget_id, $parameters->optional_vse_label, $parameters->optional_max_limit);
             $response->status = "OK";
             $response->message = "SUCCESS";
             $response->data = $entries;
