@@ -1,3 +1,4 @@
+<!-- usage: http://localhost:8080/pvcloud/backend/test.php -->
 <?php
 require_once './DA/da_conf.php';
 require_once './DA/da_helper.php';
@@ -25,10 +26,10 @@ require_once './DA/da_widget_config.php';
         //TEST_DAVSEValue::Test();
         //TEST_DAInvitation::test_da_invitation();
 
-        //TEST_DAWidgetConfig::test();
+        TEST_DAWidgetConfig::test();
         
-        TEST_WidgetData::Test();
-        ReportInfo("Tests Finished!");
+        //TEST_WidgetData::Test();
+        //ReportInfo("Tests Finished!");
         ?> 
     </body>
 </html>
@@ -400,6 +401,8 @@ class TEST_DAWidgetConfig{
             {
                 
                  ReportSuccess("Widget Modified Sucessfully");
+                 $deletedResult = da_widget_config::DeleteWidgetConfig($modifiedWidgetConfig->widget_config_id);
+                 print_r($deletedResult);
             }
             else
             {
