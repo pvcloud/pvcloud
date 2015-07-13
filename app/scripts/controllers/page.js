@@ -61,6 +61,11 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         
     };
     
+   $scope.generateRandomColor = function() {
+       var color = Math.floor(Math.random()*16777215).toString(16);
+       return "#" + color;
+   };
+    
     $scope.initChannelCustomDataInPlot = function(label,widgetId) {
         var result = {
             lines: { show: true },
@@ -79,18 +84,23 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                     } catch(exc) {
                        console.log("Error @ Json parse color");
                        options = null;
-                       if (label==="PM_CANAL_1") {
-                           result.color = "#aad874";
-                       } else if (label==="PM_CANAL_2") {
-                           result.color = "#FFA500";
-                       } else if (label==="PM_CANAL_3") {
-                         result.color = "#FF0000";  
-                       }
+                       result.color = $scope.generateRandomColor();
+                    //   if (label==="PM_CANAL_1") {
+                    //       result.color = "#aad874";
+                    //   } else if (label==="PM_CANAL_2") {
+                    //       result.color = "#FFA500";
+                    //   } else if (label==="PM_CANAL_3") {
+                    //      result.color = "#FF0000";  
+                    //   } else {
+                    //      result.color = $scope.generateRandomColor();
+                    //   }
                     }
                     if (options && options.color) {
                         result.color = options.color;
                     }
                 }
+            } else {
+                result.color = $scope.generateRandomColor();
             }
             
         }
