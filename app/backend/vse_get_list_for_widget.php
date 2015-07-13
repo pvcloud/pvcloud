@@ -33,7 +33,7 @@ function execute() {
         $parameters = collectParameters();
 
         if (validate($parameters)) {
-            $entries = da_vse_data::GetEntries($parameters->widget_id, $parameters->optional_vse_label, $parameters->optional_max_limit);
+            $entries = da_vse_data::GetEntriesForWidget($parameters->widget_id, $parameters->optional_max_limit, $parameters->last_entry_id);
             $response->status = "OK";
             $response->message = "SUCCESS";
             $response->data = $entries;
@@ -53,9 +53,10 @@ function collectParameters() {
     $parameters = new stdClass();
     $parameters->widget_id = filter_input(INPUT_GET, "widget_id");
     $parameters->optional_max_limit = filter_input(INPUT_GET, "optional_max_limit");
+    $parameters->last_entry_id = filter_input(INPUT_GET, "last_entry_id");
 
-    if (!isset($parameters->optional_vse_label) || $parameters->optional_vse_label == NULL)
-        $parameters->optional_vse_label = '';
+    if (!isset($parameters->last_entry_id) || $parameters->last_entry_id == NULL)
+        $parameters->last_entry_id = '';
     if (!isset($parameters->optional_max_limit) || $parameters->optional_max_limit == NULL || !is_numeric($parameters->optional_max_limit))
         $parameters->optional_max_limit = 0;
 

@@ -39,7 +39,9 @@
 
         <!-- Add your site or application content here -->
 
-        <div ng-view="" class="ngview"></div>
+        <!--<div ng-view="" class="ngview"></div>-->
+        
+        <div ng-view="" ui-view="" autoscroll="true" ng-class="app.viewAnimation" class="ngview content-wrapper ng-scope ng-fadeInUp"></div>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
         <script>
@@ -79,6 +81,10 @@
         <script src="bower_components/angular-touch/angular-touch.js"></script>
         <script src="bower_components/angular-route/angular-route.js"></script>
         <script src="bower_components/flot/jquery.flot.js"></script>
+        <script src="bower_components/flot/jquery.flot.time.js"></script>
+        <script src="bower_components/flot/jquery.flot.resize.js"></script>
+        <script src="bower_components/flot/jquery.flot.pie.js"></script>
+        <script src="bower_components/flot/jquery.flot.categories.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
@@ -108,6 +114,7 @@
         <script src="scripts/services/labelsService.js"></script>
         <script src="scripts/services/pageService.js"></script>
         <script src="scripts/services/vseValuesService.js"></script>
+        <script src="scripts/services/vseWidgetValuesService.js"></script>
         <script src="scripts/controllers/_mycloud_inviteafriend.js"></script>
         <script src="scripts/controllers/_mycloud_mynetwork.js"></script>
         <!-- endbuild -->
