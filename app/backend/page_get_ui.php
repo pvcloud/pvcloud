@@ -17,7 +17,7 @@ class simpleResponse {
 class be_page_ui {
 
     public $page_id = 0;
-    //public $app_id = 0;
+    public $app_id = 0;
     public $title = "";
     public $description = "";
     //public $visibility_type_id = 0;
@@ -122,6 +122,7 @@ class GetPageWebService {
         $pageUI->title = $page->title;
         $pageUI->description = $page->description;
         $pageUI->page_id = $page->page_id;
+        $pageUI->app_id = $page->app_id;
         return $pageUI;
     }
 

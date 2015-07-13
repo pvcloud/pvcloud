@@ -66,16 +66,16 @@ class da_vse_data {
      */
     public static function GetEntries($app_id, $optional_vse_label, $optional_last_limit) {
         
-        // $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
-        //         . " FROM vse_data "
-        //         . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
-        //         . " ORDER BY entry_id DESC ";
-        
+        $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
+             . " FROM vse_data "
+             . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
+             . " ORDER BY entry_id DESC ";
+        /*
         $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
                 . " FROM vse_data "
                 . " WHERE app_id = ? AND vse_label = ? "
                 . " ORDER BY entry_id DESC ";
-                
+          */      
         //  $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
         //         . " FROM vse_data "
         //         . " WHERE app_id = ? "
@@ -97,7 +97,7 @@ class da_vse_data {
         }
         
         //if (!$stmt->bind_param("iss", $app_id, $optional_vse_label, $optional_vse_label)) {
-        if (!$stmt->bind_param("is", $app_id, $optional_vse_label)) {
+          if (!$stmt->bind_param("iss", $app_id, $optional_vse_label, $optional_vse_label)) {
         //if (!$stmt->bind_param("is", $app_id)) {
             echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
         }
@@ -150,6 +150,7 @@ class da_vse_data {
         if (!$stmt->execute()) {
             echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
         }
+        
 
         $entry = new be_vse_data();
 
