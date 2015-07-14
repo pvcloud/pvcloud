@@ -14,6 +14,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     $scope.chart = null;
     $scope.charts = [];
     $scope.MAX_LIMIT = 60;
+    $scope.labelsColor = [];
     
     $scope.findWidgetConfigFromList = function(label, widget) {
         var config = null;
@@ -25,6 +26,18 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 				
 		}    
 		return config;
+    };
+    
+    $scope.findColorByLabel = function(label) {
+        var color = null;
+        for (var i = 0; i < $scope.labelsColor.length; ++i) {
+		    if ($scope.labelsColor[i].label === label) {
+			    color = $scope.labelsColor[i].color;
+			    break;
+		    }
+				
+		}
+		return color;    
     };
     
     $scope.findWidgetById = function(widgetId) {
@@ -75,9 +88,12 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         };
         if ($scope.page && $scope.page.widgets && $scope.page.widgets.length > 0) {
             var widgetConfigForLabel = $scope.findWidgetConfig(label,widgetId);
+            var found =true;
             if (widgetConfigForLabel) {
                 result.label = widgetConfigForLabel.friendly_label;
-                if (widgetConfigForLabel.options_json) {
+                result.color = $scope.findColorByLabel(label);
+                found =   result.color!=null;  
+                if (!found && widgetConfigForLabel.options_json) {
                     var options = null;
                     try {
                         options = JSON.parse(widgetConfigForLabel.options_json);
@@ -101,6 +117,12 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                 }
             } else {
                 result.color = $scope.generateRandomColor();
+            }
+            if (!found) {
+                $scope.labelsColor.push({
+                    label: label,
+                    color: result.color
+                })
             }
             
         }
@@ -194,6 +216,19 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         return widgetId;
     };
     
+    $scope.getRefreshFrequencyByWidgetId = function(widgetId) {
+        var defaultRefresh = 1000;
+        if ($scope.page && $scope.page.widgets) {
+            for (var i = 0; i < $scope.page.widgets.length; ++i) {
+			    if ($scope.page.widgets[i].widgetId === widgetId) {
+			        defaultRefresh = $scope.page.widgets[i].refresh_frequency_sec;
+			        break;
+			    }	
+			}
+        }
+        return widgetId;
+    };
+    
     $scope.processDataByLabels = function(dataList, widgetId) {
         var widget = $scope.findWidgetById(widgetId);
         var result = [];
@@ -249,6 +284,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         // Properties
         this.element = $(element);
         this.widgetId = widgetId;
+        this.refreshFrequency = null;
         this.last_entry_id = 0;
         
         // Public method
@@ -256,30 +292,14 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             var self = this;
             if (this.widgetId===-1) {
                 this.widgetId = $scope.getNextWidgetId();
+                
             }
-            // vseValuesService.GetValues("PM_CANAL_1",30,1, $scope.accountId, $scope.token,"09b508f1bdc25b6ec65af3f9b9d1eb357b87776d").$promise.then(function (response) {
-            //     UtilityService.ProcessServiceResponse(response,
-            //             function success(response) {
-            //                 console.log("SUCCESS @ page");
-            //                 $scope.labelValues = response.data;
-            //                 $scope.dataToDraw = $scope.copyDataForFlot(response.data);
-            //                 if (!$scope.plot) {
-            //                     $scope.plot = $.plot( self.element,$scope.dataToDraw, $scope.option );
-            //                 } else {
-            //                     $scope.update();
-            //                 }
-            //                 setTimeout($scope.updateChart, $scope.updateInterval);
-            //             },
-            //             function error(response) {
-            //                 console.log("ERROR @ page " + response);
-            //                 $location.path("/");
-            //             },
-            //             function exception(response) {
-            //                 console.log("EXCEPTION @ myClpageoud");
-            //                 alert("Disculpas por la interrupción. Ocurrió un problema.");
-            //                 $location.path("/");
-            //             });
-            // });
+            if (!this.refreshFrequency) {
+                $scope.updateInterval = $scope.getRefreshFrequencyByWidgetId(this.widgetId);
+                this.refreshFrequency = $scope.updateInterval;
+            } else {
+                $scope.updateInterval = this.refreshFrequency;
+            }
     
             vseWidgetValuesService.GetWidgetValues(this.widgetId,this.last_entry_id,$scope.MAX_LIMIT,$scope.app.app_id, $scope.accountId, $scope.token,$scope.app.api_key).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
