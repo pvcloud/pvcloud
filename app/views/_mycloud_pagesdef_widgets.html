@@ -16,7 +16,7 @@
         <tr>
             <th>ID</th>
             <th>Nombre y Descripción 
-                <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-plus'></i> Agregar Widget </a>
+                <a data-ng-click="GoToWidgetDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-plus'></i> Agregar Widget </a>
             </th>
         </tr>
         <tr id="tr_page_{{widget.widget_id}}" data-ng-repeat="widget in Widgets| filter: WidgetsSearchPhrase">
@@ -28,5 +28,5 @@
             </td>
         </tr>
     </table>
-    <div data-ng-if="Loading && (!Pages || Pages.length === 0)">No hay páginas definidas <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Página</a></div>
+    <div data-ng-if="(!Widgets || Widgets.length === 0)">No hay widgets definidos <a data-ng-click="GoToWidgetDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Agregar Widget</a></div>
 </div>
