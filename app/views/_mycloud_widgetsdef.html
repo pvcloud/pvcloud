@@ -3,7 +3,6 @@
 
     <!-- BREADCRUMB -->
     <ol class="breadcrumb">
-        <li><a href="#/mycloud/myapps">My Apps</a></li>
         <li><a href="#/mycloud/myapps/{{ArticleID}}/tab_pages">{{AppName}}(ID: {{ArticleID}})</a></li>
         <li>Pages: {{PageTitle}} ({{PageID}})</li>
         <li>Widget: {{WidgetTitle}} ({{WidgetID}})</li>
@@ -11,7 +10,7 @@
 
     <!-- TABS -->
     <ul data-ng-show="PageID!=='new'" class="nav nav-tabs" data-ng-class="{'nav-justified':PageID != undefined}">
-        <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Página</a></li>
+        <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Widget</a></li>
         <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Configuration}"><a data-ng-click="SwitchToTab(Tabs.Configuration)">Configuración</a></li>
     </ul>
 

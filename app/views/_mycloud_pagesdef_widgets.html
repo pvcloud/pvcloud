@@ -22,7 +22,7 @@
         <tr id="tr_page_{{widget.widget_id}}" data-ng-repeat="widget in Widgets| filter: WidgetsSearchPhrase">
             <td class="td-app-info" style="vertical-align: middle">{{widget.widget_id}}</td>
             <td class="td-app-info">
-                <a data-ng-click="GoToEditWidget(widget.widget_id)">{{widget.title}}</a>&nbsp;&nbsp;
+                <a data-ng-click="GoToWidgetDef(widget.widget_id)">{{widget.title}}</a>&nbsp;&nbsp;
                 <br>
                 <small class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{widget.description}}</small>
             </td>
