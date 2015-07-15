@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/widget_get_list_by_page.php?account_id=1&token=token_goes_here&page_id=16
+ * http://localhost:8080/pvcloud/backend/widget_get_list_by_page.php?account_id=1&token=token_goes_here&page_id=16
  * 
  * * */
 error_reporting(E_ERROR);

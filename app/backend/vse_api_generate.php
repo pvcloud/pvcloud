@@ -44,7 +44,7 @@ function getBaseURL($forceHTTPS) {
         $protocol = "https://";
     }
     $domainName = filter_input(INPUT_SERVER, "HTTP_HOST") . "/";
-    return $protocol . $domainName . "pvcloud_backend/";
+    return $protocol . $domainName . "pvcloud/backend/";
 }
 
 function execute() {

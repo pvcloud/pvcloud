@@ -2,7 +2,7 @@
 
 /* * *
  * MAKE A POST CALL TO THIS URL: 
- * http://localhost:8080/pvcloud_backend/widget_add_post.php
+ * http://localhost:8080/pvcloud/backend/widget_add_post.php
  * 
  * SEND A JSON OBJECT AS THE RAW BODY AS FOLLOWS:
 

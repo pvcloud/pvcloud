@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/widget_config_update.php
+ * http://localhost:8080/pvcloud/backend/widget_config_update.php
  * 
  * * */
 error_reporting(E_ERROR);

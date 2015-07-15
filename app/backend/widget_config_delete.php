@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- *  http://localhost:8080/pvcloud_backend/widget_config_delete.php
+ *  http://localhost:8080/pvcloud/backend/widget_config_delete.php
  * 
  * * */
 error_reporting(E_ERROR);

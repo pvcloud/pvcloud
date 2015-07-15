@@ -1,6 +1,6 @@
 <?php
 
-//TEST: http://localhost:8080/pvcloud_backend/vse_add_value.php?account_id=1&app_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e&label=DIRECT+TEST&value=ANY+THING&type=STRING&captured_datetime=2014-12-09+21:01
+//TEST: http://localhost:8080/pvcloud/backend/vse_add_value.php?account_id=1&app_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e&label=DIRECT+TEST&value=ANY+THING&type=STRING&captured_datetime=2014-12-09+21:01
 
 error_reporting(E_ERROR);
 

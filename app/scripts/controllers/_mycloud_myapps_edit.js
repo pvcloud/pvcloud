@@ -226,13 +226,12 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
         protocol = "http:";
         var hostname = window.location.host;
         var port = window.location.port;
-
+        var path = window.location.pathname;
         if (port === 9000 || port === '9000') {
-            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080";
+            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080" + path;
         } else {
-            $scope.URLBegin = protocol + "//" + hostname;
+            $scope.URLBegin = protocol + "//" + hostname + path;
         }
-        
     }
 
 
