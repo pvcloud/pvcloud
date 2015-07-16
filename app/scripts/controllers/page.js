@@ -114,15 +114,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                        console.log("Error @ Json parse color");
                        options = null;
                        result.color = $scope.generateRandomColor();
-                    //   if (label==="PM_CANAL_1") {
-                    //       result.color = "#aad874";
-                    //   } else if (label==="PM_CANAL_2") {
-                    //       result.color = "#FFA500";
-                    //   } else if (label==="PM_CANAL_3") {
-                    //      result.color = "#FF0000";  
-                    //   } else {
-                    //      result.color = $scope.generateRandomColor();
-                    //   }
+                    
                     }
                     if (options && options.color) {
                         result.color = options.color;
@@ -153,9 +145,11 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 			    if (data[i].vse_label === label) {
     			    vseValue =  data[i].vse_value;
     			    vseValue = parseInt(vseValue);
-    			    vseCreatedTimestamp = Date.parse(data[i].created_datetime);
+    			    //vseCreatedTimestamp = Date.parse(data[i].created_datetime);
 
-    			    vseValues.unshift([new Date(data[i].created_datetime),vseValue]);
+    			    //vseValues.unshift([new Date(data[i].created_datetime),vseValue]);
+    			    
+    			    vseValues.unshift([i,vseValue]);
     			    
 			    }
 				
@@ -315,14 +309,14 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                                     $.plot( self.element,$scope.dataToDraw, $scope.option );
                                 }
                             }
-                            //setTimeout($scope.updateChart, $scope.updateInterval);
+                            setTimeout($scope.updateChart, $scope.updateInterval);
                         },
                         function error(response) {
                             console.log("ERROR @ page " + response);
                             $location.path("/");
                         },
                         function exception(response) {
-                            console.log("EXCEPTION @ myClpageoud");
+                            console.log("EXCEPTION @ page");
                             alert("Disculpas por la interrupción. Ocurrió un problema.");
                             $location.path("/");
                         });
@@ -398,7 +392,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                         $location.path("/");
                     },
                     function exception(response) {
-                        console.log("EXCEPTION @ myClpageoud");
+                        console.log("EXCEPTION @ page");
                         alert("Disculpas por la interrupción. Ocurrió un problema.");
                         $location.path("/");
                     });
