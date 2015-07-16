@@ -1,5 +1,4 @@
 <?php
-
 //TEST: http://localhost:8080/pvcloud/backend/vse_get_value_last.php?account_id=1&app_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e&optional_label=DIRECT+TEST
 error_reporting(E_ERROR);
 
