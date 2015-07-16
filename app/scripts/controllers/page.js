@@ -16,6 +16,28 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     $scope.MAX_LIMIT = 60;
     $scope.labelsColor = [];
     
+    $scope.validateSession = function() {
+        sessionService.ValidateSession().$promise.then(function (response) {
+            UtilityService.ProcessServiceResponse(response,
+                    function success(response) {
+                        console.log("SUCCESS @ myCloud");
+                        $scope.LoggedIn = true;
+                        $scope.Email = sessionService.GetCurrentEmail();
+                        $scope.AccountID = sessionService.GetCurrentAccountID();
+                    },
+                    function error(response) {
+                        console.log("ERROR @ myCloud");
+                        $location.path("/");
+                    },
+                    function exception(response) {
+                        console.log("EXCEPTION @ myCloud");
+                        alert("Disculpas por la interrupción. Ocurrió un problema con su sesión. Por favor trate autenticándose nuevamente.");
+                        $location.path("/");
+                    });
+        });
+    }
+    $scope.validateSession();
+    
     $scope.findWidgetConfigFromList = function(label, widget) {
         var config = null;
         for (var i = 0; i < widget.widget_configs.length; ++i) {
@@ -55,15 +77,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
     
     $scope.findWidgetConfig = function(label,widgetId) {
-//         var config = null;
-//         for (var i = 0; i < $scope.page.widgets.length; ++i) {
-// 		    if ($scope.page.widgets[i].widget_id === widgetId) {
-// 			    config = $scope.findWidgetConfigFromList(label,$scope.page.widgets[i])
-// 		    }
-				
-// 		}
-// 		return config;
-
         var config = null;
         var widget = $scope.findWidgetById(widgetId);
         if (widget) {
@@ -141,25 +154,15 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     			    vseValue =  data[i].vse_value;
     			    vseValue = parseInt(vseValue);
     			    vseCreatedTimestamp = Date.parse(data[i].created_datetime);
-    			    
-    			    //vseValues.push([new Date(data[i].created_datetime),vseValue]);
+
     			    vseValues.unshift([new Date(data[i].created_datetime),vseValue]);
     			    
-    			    //vseValues.push([vseCreatedTimestamp,vseValue]);
-    			    //result.data.push([i,vseValue]);
-    			    //result.data.push([data[i].created_datetime,vseValue]);
 			    }
 				
 			}
-			//vseValues.reverse();
-			
-// 			for (var i = 0; i < vseValues.length; ++i) {
-// 			    result.data.push([i,vseValues[i]]);
-// 			}
+
             result.data = vseValues;
-			
-			
-			//result.data.reverse();
+
         }
         return result;
         
@@ -194,8 +197,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
         
     $scope.updateChart = function() {
-       // $scope.chart.requestData();  
-        if ($scope.charts && $scope.charts.length > 0) {
+       if ($scope.charts && $scope.charts.length > 0) {
             for (var i = 0; i < $scope.charts.length; ++i) {
 			     $scope.charts[i].requestData();  	
 			}
@@ -226,7 +228,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 			    }	
 			}
         }
-        return widgetId;
+        return defaultRefresh;
     };
     
     $scope.processDataByLabels = function(dataList, widgetId) {
@@ -240,11 +242,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                         result.push(dataResult);
                     }
                 }
-			 //   if (!$scope.page.widgets[i].wasCreated) {
-			 //       $scope.page.widgets[i].wasCreated = true;
-			 //       widgetId = $scope.page.widgets[i].widgetId;
-			 //       break;
-			 //   }	
+			 
 			}
         }
         return result;
@@ -252,15 +250,9 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
     
     $scope.mergeWithLastData = function(newData) {
-        //TODO
-        // Merge con los datos anteriores: ejemplo si no optiene nada solo graficar lo ultimo
-        // si optione 3 remover 3 y agregar esos 3 al inicio de la lista
         
         // POINTS 60 
-        
-        
-        
-        if (!newData || newData.length===0) {
+       if (!newData || newData.length===0) {
             return $scope.labelValues;
         }
         if (newData.length === $scope.MAX_LIMIT) {
@@ -323,7 +315,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                                     $.plot( self.element,$scope.dataToDraw, $scope.option );
                                 }
                             }
-                            setTimeout($scope.updateChart, $scope.updateInterval);
+                            //setTimeout($scope.updateChart, $scope.updateInterval);
                         },
                         function error(response) {
                             console.log("ERROR @ page " + response);
@@ -423,96 +415,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             var Selector = '.chart-line';
             $(Selector).each(function() {
                 $scope.chart = new FlotChart(this, $scope.getNextWidgetId());
-                // $scope.option = {
-                //         series: {
-                //             lines: {
-                //                 show: true
-                //             },
-                //             points: {
-                //                 show: true,
-                //                 radius: 4
-                //             }
-                //         },
-                //         grid: {
-                //             borderColor: '#eee',
-                //             borderWidth: 1,
-                //             hoverable: true
-                //         },
-                //         tooltip: true,
-                //         tooltipOpts: {
-                //             content: '%x : %y'
-                //         },
-                //         xaxis: {
-                //             tickColor: '#fcfcfc',
-                //             mode: 'time',
-                //             show: false
-                //         },
-                //         yaxis: {
-                //             min: 0,
-                //             tickColor: '#eee',
-                //             position: 'left',
-                //             tickFormatter: function (v) {
-                //                 return v + ' Kw';
-                //             }
-                //         },
-                //         noColumns: 5,
-                //         shadowSize: 0
-                //     };
-               
-                // $scope.option = {
-                //         series: {
-                //             lines: {
-                //                 show: true,
-                //                 lineWidth: 2,
-                //                 fill: false
-                //             },
-                //             points: {
-                //                 show: true,
-                //                  radius: 2
-                //             }
-                //         },
-                //         grid: {
-                //             borderColor: '#eee',
-                //             borderWidth: 1,
-                //             hoverable: true
-                //         },
-                //         tooltip: true,
-                //         tooltipOpts: {
-                //             content: '%x : %y'
-                //         },
-                //         xaxis: {
-                //             show: false,
-                //             tickSize: [5, "second"],
-                //             mode: "time",        
-                //             tickFormatter: function (v, axis) {
-                //                 var date = v;
-                    
-                //                 if (date.getSeconds() % 20 == 0) {
-                //                     var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-                //                     var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-                //                     var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-                    
-                //                     return hours + ":" + minutes + ":" + seconds;
-                //                 } else {
-                //                     return "";
-                //                 }
-                //             },
-                //             color: "#eee",
-                //             axisLabel: "Tiempo",
-                //             axisLabelUseCanvas: true,
-                //             axisLabelFontSizePixels: 12,
-                //             axisLabelFontFamily: 'Verdana, Arial',
-                //             axisLabelPadding: 10
-                //         },
-                //         yaxis: {
-                //             tickColor: '#eee',
-                //             position: 'left',
-                //             tickFormatter: function (v) {
-                //                 return v + ' Kw';
-                //             }
-                //         },
-                //         shadowSize: 0
-                //     };
+                
                 $scope.option = {
                     series: {
                         lines: {
