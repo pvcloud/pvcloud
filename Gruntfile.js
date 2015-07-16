@@ -146,6 +146,14 @@ module.exports = function (grunt) {
                         ]
                     }]
             },
+            winlocal_pre: {
+                files: [{
+                        dot: true,
+                        src: [
+                            'c:\\xampp\\htdocs\\pvcloud_pre/{,*/}*'
+                        ]
+                    }]
+            },            
             winbackend: {
                 files: [{
                         dot: true,
@@ -344,6 +352,19 @@ module.exports = function (grunt) {
                     }
                 ]
             },
+            winlocal_pre: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.dist %>',
+                        dest: 'c:\\xampp\\htdocs\\pvcloud_pre',
+                        src: [
+                            '.htaccess',
+                            './**'
+                        ]
+                    }
+                ]
+            },            
             winbackend: {
                 files: [
                     {
@@ -434,8 +455,14 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('minion', [
+        'build',
         'clean:winlocal',
         'copy:winlocal'
+    ]);
+    grunt.registerTask('sputnik', [
+        'build',
+        'clean:winlocal_pre',
+        'copy:winlocal_pre'
     ]);
     grunt.registerTask('gru', [
         'clean:winbackend',
