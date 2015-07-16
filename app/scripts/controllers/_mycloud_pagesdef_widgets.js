@@ -2,7 +2,8 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
 
     console.log("This is _mycloud_pagesdef_widgets controller being invoked");
     $scope.Widgets = [];
-    $scope.GoToEditWidget = function (widget_id) {
+    $scope.GoToWidgetDef = function (widget_id) {
+        console.debug("hola");
         $location.path("/mycloud/widgetsdef/" + app_id + "/" + page_id + "/" + widget_id);
     };
 
@@ -57,11 +58,12 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
         var protocol = window.location.protocol;
         var hostname = window.location.host;
         var port = window.location.port;
+        var path = window.location.pathname;
 
-        if (port === 9000 || port === '9000') {
-            $scope.BackendURLBegin = protocol + "//" + window.location.hostname + ":8080";
+        if (port === 9000) {
+            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080" + path;
         } else {
-            $scope.BackendURLBegin = protocol + "//" + hostname;
+            $scope.URLBegin = protocol + "//" + hostname + path;
         }
     }
 });

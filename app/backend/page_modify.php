@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/page_modify.php?account_id=1&token=123x&page_id=1&title=NewTitle&description=newDescription&visibility_type_id=3
+ * http://localhost:8080/pvcloud/backend/page_modify.php?account_id=1&token=123x&page_id=1&title=NewTitle&description=newDescription&visibility_type_id=3
  * 
  * * */
 error_reporting(E_ERROR);

@@ -1,3 +1,4 @@
+<!-- usage: http://localhost:8080/pvcloud/backend/test.php -->
 <?php
 require_once './DA/da_conf.php';
 require_once './DA/da_helper.php';
@@ -25,10 +26,10 @@ require_once './DA/da_widget_config.php';
         //TEST_DAVSEValue::Test();
         //TEST_DAInvitation::test_da_invitation();
 
-        //TEST_DAWidgetConfig::test();
+        TEST_DAWidgetConfig::test();
         
-        TEST_WidgetData::Test();
-        ReportInfo("Tests Finished!");
+        //TEST_WidgetData::Test();
+        //ReportInfo("Tests Finished!");
         ?> 
     </body>
 </html>
@@ -377,10 +378,9 @@ class TEST_DAWidgetConfig{
         $newWidgetConfig = new be_widget_config();
         $newWidgetConfig->widget_id = 1;
         $newWidgetConfig->vse_label = "TEST";
-        $newWidgetConfig->read_frequency = 10;
         $newWidgetConfig->simple_object_property = "";
         $newWidgetConfig->friendly_label = "PRUEBA";
-        
+        $newWidgetConfig->options_json = "";
         ReportInfo("Widget to create:");
         print_r($newWidgetConfig);
         $savedWidgetConfig = da_widget_config::InsertWidgetConfig($newWidgetConfig);
@@ -388,6 +388,34 @@ class TEST_DAWidgetConfig{
         if ( is_numeric($savedWidgetConfig->widget_config_id) && $savedWidgetConfig->widget_config_id != $newWidgetConfig->widget_config_id && $savedWidgetConfig->widget_config_id > 0){
             ReportSuccess("Widget Config Created Successfully");
             print_r($savedWidgetConfig);
+            
+            $savedWidgetConfig->vse_label = "MODIFIED";
+            $savedWidgetConfig->options_json = "{'color':'red'}";
+            //sleep(2);
+            ReportInfo("Widget Config Modification:");
+            print_r($savedWidgetConfig);
+            $modifiedWidgetConfig = da_widget_config::UpdateWidgetConfig($savedWidgetConfig);
+            
+            if($modifiedWidgetConfig->vse_label == "MODIFIED"
+               && $modifiedWidgetConfig->options_json == "{'color':'red'}")
+            {
+                
+                 ReportSuccess("Widget Modified Sucessfully");
+                 $deletedResult = da_widget_config::DeleteWidgetConfig($modifiedWidgetConfig->widget_config_id);
+                 print_r($deletedResult);
+            }
+            else
+            {
+                  ReportError("Modification failed :(");
+            }
+            
+            
+            ReportInfo("Modification Result:");
+            print_r($modifiedWidgetConfig);
+        }
+        else
+        {
+            ReportError("Insertion failed :(");
         }
     }   
 }
