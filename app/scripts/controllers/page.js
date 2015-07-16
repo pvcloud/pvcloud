@@ -14,6 +14,29 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     $scope.chart = null;
     $scope.charts = [];
     $scope.MAX_LIMIT = 60;
+    $scope.labelsColor = [];
+    
+    $scope.validateSession = function() {
+        sessionService.ValidateSession().$promise.then(function (response) {
+            UtilityService.ProcessServiceResponse(response,
+                    function success(response) {
+                        console.log("SUCCESS @ myCloud");
+                        $scope.LoggedIn = true;
+                        $scope.Email = sessionService.GetCurrentEmail();
+                        $scope.AccountID = sessionService.GetCurrentAccountID();
+                    },
+                    function error(response) {
+                        console.log("ERROR @ myCloud");
+                        $location.path("/");
+                    },
+                    function exception(response) {
+                        console.log("EXCEPTION @ myCloud");
+                        alert("Disculpas por la interrupción. Ocurrió un problema con su sesión. Por favor trate autenticándose nuevamente.");
+                        $location.path("/");
+                    });
+        });
+    }
+    $scope.validateSession();
     
     $scope.findWidgetConfigFromList = function(label, widget) {
         var config = null;
@@ -25,6 +48,18 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 				
 		}    
 		return config;
+    };
+    
+    $scope.findColorByLabel = function(label) {
+        var color = null;
+        for (var i = 0; i < $scope.labelsColor.length; ++i) {
+		    if ($scope.labelsColor[i].label === label) {
+			    color = $scope.labelsColor[i].color;
+			    break;
+		    }
+				
+		}
+		return color;    
     };
     
     $scope.findWidgetById = function(widgetId) {
@@ -42,15 +77,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
     
     $scope.findWidgetConfig = function(label,widgetId) {
-//         var config = null;
-//         for (var i = 0; i < $scope.page.widgets.length; ++i) {
-// 		    if ($scope.page.widgets[i].widget_id === widgetId) {
-// 			    config = $scope.findWidgetConfigFromList(label,$scope.page.widgets[i])
-// 		    }
-				
-// 		}
-// 		return config;
-
         var config = null;
         var widget = $scope.findWidgetById(widgetId);
         if (widget) {
@@ -75,9 +101,12 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         };
         if ($scope.page && $scope.page.widgets && $scope.page.widgets.length > 0) {
             var widgetConfigForLabel = $scope.findWidgetConfig(label,widgetId);
+            var found =true;
             if (widgetConfigForLabel) {
                 result.label = widgetConfigForLabel.friendly_label;
-                if (widgetConfigForLabel.options_json) {
+                result.color = $scope.findColorByLabel(label);
+                found =   result.color!=null;  
+                if (!found && widgetConfigForLabel.options_json) {
                     var options = null;
                     try {
                         options = JSON.parse(widgetConfigForLabel.options_json);
@@ -102,6 +131,12 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             } else {
                 result.color = $scope.generateRandomColor();
             }
+            if (!found) {
+                $scope.labelsColor.push({
+                    label: label,
+                    color: result.color
+                })
+            }
             
         }
         
@@ -119,25 +154,15 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     			    vseValue =  data[i].vse_value;
     			    vseValue = parseInt(vseValue);
     			    vseCreatedTimestamp = Date.parse(data[i].created_datetime);
-    			    
-    			    //vseValues.push([new Date(data[i].created_datetime),vseValue]);
+
     			    vseValues.unshift([new Date(data[i].created_datetime),vseValue]);
     			    
-    			    //vseValues.push([vseCreatedTimestamp,vseValue]);
-    			    //result.data.push([i,vseValue]);
-    			    //result.data.push([data[i].created_datetime,vseValue]);
 			    }
 				
 			}
-			//vseValues.reverse();
-			
-// 			for (var i = 0; i < vseValues.length; ++i) {
-// 			    result.data.push([i,vseValues[i]]);
-// 			}
+
             result.data = vseValues;
-			
-			
-			//result.data.reverse();
+
         }
         return result;
         
@@ -172,8 +197,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
         
     $scope.updateChart = function() {
-       // $scope.chart.requestData();  
-        if ($scope.charts && $scope.charts.length > 0) {
+       if ($scope.charts && $scope.charts.length > 0) {
             for (var i = 0; i < $scope.charts.length; ++i) {
 			     $scope.charts[i].requestData();  	
 			}
@@ -194,6 +218,19 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         return widgetId;
     };
     
+    $scope.getRefreshFrequencyByWidgetId = function(widgetId) {
+        var defaultRefresh = 1000;
+        if ($scope.page && $scope.page.widgets) {
+            for (var i = 0; i < $scope.page.widgets.length; ++i) {
+			    if ($scope.page.widgets[i].widgetId === widgetId) {
+			        defaultRefresh = $scope.page.widgets[i].refresh_frequency_sec;
+			        break;
+			    }	
+			}
+        }
+        return defaultRefresh;
+    };
+    
     $scope.processDataByLabels = function(dataList, widgetId) {
         var widget = $scope.findWidgetById(widgetId);
         var result = [];
@@ -205,11 +242,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                         result.push(dataResult);
                     }
                 }
-			 //   if (!$scope.page.widgets[i].wasCreated) {
-			 //       $scope.page.widgets[i].wasCreated = true;
-			 //       widgetId = $scope.page.widgets[i].widgetId;
-			 //       break;
-			 //   }	
+			 
 			}
         }
         return result;
@@ -217,15 +250,9 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
     
     $scope.mergeWithLastData = function(newData) {
-        //TODO
-        // Merge con los datos anteriores: ejemplo si no optiene nada solo graficar lo ultimo
-        // si optione 3 remover 3 y agregar esos 3 al inicio de la lista
         
         // POINTS 60 
-        
-        
-        
-        if (!newData || newData.length===0) {
+       if (!newData || newData.length===0) {
             return $scope.labelValues;
         }
         if (newData.length === $scope.MAX_LIMIT) {
@@ -249,6 +276,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         // Properties
         this.element = $(element);
         this.widgetId = widgetId;
+        this.refreshFrequency = null;
         this.last_entry_id = 0;
         
         // Public method
@@ -256,30 +284,14 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             var self = this;
             if (this.widgetId===-1) {
                 this.widgetId = $scope.getNextWidgetId();
+                
             }
-            // vseValuesService.GetValues("PM_CANAL_1",30,1, $scope.accountId, $scope.token,"09b508f1bdc25b6ec65af3f9b9d1eb357b87776d").$promise.then(function (response) {
-            //     UtilityService.ProcessServiceResponse(response,
-            //             function success(response) {
-            //                 console.log("SUCCESS @ page");
-            //                 $scope.labelValues = response.data;
-            //                 $scope.dataToDraw = $scope.copyDataForFlot(response.data);
-            //                 if (!$scope.plot) {
-            //                     $scope.plot = $.plot( self.element,$scope.dataToDraw, $scope.option );
-            //                 } else {
-            //                     $scope.update();
-            //                 }
-            //                 setTimeout($scope.updateChart, $scope.updateInterval);
-            //             },
-            //             function error(response) {
-            //                 console.log("ERROR @ page " + response);
-            //                 $location.path("/");
-            //             },
-            //             function exception(response) {
-            //                 console.log("EXCEPTION @ myClpageoud");
-            //                 alert("Disculpas por la interrupción. Ocurrió un problema.");
-            //                 $location.path("/");
-            //             });
-            // });
+            if (!this.refreshFrequency) {
+                $scope.updateInterval = $scope.getRefreshFrequencyByWidgetId(this.widgetId);
+                this.refreshFrequency = $scope.updateInterval;
+            } else {
+                $scope.updateInterval = this.refreshFrequency;
+            }
     
             vseWidgetValuesService.GetWidgetValues(this.widgetId,this.last_entry_id,$scope.MAX_LIMIT,$scope.app.app_id, $scope.accountId, $scope.token,$scope.app.api_key).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
@@ -303,7 +315,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                                     $.plot( self.element,$scope.dataToDraw, $scope.option );
                                 }
                             }
-                            setTimeout($scope.updateChart, $scope.updateInterval);
+                            //setTimeout($scope.updateChart, $scope.updateInterval);
                         },
                         function error(response) {
                             console.log("ERROR @ page " + response);
@@ -403,96 +415,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             var Selector = '.chart-line';
             $(Selector).each(function() {
                 $scope.chart = new FlotChart(this, $scope.getNextWidgetId());
-                // $scope.option = {
-                //         series: {
-                //             lines: {
-                //                 show: true
-                //             },
-                //             points: {
-                //                 show: true,
-                //                 radius: 4
-                //             }
-                //         },
-                //         grid: {
-                //             borderColor: '#eee',
-                //             borderWidth: 1,
-                //             hoverable: true
-                //         },
-                //         tooltip: true,
-                //         tooltipOpts: {
-                //             content: '%x : %y'
-                //         },
-                //         xaxis: {
-                //             tickColor: '#fcfcfc',
-                //             mode: 'time',
-                //             show: false
-                //         },
-                //         yaxis: {
-                //             min: 0,
-                //             tickColor: '#eee',
-                //             position: 'left',
-                //             tickFormatter: function (v) {
-                //                 return v + ' Kw';
-                //             }
-                //         },
-                //         noColumns: 5,
-                //         shadowSize: 0
-                //     };
-               
-                // $scope.option = {
-                //         series: {
-                //             lines: {
-                //                 show: true,
-                //                 lineWidth: 2,
-                //                 fill: false
-                //             },
-                //             points: {
-                //                 show: true,
-                //                  radius: 2
-                //             }
-                //         },
-                //         grid: {
-                //             borderColor: '#eee',
-                //             borderWidth: 1,
-                //             hoverable: true
-                //         },
-                //         tooltip: true,
-                //         tooltipOpts: {
-                //             content: '%x : %y'
-                //         },
-                //         xaxis: {
-                //             show: false,
-                //             tickSize: [5, "second"],
-                //             mode: "time",        
-                //             tickFormatter: function (v, axis) {
-                //                 var date = v;
-                    
-                //                 if (date.getSeconds() % 20 == 0) {
-                //                     var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-                //                     var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-                //                     var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-                    
-                //                     return hours + ":" + minutes + ":" + seconds;
-                //                 } else {
-                //                     return "";
-                //                 }
-                //             },
-                //             color: "#eee",
-                //             axisLabel: "Tiempo",
-                //             axisLabelUseCanvas: true,
-                //             axisLabelFontSizePixels: 12,
-                //             axisLabelFontFamily: 'Verdana, Arial',
-                //             axisLabelPadding: 10
-                //         },
-                //         yaxis: {
-                //             tickColor: '#eee',
-                //             position: 'left',
-                //             tickFormatter: function (v) {
-                //                 return v + ' Kw';
-                //             }
-                //         },
-                //         shadowSize: 0
-                //     };
+                
                 $scope.option = {
                     series: {
                         lines: {

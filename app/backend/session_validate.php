@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/account_authenticate.php?email=jose.a.nunez@gmail.com&pwd=1234pass
+ * http://localhost:8080/pvcloud/backend/account_authenticate.php?email=jose.a.nunez@gmail.com&pwd=1234pass
  * 
  * * */
 error_reporting(E_ERROR);

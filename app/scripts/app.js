@@ -22,7 +22,11 @@ angular
                     .when('/mycloud/:section/:article_id/:subarticle_id',{
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
-                    })                  
+                    })  
+                    .when('/mycloud/:section/:article_id/:subarticle_id/:widget_id',{
+                        templateUrl: 'views/mycloud.html',
+                        controller: 'MyCloudCtrl'
+                    })
                     .when('/mycloud/:section/:article_id', {
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'

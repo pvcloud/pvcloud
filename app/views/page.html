@@ -1,6 +1,3 @@
-<!-- CONTENT -->
-<!--<div class="container-fluid" style="min-height: 100%">-->
-
 
     <!--NAV BAR AND SANDWITCH-->
     <nav class="navbar navbar-default main-standard-navigation">
@@ -10,12 +7,7 @@
                 <a class="navbar-brand" href="#">{{page.title}} </span></sub></a> 
                 <br />
                 <p class="navbar-brand lead"> {{page.description}}</p>
-                <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">-->
-                <!--    <span class="sr-only">Toggle navigation</span>-->
-                <!--    <span class="icon-bar"></span>-->
-                <!--    <span class="icon-bar"></span>-->
-                <!--    <span class="icon-bar"></span>-->
-                <!--</button>-->
+                
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -27,212 +19,30 @@
         </div><!-- /.container-fluid -->
     </nav>    
     
-    <!--<div id="panelChart1" class="panel panel-default">-->
-                            
-                            
-    <!--                           <div class="panel-body">-->
-    <!--                              <div class="chart-area flot-chart" style="width:100%;height:300px;"></div>-->
-                                  
-    <!--                           </div>-->
-                            
-    <!--                     </div>-->
+    
     
     <div  class="container-fluid">
-   <!-- START row-->
-       <!--<div class="row">-->
-       <!--       <div class="col-lg-8">-->
-       <!--          <div id="panelChart1" class="panel panel-default">-->
-       <!--             <div class="panel-heading">-->
-       <!--                <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss" tool-refresh="traditional"></paneltool>-->
-       <!--                <div class="panel-title">Area</div>-->
-       <!--             </div>-->
-       <!--             <div collapse="panelChart1" class="panel-wrapper">-->
-       <!--                <div class="panel-body">-->
-       <!--                   <div class="chart-area flot-chart" style="height:400px;"></div>-->
-       <!--                </div>-->
-       <!--             </div>-->
-       <!--          </div>-->
-       <!--       </div>    -->
-       <!--     </div>-->
+  
             
             <div class="row">
-      <div class="col-lg-12">
-         <div id="panelChart4" class="panel panel-default">
-            <div class="panel-heading">
-               <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss"></paneltool>
-               <div class="panel-title">Line</div>
+                  <div class="col-lg-12">
+                     <div id="panelChart4" class="panel panel-default">
+                        <div class="panel-heading">
+                           <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss"></paneltool>
+                           <div class="panel-title" >{{page.widgets[0].title}}</div>
+                        </div>
+                        <div collapse="panelChart4" class="panel-wrapper">
+                           <div class="panel-body">
+                              <div  class="chart-line flot-chart" style="height:400px;"></div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
             </div>
-            <div collapse="panelChart4" class="panel-wrapper">
-               <div class="panel-body">
-                  <div  class="chart-line flot-chart" style="height:400px;"></div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
     </div>
 
-    <!--<div class="container">-->
-    <!--  <div class="col-xs-6 col-xs-offset-3">-->
-    <!--    <h4 class="text-center">Real-time</h4>-->
-    <!--    <div class="chart-area flot-chart" style="height:300px;"></div>-->
-    <!--  </div>-->
-    <!--</div>-->
 
-    <!-- MAIN SECTIONS -->
-    <!--<div class="row" style="height: 100%; display:block">-->
-       
-
-        <!-- WORKSPACE -->
-    <!--    <div class="col-md-6 main-navigation">-->
-            <!-- PARTIAL VIEW FOR SECTIONS -->
-    <!--        <div class="panel panel-default">-->
-    <!--            <div class="panel-body">-->
-                    <!--<div class="row">-->
-                    <!--    <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                -->
-                    <!--</div>-->
-    <!--                <div class="row">-->
-    <!--                  <div class="col-lg-6">-->
-    <!--                     <div id="panelChart1" class="panel panel-default">-->
-    <!--                        <div class="panel-heading">-->
-    <!--                           <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss" tool-refresh="traditional"></paneltool>-->
-    <!--                           <div class="panel-title">Power Meter: Canal 1</div>-->
-    <!--                        </div>-->
-    <!--                        <div collapse="panelChart1">-->
-    <!--                           <div class="panel-body">-->
-    <!--                              <div data-source="{{testData}}" class="chart-area flot-chart" style="width:100%;height:400px"></div>-->
-                                  
-    <!--                           </div>-->
-    <!--                        </div>-->
-    <!--                     </div>-->
-    <!--                  </div>-->
-                      
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>            -->
-    <!--    </div>-->
-    <!--</div>-->
-  
-   <!--     <div class="container-fluid"> -->
-        
-   <!--      <div class="row" style="height: 100%; display:block">-->
-       
-
-        <!-- WORKSPACE -->
-   <!--     <div class="col-md-6 main-navigation">-->
-            <!-- PARTIAL VIEW FOR SECTIONS -->
-   <!--         <div class="panel panel-default">-->
-   <!--             <div class="panel-body">-->
-                    <!--<div class="row">-->
-                    <!--    <div class="col-md-12 slide-animate" data-ng-include="SectionURL"></div>                -->
-                    <!--</div>-->
-   <!--                 <div class="row" >-->
-   <!--                   <div class="col-lg-6">-->
-   <!--                      <div id="panelChart1" class="panel panel-default">-->
-   <!--                         <div class="panel-heading">-->
-                               <!--<paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss" tool-refresh="traditional"></paneltool>-->
-   <!--                            <div class="panel-title">Power Meter: Canal 1</div>-->
-   <!--                         </div>-->
-   <!--                         <div collapse="panelChart1">-->
-   <!--                            <div class="panel-body">-->
-   <!--                               <div class="chart-area flot-chart" style="width:400px;height:400px;"></div>-->
-                                  
-   <!--                            </div>-->
-   <!--                         </div>-->
-   <!--                      </div>-->
-   <!--                   </div>-->
-                      <!--<div class="col-lg-6">-->
-                      <!--   <div id="panelChart9" class="panel panel-default">-->
-                      <!--      <div class="panel-heading">-->
-                      <!--         <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss" tool-refresh="traditional"></paneltool>-->
-                      <!--         <div class="panel-title">PowerMeter: canal 2</div>-->
-                      <!--      </div>-->
-                      <!--      <div collapse="panelChart9" class="panel-wrapper">-->
-                      <!--         <div class="panel-body">-->
-                      <!--            <div data-source="{{testData1}}" class="chart-spline flot-chart" style="width:250px;height:400px"></div>-->
-                      <!--         </div>-->
-                      <!--      </div>-->
-                      <!--   </div>-->
-                      <!--</div>-->
-   <!--                 </div>-->
-   <!--             </div>-->
-   <!--         </div>            -->
-   <!--     </div>-->
-   <!-- </div>-->
-        
-        
-        
-   <!--         <div class="row">-->
-   <!--             <div class="row">-->
-   <!--   <div class="col-lg-6">-->
-   <!--      <div id="panelChart1" class="panel panel-default">-->
-   <!--         <div class="panel-heading">-->
-   <!--            <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss" tool-refresh="traditional"></paneltool>-->
-   <!--            <div class="panel-title">Area</div>-->
-   <!--         </div>-->
-   <!--         <div collapse="panelChart1" class="panel-wrapper">-->
-   <!--            <div class="panel-body">-->
-   <!--               <div  class="chart-area flot-chart" ></div>-->
-   <!--            </div>-->
-   <!--         </div>-->
-   <!--      </div>-->
-   <!--   </div>-->
-      
-   <!--</div>-->
-            <!--<div class="row">-->
-            <!--          <div class="col-lg-6">-->
-            <!--             <div id="panelChart1" class="panel panel-default">-->
-            <!--                <div class="panel-heading">-->
-            <!--                   <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss" tool-refresh="traditional"></paneltool>-->
-            <!--                   <div class="panel-title">Power Meter: Canal 1</div>-->
-            <!--                </div>-->
-            <!--                <div collapse="panelChart1">-->
-            <!--                   <div class="panel-body">-->
-            <!--                      <div  class="chart-area flot-chart" style="height:400px"></div>-->
-                                  
-            <!--                   </div>-->
-            <!--                </div>-->
-            <!--             </div>-->
-            <!--          </div>-->
-                      
-            <!--        </div>-->
-   <!--        </div>-->
-   <!-- </div>-->
-    
-    
-                <!--<div id="panelChart1" class="panel panel-default">-->
-                            
-                <!--            <div collapse="panelChart1">-->
-                <!--               <div class="panel-body">-->
-                <!--                  <div class="chart-area flot-chart" style="height:400px;"></div>-->
-                                  
-                <!--               </div>-->
-                <!--            </div>-->
-                <!--         </div>-->
-                         
-                         <!-- <div id="panelChart1" class="panel panel-default">-->
-                            
-                            
-                         <!--      <div class="panel-body">-->
-                         <!--         <div class="chart-area flot-chart" style="height:400px;"></div>-->
-                                  
-                         <!--      </div>-->
-                            
-                         <!--</div>-->
-                         
-                         <!--<div id="panelChart1" class="panel panel-default">-->
-                            
-                            
-                               <!--<div class="panel-body">-->
-                                  <!--<div class="chart-area flot-chart" style="width:100%;height:300px;"></div>-->
-                                  
-                               <!--</div>-->
-                            
-                         <!--</div>-->
-    
-    
-<!--    </<div>-->
-<!--</div>-->
+ 
 
 <!-- FOOTER -->
 <div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a></div>

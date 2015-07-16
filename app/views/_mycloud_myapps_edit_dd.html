@@ -26,9 +26,9 @@
             <p>pvCloud ofrece un programa personalizado para su app que puede descargar usando los siguientes comandos de LINUX.</p>
             <p>Primero, descargue el programa personalizado para su app usando el comando de LINUX wget:</p>
             <code style="text-align: left; display: inline-block; word-break: break-all">
-                wget -O ~/pvcloud_api.js "{{URLBegin}}/pvcloud_backend/<strong>vse_api_generate.php</strong>?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}"
+                wget -O ~/pvcloud_api.js "{{URLBegin}}backend/<strong>vse_api_generate.php</strong>?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}"
             </code><br><br>                
-            <a class="pull-right" href="{{URLBegin}}/pvcloud_backend/vse_api_generate.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" title="También puede descargarlo en su PC para realizar pruebas">Descargar en su computador</a>
+            <a class="pull-right" href="{{URLBegin}}backend/vse_api_generate.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" title="También puede descargarlo en su PC para realizar pruebas">Descargar en su computador</a>
             <br>
             <hr>
             <h4>Paso 2 de 3: Instale el módulo "request" de nodejs</h4>     
@@ -80,8 +80,8 @@
                 <li><strong>annotations (opcional): </strong> es un parámetro para anotaciones adicionales</li>
             </ul>
             <h4>Ejemplo:</h4>
-            <a href="{{URLBegin}}/pvcloud_backend/vse_add_value.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&label=DIRECT+pvCloud+TEST&value=12345&type=NUNMERICO&captured_datetime={{Application.CapturedDatetime}}" target="_blank">
-                <pre>{{URLBegin}}/pvcloud_backend/<strong>vse_add_value.php</strong>?account_id={{AccountID}}
+            <a href="{{URLBegin}}backend/vse_add_value.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&label=DIRECT+pvCloud+TEST&value=12345&type=NUNMERICO&captured_datetime={{Application.CapturedDatetime}}" target="_blank">
+                <pre>{{URLBegin}}backend/<strong>vse_add_value.php</strong>?account_id={{AccountID}}
 &app_id={{Application.app_id}}
 &api_key={{Application.api_key}}
 &label=DIRECT+pvCloud+TEST
@@ -100,15 +100,15 @@
                 <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema el ultimo valor de una etiqueta específica. Si se omite, el sistem devolverá el último valor de todos para el app en cuestión.</li>
             </ul>        
             <h4>Ejemplos:</h4>
-            <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
-                <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{AccountID}}
+            <a href="{{URLBegin}}backend/vse_get_value_last.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
+                <pre>{{URLBegin}}backend/vse_get_value_last.php?account_id={{AccountID}}
 &app_id={{Application.app_id}}
 &api_key={{Application.api_key}}
 &optional_label=DIRECT+pvCloud+TEST</pre>  
             </a><br><br>
             <p>Sin el parámetro opcional sería así:</p>
-            <a href="{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" target="_blank">
-                <pre>{{URLBegin}}/pvcloud_backend/vse_get_value_last.php?account_id={{AccountID}}
+            <a href="{{URLBegin}}backend/vse_get_value_last.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" target="_blank">
+                <pre>{{URLBegin}}backend/vse_get_value_last.php?account_id={{AccountID}}
 &app_id={{Application.app_id}}
 &api_key={{Application.api_key}}</pre>  
             </a>     
@@ -124,16 +124,16 @@
                 <li><strong>optional_last_limit: </strong> este parámetro permite solicitar al sistema una cantidad determinada de registros a partir de los más recientes.</li>
             </ul>        
             <h4>Ejemplos:</h4>
-            <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&optional_label=DIRECT+pvCloud+TEST&optional_last_limit=3" target="_blank">
-                <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{AccountID}}
+            <a href="{{URLBegin}}backend/vse_get_values.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&optional_label=DIRECT+pvCloud+TEST&optional_last_limit=3" target="_blank">
+                <pre>{{URLBegin}}backend/vse_get_values.php?account_id={{AccountID}}
 &app_id={{Application.app_id}}
 &api_key={{Application.api_key}}
 &optional_label=DIRECT+pvCloud+TEST
 &optional_last_limit=3</pre>  
             </a><br><br>
             <p>Sin el parámetro opcional sería así:</p>
-            <a href="{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" target="_blank">
-                <pre>{{URLBegin}}/pvcloud_backend/vse_get_values.php?account_id={{AccountID}}
+            <a href="{{URLBegin}}backend/vse_get_values.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" target="_blank">
+                <pre>{{URLBegin}}backend/vse_get_values.php?account_id={{AccountID}}
 &app_id={{Application.app_id}}
 &api_key={{Application.api_key}}</pre>  
             </a>     
@@ -148,8 +148,8 @@
                 <li><strong>optional_label: </strong> este parámetro permite solicitar al sistema borrar los valores con una etiqueta específica. Si se omite, el sistem borrarán todos los valores para el app en cuestión.</li>
             </ul>        
             <h4>Ejemplos:</h4>
-            <a href="{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
-                <pre>{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{AccountID}}
+            <a href="{{URLBegin}}backend/vse_clear_values.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&optional_label=DIRECT+pvCloud+TEST" target="_blank">
+                <pre>{{URLBegin}}backend/vse_clear_values.php?account_id={{AccountID}}
 &app_id={{Application.app_id}}
 &api_key={{Application.api_key}}
 &optional_label=DIRECT+pvCloud+TEST</pre>  
@@ -157,7 +157,7 @@
             <p>Sin el parámetro opcional sería así:</p>
             <p class="bg-warning" role="alert" style="padding:10px"> (!) Nota: El siguiente ejemplo no contiene enlaces reales por que al acceder al enlace se eliminarían todos los datos del app</p>        
             <a href="" target="_blank">
-                <pre>{{URLBegin}}/pvcloud_backend/vse_clear_values.php?account_id={{AccountID}}
+                <pre>{{URLBegin}}backend/vse_clear_values.php?account_id={{AccountID}}
 &app_id={{Application.app_id}}
 &api_key={{Application.api_key}}</pre>  
             </a>                      
