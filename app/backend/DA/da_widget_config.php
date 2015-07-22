@@ -128,9 +128,9 @@ class da_widget_config {
      */
     public static function DeleteWidgetConfig($widget_config_id) {
         
-      $sqlCommand = "DELETE"
-                . " FROM widget_config "
-                . " WHERE widget_config_id = ?";
+      $sqlCommand = "UPDATE widget_config "
+                . " SET deleted_datetime= NOW()"
+                . " WHERE widget_config_id = ? ";
         
         $paramTypeSpec = "i";
         
@@ -157,7 +157,7 @@ class da_widget_config {
         $result = new stdClass();
         
         $result->Status="DELETE SUCCESS";
-        $result->$widget_config_id= $widget_config_id;
+        $result->widget_config_id= $widget_config_id;
         return $result;
 
       
@@ -209,7 +209,8 @@ class da_widget_config {
          
         $sqlCommand = "SELECT widget_config_id, widget_id, vse_label, simple_object_property, friendly_label, options_json"
                 . " FROM widget_config "
-                . " WHERE widget_id = ?";
+                . " WHERE widget_id = ?"
+                . " AND deleted_datetime = NULL";
         
         $paramTypeSpec = "i";
 

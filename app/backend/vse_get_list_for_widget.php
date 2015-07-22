@@ -1,6 +1,6 @@
 <?php
 
-//TEST: http://localhost:8080/pvcloud_backend/vse_get_values.php?account_id=1&widget_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e&optional_label=DIRECT+TEST&optional_max_limit=0
+//TEST: http://localhost:8080/pvcloud/backend/vse_get_values.php?account_id=1&widget_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e&optional_label=DIRECT+TEST&optional_max_limit=0
 error_reporting(E_ERROR);
 
 class simpleResponse {
@@ -33,7 +33,7 @@ function execute() {
         $parameters = collectParameters();
 
         if (validate($parameters)) {
-            $entries = da_vse_data::GetEntries($parameters->widget_id, $parameters->optional_vse_label, $parameters->optional_max_limit);
+            $entries = da_vse_data::GetEntriesForWidget($parameters->widget_id, $parameters->optional_max_limit, $parameters->last_entry_id);
             $response->status = "OK";
             $response->message = "SUCCESS";
             $response->data = $entries;
@@ -53,9 +53,10 @@ function collectParameters() {
     $parameters = new stdClass();
     $parameters->widget_id = filter_input(INPUT_GET, "widget_id");
     $parameters->optional_max_limit = filter_input(INPUT_GET, "optional_max_limit");
+    $parameters->last_entry_id = filter_input(INPUT_GET, "last_entry_id");
 
-    if (!isset($parameters->optional_vse_label) || $parameters->optional_vse_label == NULL)
-        $parameters->optional_vse_label = '';
+    if (!isset($parameters->last_entry_id) || $parameters->last_entry_id == NULL)
+        $parameters->last_entry_id = '';
     if (!isset($parameters->optional_max_limit) || $parameters->optional_max_limit == NULL || !is_numeric($parameters->optional_max_limit))
         $parameters->optional_max_limit = 0;
 

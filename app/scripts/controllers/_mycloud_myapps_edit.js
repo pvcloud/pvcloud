@@ -101,8 +101,8 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
 
         }
     };
-    
-    
+
+
 
     checkForDevelopmentRedirection();
 
@@ -179,7 +179,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
     function initialize() {
         $scope.ArticleID = $routeParams.article_id;
         $scope.SubArticleID = $routeParams.subarticle_id;
-        
+
 
 
         if ($routeParams.article_id !== "new") {
@@ -194,7 +194,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
             $scope.AppVisibility = 1;
         }
 
-        switch ($scope.SubArticleID){
+        switch ($scope.SubArticleID) {
             case "tab_pages":
                 $scope.CurrentTab = $scope.Tabs.Pages;
                 break;
@@ -220,21 +220,18 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
 
     function checkForDevelopmentRedirection() {
         var protocol = window.location.protocol;
-        //TODO: Making protocol for WGET to be HTTP until we find an easy way to install wget-ssl in Galileo
-        //pvcloud_api.js driver will anyway interact ONLY with HTTPS
-
-        protocol = "http:";
         var hostname = window.location.host;
         var port = window.location.port;
-
-        if (port === 9000 || port === '9000') {
-            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080";
-        } else {
-            $scope.URLBegin = protocol + "//" + hostname;
+        if (port !== "") {
+            port = ":" + port;
         }
-        
+
+        var path = window.location.pathname;
+        if (port === 9000 || port === '9000') {
+            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080" + path;
+        } else {
+            $scope.URLBegin = protocol + "//" + hostname + port + path;
+        }
     }
-
-
 });
 

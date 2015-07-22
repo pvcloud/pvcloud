@@ -27,7 +27,6 @@
                     var newURL = currentURL.replace("http", "https").replace(":8080", "").replace(":9000", "");
                     window.location.href = newURL;
                 }
-            } else {
             }
         </script>
 
@@ -39,7 +38,9 @@
 
         <!-- Add your site or application content here -->
 
-        <div ng-view="" class="ngview"></div>
+        <!--<div ng-view="" class="ngview"></div>-->
+        
+        <div ng-view="" ui-view="" autoscroll="true" ng-class="app.viewAnimation" class="ngview content-wrapper ng-scope ng-fadeInUp"></div>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
         <script>
@@ -108,6 +109,7 @@
         <script src="scripts/services/labelsService.js"></script>
         <script src="scripts/services/pageService.js"></script>
         <script src="scripts/services/vseValuesService.js"></script>
+        <script src="scripts/services/vseWidgetValuesService.js"></script>
         <script src="scripts/controllers/_mycloud_inviteafriend.js"></script>
         <script src="scripts/controllers/_mycloud_mynetwork.js"></script>
         <script src="scripts/services/invitationservice.js"></script>

@@ -91,9 +91,9 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                             ).$promise.then(function (response) {
                         UtilityService.ProcessServiceResponse(response,
                                 function success(response) {
-                                var page = response.data;
-                                loadDataToForm($scope.App, page);
-                                alert("Los datos se almacenaron satisfactoriamente.");
+                                    var page = response.data;
+                                    loadDataToForm($scope.App, page);
+                                    alert("Los datos se almacenaron satisfactoriamente.");
                                 },
                                 function error(response) {
                                     console.log(response);
@@ -222,10 +222,12 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         var hostname = window.location.host;
         var port = window.location.port;
 
-        if (port === 9000 || port === '9000') {
-            $scope.BackendURLBegin = protocol + "//" + window.location.hostname + ":8080";
+        var path = window.location.pathname;
+
+        if (port === 9000) {
+            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080" + path;
         } else {
-            $scope.BackendURLBegin = protocol + "//" + hostname;
+            $scope.URLBegin = protocol + "//" + hostname + path;
         }
     }
 });

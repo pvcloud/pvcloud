@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/page_get_by_id.php?account_id=1&page_id=1&token=f40d375b097ab7254eff566d72adcc2cff1ba913
+ * http://localhost:8080/pvcloud/backend/page_get_by_id.php?account_id=1&page_id=1&token=f40d375b097ab7254eff566d72adcc2cff1ba913
  * 
  * * */
 error_reporting(E_ERROR);
@@ -17,7 +17,7 @@ class simpleResponse {
 class be_page_ui {
 
     public $page_id = 0;
-    //public $app_id = 0;
+    public $app_id = 0;
     public $title = "";
     public $description = "";
     //public $visibility_type_id = 0;
@@ -122,6 +122,7 @@ class GetPageWebService {
         $pageUI->title = $page->title;
         $pageUI->description = $page->description;
         $pageUI->page_id = $page->page_id;
+        $pageUI->app_id = $page->app_id;
         return $pageUI;
     }
 

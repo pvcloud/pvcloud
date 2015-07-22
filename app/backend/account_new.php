@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/new_account.php?email=jose.a.nunez@gmail.com&nickname=jose&pwd=1234pass
+ * http://localhost:8080/pvcloud/backend/new_account.php?email=jose.a.nunez@gmail.com&nickname=jose&pwd=1234pass
  * 
  * * */
 error_reporting(E_ERROR);
@@ -30,7 +30,7 @@ echo json_encode($response);
 
 function sendNewAccountEmail($email, $guid) {
     $message = "Gracias por registrarse en pvCloud. Por favor haga clic en el siguiente enlace para confirmar su cuenta.";
-    $message .= "http://localhost:8080/pvcloud_backend/account_activate.php?email=$email&guid=$guid";
+    $message .= "http://localhost:8080/pvcloud/backend/account_activate.php?email=$email&guid=$guid";
     $to = $email;
     $subject = "Confirmación de cuenta PV Cloud";
     $headers = 'From: donotreply@costaricamakers.com' . "\r\n";
