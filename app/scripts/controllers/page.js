@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('PageController', function ($scope, LabelsService, $location, sessionService, PageService, vseValuesService, vseWidgetValuesService, AppRegistryService, UtilityService, $routeParams, $rootScope, $window) {
+angular.module('pvcloudApp').controller('PageController', function ($scope, LabelsService, addVseValueService,$location, sessionService, PageService, vseValuesService, vseLastValueService, vseWidgetValuesService, AppRegistryService, UtilityService, $routeParams, $rootScope, $window) {
     console.log("PageController LOADED :-)");
+    var WIDGET_TYPE_CHARTING = 4;
+    var WIDGET_TYPE_DISPLAY = 1;
     $scope.page = null;
     $scope.pageId = $routeParams.pageId;
     
@@ -13,8 +15,16 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     $scope.updateInterval = 1000;
     $scope.chart = null;
     $scope.charts = [];
+    $scope.offAndOns = [];
+    $scope.offAndOn = null;
     $scope.MAX_LIMIT = 60;
     $scope.labelsColor = [];
+    
+    //SHOULD BE CHANGED to a generic solution
+    $scope.pumpOn = "";
+    $scope.chillerOn = "";
+    $scope.chartTitle = "";
+    
     
     $scope.validateSession = function() {
         sessionService.ValidateSession().$promise.then(function (response) {
@@ -135,16 +145,29 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         return result;
     };
     
+    $scope.parseVseValue = function(rawValue, typeName) {
+        var vseValue = rawValue;
+        if (typeName === "NUMERIC") {
+            vseValue = parseInt(rawValue);
+        } else if (typeName === "FLOAT") {
+            vseValue = parseFloat(rawValue);
+        }
+        
+        return vseValue;
+    }
+    
     $scope.copyDataLabelForPlot = function(data, label, widgetId) {
         var result = $scope.initChannelCustomDataInPlot(label, widgetId);
         if (!data || data.length > 0) {
             var vseValues = [];
           var vseValue =  -1;
           var vseCreatedTimestamp;
-			for (var i = 0; i < data.length; ++i) {
+			//for (var i = 0; i < data.length; ++i) {
+			 for (var i = data.length - 1; i >= 0; i--) {
 			    if (data[i].vse_label === label) {
-    			    vseValue =  data[i].vse_value;
-    			    vseValue = parseInt(vseValue);
+    			    //vseValue =  data[i].vse_value;
+    			    vseValue = $scope.parseVseValue(data[i].vse_value, data[i].vse_type);
+    			    //vseValue = parseInt(vseValue);
     			    //vseCreatedTimestamp = Date.parse(data[i].created_datetime);
 
     			    //vseValues.unshift([new Date(data[i].created_datetime),vseValue]);
@@ -198,11 +221,11 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         }
     };
     
-    $scope.getNextWidgetId = function() {
+    $scope.getNextWidgetId = function(widgetType) {
         var widgetId = -1;
         if ($scope.page && $scope.page.widgets) {
             for (var i = 0; i < $scope.page.widgets.length; ++i) {
-			    if (!$scope.page.widgets[i].wasCreated) {
+			    if (!$scope.page.widgets[i].wasCreated && widgetType===$scope.page.widgets[i].widget_type_id) {
 			        $scope.page.widgets[i].wasCreated = true;
 			        widgetId = $scope.page.widgets[i].widget_id;
 			        break;
@@ -210,6 +233,19 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 			}
         }
         return widgetId;
+    };
+    
+    $scope.getTitleByWidgetId = function(widgetId) {
+        var title = "";
+        if ($scope.page && $scope.page.widgets) {
+            for (var i = 0; i < $scope.page.widgets.length; ++i) {
+			    if ($scope.page.widgets[i].widget_id === widgetId) {
+			        title = $scope.page.widgets[i].title;
+			        break;
+			    }	
+			}
+        }
+        return title;
     };
     
     $scope.getRefreshFrequencyByWidgetId = function(widgetId) {
@@ -266,19 +302,65 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         
     }
     
+    $scope.getChartTitle = function() {
+      if (!$scope.chartTitle) {
+         for (var i = 0; i < $scope.charts; i++) {
+            $scope.chartTitle = $scope.charts[i];
+		    break;
+			
+		} 
+      }
+      return $scope.chartTitle;
+    };
+    
+    $scope.updateChiller = function(event) {
+        var v = 0;
+        if (event && event.toElement && event.toElement.value) {
+           v = $scope.translateToBoolean(event.toElement.checked);
+        }
+        
+        $scope.addValue("CHILLER",v,"BOOLEAN"); 
+      
+    };
+    
+    $scope.translateToBoolean = function(v) {
+        if (v) {
+            return 1;  
+        } else if (!v) {
+            return 0;
+        }
+        $scope.chillerOn = event.toElement.checked;
+        return 0;
+    };
+    
+    $scope.updatePump = function(event) {
+        
+        var v = 0;
+        if (event && event.toElement && event.toElement.value) {
+           v = $scope.translateToBoolean(event.toElement.checked);
+        }
+        $scope.pumpOn = event.toElement.checked;
+        $scope.addValue("PUMP",v,"BOOLEAN"); 
+     
+    };
+    
     $window.FlotChart = function (element, widgetId) {
         // Properties
         this.element = $(element);
         this.widgetId = widgetId;
         this.refreshFrequency = null;
         this.last_entry_id = 0;
+        this.title = null;
         
         // Public method
         this.requestData = function () {
             var self = this;
             if (this.widgetId===-1) {
-                this.widgetId = $scope.getNextWidgetId();
-                
+                this.widgetId = $scope.getNextWidgetId(WIDGET_TYPE_CHARTING);
+            }
+            if (!this.title) {
+                this.title = $scope.getTitleByWidgetId(this.widgetId);
+                $scope.chartTitle = this.title;
             }
             if (!this.refreshFrequency) {
                 $scope.updateInterval = $scope.getRefreshFrequencyByWidgetId(this.widgetId);
@@ -286,7 +368,9 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             } else {
                 $scope.updateInterval = this.refreshFrequency;
             }
-    
+            if ($scope.offAndOn) {
+                $scope.offAndOn.requestData();
+            }
             vseWidgetValuesService.GetWidgetValues(this.widgetId,this.last_entry_id,$scope.MAX_LIMIT,$scope.app.app_id, $scope.accountId, $scope.token,$scope.app.api_key).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
@@ -308,6 +392,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                                     //$scope.update();
                                     $.plot( self.element,$scope.dataToDraw, $scope.option );
                                 }
+                                
                             }
                             setTimeout($scope.updateChart, $scope.updateInterval);
                         },
@@ -322,6 +407,126 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                         });
             });
     
+            return this; // chain-ability
+    
+        };
+    
+        // Listen to refresh events
+        this.listen = function() {
+          var self = this,
+              chartPanel = this.element.parents('.panel').eq(0);
+          
+          // attach custom event
+          chartPanel.on('panel-refresh', function(event, panel) {
+            // request data and remove spinner when done
+            self.requestData(self.option, function(){
+              panel.removeSpinner();
+            });
+    
+          });
+
+      return this; // chain-ability
+    };
+
+  };
+  
+  $scope.addValue = function(label,value,type) {
+        function success(response) {
+            console.log("SUCCESS @ ADD VALUE");
+            
+            
+        };
+        function error(response) {
+            console.log("ERROR @ add value " + response);
+            $location.path("/");
+        };
+        function exception(response) {
+            console.log("EXCEPTION @ add value");
+            alert("Disculpas por la interrupción. Ocurrió un problema.");
+            $location.path("/");
+        };
+    addVseValueService.AddValue1(label,value,type,$scope.app.app_id, $scope.accountId, $scope.token,$scope.app.api_key,success,error);
+                        
+              
+  };
+  
+  $scope.updateOffAndOnValues = function(data) {
+      if (data.entry_id)  {
+        if (data.vse_value && data.vse_value === "1") {
+            if (data.vse_label==="CHILLER") {
+                $scope.chillerOn = true;
+            } else {
+                $scope.pumpOn = true;
+            }
+        } else {
+            if (data.vse_label==="CHILLER") {
+                $scope.chillerOn = false;
+            } else {
+                $scope.pumpOn = false;
+            } 
+        }
+        
+        
+    } else {
+            if (data.vse_label==="CHILLER") {
+                $scope.chillerOn = false;
+            } else {
+                $scope.pumpOn = false;
+            } 
+    }
+  }
+  
+  $window.OffAndOn = function (element, widgetId) {
+        // Properties
+        this.element = $(element);
+        this.widgetId = widgetId;
+        this.refreshFrequency = null;
+        this.label = "";
+        
+        this.getLastValue = function(label) {
+            
+            vseLastValueService.GetValue(label,$scope.app.app_id, $scope.accountId, $scope.token,$scope.app.api_key).$promise.then(function (response) {
+                UtilityService.ProcessServiceResponse(response,
+                        function success(response) {
+                            console.log("SUCCESS @ get LAST VALUE");
+                            
+                            //$scope.dataToDraw = $scope.processDataByLabels(response.data);
+                            $scope.updateOffAndOnValues(response.data);
+                            //setTimeout($scope.updateChart, $scope.updateInterval);
+                        },
+                        function error(response) {
+                            console.log("ERROR @ get last value " + response);
+                            $location.path("/");
+                        },
+                        function exception(response) {
+                            console.log("EXCEPTION @ get last value");
+                            alert("Disculpas por la interrupción. Ocurrió un problema.");
+                            $location.path("/");
+                        });
+            });
+        }
+        
+        // Public method
+        this.requestData = function () {
+            var self = this;
+            if (this.widgetId===-1) {
+                this.widgetId = $scope.getNextWidgetId(WIDGET_TYPE_DISPLAY);
+                
+            }
+            // if (!this.refreshFrequency) {
+                
+            //     this.refreshFrequency = $scope.updateInterval;
+            // } 
+            var widget = $scope.findWidgetById(this.widgetId);
+            if (!widget) {
+                return;
+            }
+            for (var i = 0; i < widget.widget_configs.length; ++i) {
+                if (widget.widget_configs[i].vse_label) {
+                    this.getLastValue(widget.widget_configs[i].vse_label);
+                }
+			 
+			}
             return this; // chain-ability
     
         };
@@ -408,7 +613,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         (function () {
             var Selector = '.chart-line';
             $(Selector).each(function() {
-                $scope.chart = new FlotChart(this, $scope.getNextWidgetId());
+                $scope.chart = new FlotChart(this, $scope.getNextWidgetId(WIDGET_TYPE_CHARTING));
                 
                 $scope.option = {
                     series: {
@@ -450,8 +655,25 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                } else {
                     $scope.chart.pendingToRequestData = true;
                }
-               // $scope.chart.requestData().listen();
-    
+               
+            });
+        })();
+        
+         (function () {
+            var Selector = '.offon-values';
+            $(Selector).each(function() {
+                $scope.offAndOn = new OffAndOn(this, $scope.getNextWidgetId(WIDGET_TYPE_DISPLAY));
+                
+                
+
+               $scope.offAndOns.push($scope.offAndOn);
+               if ($scope.page && $scope.app) {
+                    $scope.offAndOn.pendingToRequestData = false;
+                    $scope.offAndOn.requestData().listen();
+               } else {
+                    $scope.offAndOn.pendingToRequestData = true;
+               }
+               
             });
         })();
     
