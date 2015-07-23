@@ -162,17 +162,15 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             var vseValues = [];
           var vseValue =  -1;
           var vseCreatedTimestamp;
+          var vseCreated;
 			//for (var i = 0; i < data.length; ++i) {
 			 for (var i = data.length - 1; i >= 0; i--) {
 			    if (data[i].vse_label === label) {
-    			    //vseValue =  data[i].vse_value;
     			    vseValue = $scope.parseVseValue(data[i].vse_value, data[i].vse_type);
-    			    //vseValue = parseInt(vseValue);
-    			    //vseCreatedTimestamp = Date.parse(data[i].created_datetime);
-
-    			    //vseValues.unshift([new Date(data[i].created_datetime),vseValue]);
     			    
-    			    vseValues.unshift([i,vseValue]);
+    			    //vseCreatedTimestamp = Date.parse(data[i].created_datetime);
+                    vseCreated = $scope.parseDate(data[i].created_datetime);
+                    vseValues.unshift([vseCreated,vseValue]);
     			    
 			    }
 				
@@ -375,10 +373,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
                             console.log("SUCCESS @ page");
-                            
-                            //$scope.dataToDraw = $scope.processDataByLabels(response.data);
                             if (response.data && response.data.length > 0)  {
-                            //if (response.data)  {
                                 $scope.currentResponseData = response.data;
                                 
                                 $scope.labelValues = $scope.mergeWithLastData($scope.currentResponseData);
@@ -389,7 +384,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                                 if (!$scope.plot) {
                                     $scope.plot = $.plot( self.element,$scope.dataToDraw, $scope.option );
                                 } else {
-                                    //$scope.update();
                                     $.plot( self.element,$scope.dataToDraw, $scope.option );
                                 }
                                 
@@ -433,8 +427,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
   $scope.addValue = function(label,value,type) {
         function success(response) {
             console.log("SUCCESS @ ADD VALUE");
-            
-            
         };
         function error(response) {
             console.log("ERROR @ add value " + response);
@@ -489,10 +481,8 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
                             console.log("SUCCESS @ get LAST VALUE");
-                            
-                            //$scope.dataToDraw = $scope.processDataByLabels(response.data);
                             $scope.updateOffAndOnValues(response.data);
-                            //setTimeout($scope.updateChart, $scope.updateInterval);
+                            
                         },
                         function error(response) {
                             console.log("ERROR @ get last value " + response);
@@ -513,10 +503,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                 this.widgetId = $scope.getNextWidgetId(WIDGET_TYPE_DISPLAY);
                 
             }
-            // if (!this.refreshFrequency) {
-                
-            //     this.refreshFrequency = $scope.updateInterval;
-            // } 
+            
             var widget = $scope.findWidgetById(this.widgetId);
             if (!widget) {
                 return;
@@ -552,11 +539,11 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
   
   $scope.requestDataForPendings = function() {
       for (var i = 0; i < $scope.charts.length; ++i) {
-			    if ($scope.charts[i].pendingToRequestData) {
-    			    $scope.charts[i].requestData();
-			    }
-				
-			}
+		    if ($scope.charts[i].pendingToRequestData) {
+			    $scope.charts[i].requestData();
+		    }
+			
+		}
       
   }
   
@@ -606,6 +593,14 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
   
   $scope.initPageData();
   
+  $scope.parseDate = function(s) {
+      //2015-07-22 20:01:50
+      var re = /^(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)$/;
+      var m = re.exec(s);
+      return m ? new Date(m[1], m[2]-1, m[3], m[4], m[5], m[6]) : null;
+
+  };
+  
     
     angular.element(document).ready(function () {
       
@@ -637,12 +632,38 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                         content: '%x : %y'
                     },
                     xaxis: {
-                        
+                        tickSize: [2, "second"],
+                        tickFormatter: function (v, axis) {
+                            var date =new Date(v);
+                            if (date.getSeconds() % 60 == 0) {
+                                var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                                var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                                var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+                     
+                                return hours + ":" + minutes + ":" + seconds;
+                            } else {
+                                return "";
+                            }
+                        },
                         tickColor: '#eee',
-                        mode: 'time'
+                        mode: 'time',
+                        axisLabel: "Time",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Verdana, Arial',
+                        axisLabelPadding: 10
                     },
                     yaxis: {
+                        axisLabel: "Kilowatts",
                         position: 'left',
+                        tickFormatter: function (v, axis) {
+                            return v + "Kw";
+                            
+                        },
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Verdana, Arial',
+                        axisLabelPadding: 6,
                         tickColor: '#eee'
                     },
                     shadowSize: 0
@@ -663,9 +684,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             var Selector = '.offon-values';
             $(Selector).each(function() {
                 $scope.offAndOn = new OffAndOn(this, $scope.getNextWidgetId(WIDGET_TYPE_DISPLAY));
-                
-                
-
                $scope.offAndOns.push($scope.offAndOn);
                if ($scope.page && $scope.app) {
                     $scope.offAndOn.pendingToRequestData = false;
