@@ -6,13 +6,13 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit_pages', function (
 
     getListOfPages();
 
-    var app_id = $routeParams.article_id;
+    var app_id = $routeParams.p1;
 
     $scope.GoToPageDef = function () {
-        $location.path("/mycloud/pagesdef/" + app_id + "/new");
+        $location.path("/pagesdef/" + app_id + "/new");
     };
     $scope.GoToEditPage = function (page_id) {
-        $location.path("/mycloud/pagesdef/" + app_id + "/" + page_id);
+        $location.path("/pagesdef/" + app_id + "/" + page_id);
     };
 
     function processDevRedirects() {
@@ -31,7 +31,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit_pages', function (
     function getListOfPages() {
         var token = sessionService.GetCurrentToken();
         var account_id = sessionService.GetCurrentAccountID();
-        var app_id = $routeParams.article_id;
+        var app_id = $routeParams.p1;
 
         AppRegistryService.GetPagesListForAppID(account_id, token, app_id).$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,

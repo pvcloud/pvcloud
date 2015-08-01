@@ -19,7 +19,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
                 return;
             }
         }
-        $location.path("/mycloud/myapps");
+        $location.path("/apps");
     };
 
     $scope.SaveApp = function () {
@@ -58,7 +58,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
                             alert("App #" + app_id + " fue removida satisfactoriamente");
-                            $location.path("/mycloud/myapps");
+                            $location.path("/apps");
                         },
                         function error(response) {
                             console.log(response);
@@ -124,7 +124,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
                     UtilityService.ProcessServiceResponse(response,
                             function success(response) {
                                 var app = response.data;
-                                $location.path("/mycloud/myapps/" + app.app_id);
+                                $location.path("/apps/" + app.app_id);
                                 alert("Los datos se almacenaron satisfactoriamente.");
                             },
                             function error(response) {
@@ -177,15 +177,15 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
     }
 
     function initialize() {
-        $scope.ArticleID = $routeParams.article_id;
-        $scope.SubArticleID = $routeParams.subarticle_id;
+        $scope.AppID = $routeParams.p1;
+        $scope.TabSpec = $routeParams.p2;
 
 
 
-        if ($routeParams.article_id !== "new") {
+        if ($routeParams.p1 !== "new") {
             var token = sessionService.GetCurrentToken();
             var account_id = sessionService.GetCurrentAccountID();
-            $scope.ApplicationID = $routeParams.article_id;
+            $scope.ApplicationID = $routeParams.p1;
             AppRegistryService.GetAppByID(account_id, token, $scope.ApplicationID).$promise.then(function (response) {
                 loadAppToForm(response.data);
             });
@@ -194,7 +194,7 @@ angular.module('pvcloudApp').controller('_mycloud_myapps_edit', function ($scope
             $scope.AppVisibility = 1;
         }
 
-        switch ($scope.SubArticleID) {
+        switch ($scope.TabSpec) {
             case "tab_pages":
                 $scope.CurrentTab = $scope.Tabs.Pages;
                 break;

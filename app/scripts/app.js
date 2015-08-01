@@ -1,41 +1,32 @@
 'use strict';
 
-angular
-        .module('pvcloudApp', [
-            'ngAnimate',
-            'ngCookies',
-            'ngResource',
-            'ngRoute',
-            'ngSanitize',
-            'ngTouch'
-        ])
+angular.module('pvcloudApp', [
+    'ngAnimate',
+    'ngCookies',
+    'ngResource',
+    'ngRoute',
+    'ngSanitize',
+    'ngTouch'
+])
         .config(function ($routeProvider) {
             $routeProvider
                     .when('/', {
                         templateUrl: 'views/main.html',
                         controller: 'MainCtrl'
                     })
-                    .when('/about', {
-                        templateUrl: 'views/about.html',
-                        controller: 'AboutCtrl'
-                    })
-                    .when('/mycloud/:section/:article_id/:subarticle_id',{
-                        templateUrl: 'views/mycloud.html',
-                        controller: 'MyCloudCtrl'
-                    })  
-                    .when('/mycloud/:section/:article_id/:subarticle_id/:widget_id',{
+                    .when('/:section', {
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
                     })
-                    .when('/mycloud/:section/:article_id', {
+                    .when('/:section/:p1', {
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
                     })
-                    .when('/mycloud/:section', {
+                    .when('/:section/:p1/:p2', {
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
                     })
-                    .when('/mycloud', {
+                    .when('/:section/:p1/:p2/:p3', {
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
                     })
@@ -46,11 +37,11 @@ angular
                     .when('/page/:pageId', {
                         templateUrl: 'views/page.html',
                         controller: 'PageController'
-                    }) 
+                    })
                     .when('/pages', {
                         templateUrl: 'views/pages.html',
                         controller: 'PagesCtrl'
-                    })                    
+                    })
                     .when('/passwordrecovery/:account_id/:confirmation_code', {
                         templateUrl: 'views/passwordrecovery.html',
                         controller: 'PasswordrecoveryCtrl'
@@ -62,6 +53,6 @@ angular
                         templateUrl: 'views/error.html'
                     })
                     .otherwise({
-                        redirectTo: '/pages'
+                        redirectTo: '/'
                     });
         });
