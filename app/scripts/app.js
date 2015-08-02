@@ -14,6 +14,10 @@ angular.module('pvcloudApp', [
                         templateUrl: 'views/main.html',
                         controller: 'MainCtrl'
                     })
+                    .when('/page/:pageId', {
+                        templateUrl: 'views/page.html',
+                        controller: 'PageController'
+                    })                    
                     .when('/:section', {
                         templateUrl: 'views/mycloud.html',
                         controller: 'MyCloudCtrl'
@@ -33,10 +37,6 @@ angular.module('pvcloudApp', [
                     .when('/pmchart', {
                         templateUrl: 'views/pmchart.html',
                         controller: 'PMChartController'
-                    })
-                    .when('/page/:pageId', {
-                        templateUrl: 'views/page.html',
-                        controller: 'PageController'
                     })
                     .when('/pages', {
                         templateUrl: 'views/pages.html',
