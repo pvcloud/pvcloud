@@ -5,17 +5,12 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">{{page.title}} </span></sub></a> 
-                <br />
-                <p class="navbar-brand lead"> {{page.description}}</p>
+                <!--<br />-->
+                <!--<p class="navbar-brand lead"> {{page.description}}</p>-->
                 
             </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                   
-                </ul>
-            </div><!-- /.navbar-collapse -->
+           
         </div><!-- /.container-fluid -->
     </nav>    
     
@@ -29,7 +24,7 @@
                      <div id="panelChart4" class="panel panel-default">
                         <div class="panel-heading">
                            <paneltool tool-collapse="tool-collapse" tool-dismiss="tool-dismiss"></paneltool>
-                           <div class="panel-title" >{{page.widgets[0].title}}</div>
+                           <div class="panel-title" >{{getChartTitle()}}</div>
                         </div>
                         <div collapse="panelChart4" class="panel-wrapper">
                            <div class="panel-body">
@@ -38,6 +33,94 @@
                         </div>
                      </div>
                   </div>
+            </div>
+            <!--<div class="row">-->
+            <!--   <div class="col-lg-3 col-sm-6">-->
+            <!--       START widget-->
+            <!--      <div class="panel widget bg-purple">-->
+            <!--         <div class="row row-table">-->
+            <!--            <div class="col-xs-4 text-center bg-purple-dark pv-lg">-->
+            <!--               <em class="icon-energy fa-3x"></em>-->
+            <!--            </div>-->
+            <!--            <div class="col-xs-8 pv-lg">-->
+            <!--               <div class="h2 mt0">2.3-->
+            <!--                  <small>KW</small>-->
+            <!--               </div>-->
+            <!--               <div class="text-uppercase">CHANNEL 2</div>-->
+            <!--            </div>-->
+            <!--         </div>-->
+            <!--      </div>-->
+            <!--   </div>-->
+            <!--   <div class="col-lg-3 col-sm-6">-->
+            <!--       START widget-->
+            <!--      <div class="panel widget bg-purple">-->
+            <!--         <div class="row row-table">-->
+            <!--            <div class="col-xs-4 text-center bg-purple-dark pv-lg">-->
+            <!--               <em class="icon-energy fa-3x"></em>-->
+            <!--            </div>-->
+            <!--            <div class="col-xs-8 pv-lg">-->
+            <!--               <div class="h2 mt0">19-->
+            <!--                  <small>KW</small>-->
+            <!--               </div>-->
+            <!--               <div class="text-uppercase">CHANNEL 1</div>-->
+            <!--            </div>-->
+            <!--         </div>-->
+            <!--      </div>-->
+            <!--   </div>-->
+            <!--</div>-->
+            
+            <div class="row">
+               <div ng-repeat="c in lastValueVse" class="col-lg-3 col-sm-6">
+                  <!-- START widget-->
+                  <div class="panel widget bg-purple">
+                     <div class="row row-table">
+                        <div class="col-xs-4 text-center bg-purple-dark pv-lg">
+                           <em class="icon-energy fa-3x"></em>
+                        </div>
+                        <div class="col-xs-8 pv-lg">
+                           <div class="h2 mt0">{{c.vse_value}}
+                              <small>KW</small>
+                           </div>
+                           <div class="text-uppercase">{{c.friendly_label}}</div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               
+            </div>
+            
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                       <div class="panel-heading">{{getOffAndOnTitle()}}</div>
+                           <div class="panel-body offon-values " id="52">
+                                <fieldset>
+                                   <div class="form-group">
+                                       <label class="col-sm-2 control-label">PUMP</label>
+                                       <div class="col-sm-8">
+                                          <label class="switch switch-sm">
+                                             <input id="pumpOn" name="pumpOn" type="checkbox"  ng-model="pumpOn" ng-click="updatePump($event)" />
+                                             <span></span>
+                                          </label>
+                                       </div>
+                                    </div>
+                                </fieldset>
+                                 <fieldset>
+                                    <div class="form-group">
+                                       <label class="col-sm-2 control-label">CHILLER</label>
+                                       <div class="col-sm-8">
+                                          <label class="switch switch-sm">
+                                             <input id="chillerOn" name="chillerOn" type="checkbox" ng-model="chillerOn" ng-click="updateChiller($event)"/>
+                                             <span></span>
+                                          </label>
+                                       </div>
+                                    </div>
+                                 </fieldset>
+                           </div>
+                        </div>
+                    </div>
+                </div>
             </div>
     </div>
 

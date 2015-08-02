@@ -210,7 +210,7 @@ class da_widget_config {
         $sqlCommand = "SELECT widget_config_id, widget_id, vse_label, simple_object_property, friendly_label, options_json"
                 . " FROM widget_config "
                 . " WHERE widget_id = ?"
-                . " AND deleted_datetime = NULL";
+                . " AND deleted_datetime IS NULL";
         
         $paramTypeSpec = "i";
 
