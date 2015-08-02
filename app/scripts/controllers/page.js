@@ -24,6 +24,11 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     $scope.pumpOn = "";
     $scope.chillerOn = "";
     $scope.chartTitle = "";
+    $scope.offAndOnTitle = "";
+    
+    $scope.lastValueWidgetUpdate = [];
+    
+    $scope.lastValueVse = [];
     
     
     $scope.validateSession = function() {
@@ -74,8 +79,9 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     
     $scope.findWidgetById = function(widgetId) {
         var widget = null;
+        var idToFind = parseInt(widgetId);
         for (var i = 0; i < $scope.page.widgets.length; ++i) {
-		    if ($scope.page.widgets[i].widget_id === widgetId) {
+		    if ($scope.page.widgets[i].widget_id === idToFind) {
 			    widget = $scope.page.widgets[i];
 			    break;
 		    }
@@ -95,6 +101,21 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 		return config;
         
         
+    };
+    
+    $scope.isWidgetUpdated = function(idWidget) {
+        var result =false;
+        if (!$scope.lastValueWidgetUpdate) {
+            return false;
+        }
+        for (var i = 0; i < $scope.lastValueWidgetUpdate.length; ++i) {
+		    if ($scope.lastValueWidgetUpdate[i] === idWidget) {
+			    result =true;
+			    break;
+		    }
+				
+		}
+		return result;
     };
     
    $scope.generateRandomColor = function() {
@@ -161,10 +182,8 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         if (!data || data.length > 0) {
             var vseValues = [];
           var vseValue =  -1;
-          var vseCreatedTimestamp;
           var vseCreated;
-			//for (var i = 0; i < data.length; ++i) {
-			 for (var i = data.length - 1; i >= 0; i--) {
+			for (var i = data.length - 1; i >= 0; i--) {
 			    if (data[i].vse_label === label) {
     			    vseValue = $scope.parseVseValue(data[i].vse_value, data[i].vse_type);
     			    
@@ -173,57 +192,36 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                     vseValues.unshift([vseCreated,vseValue]);
     			    
 			    }
-				
 			}
-
             result.data = vseValues;
-
         }
         return result;
-        
     };
 
-    $scope.copyDataForFlot = function(data) {
-        
-        var result = [
-            {
-                label: "Canal 1",
-                color: "#aad874",
-                data: []
-            }
-            ];
-        
-        if (!data || data.length > 0) {
-          var vseValue =  -1;
-			for (var i = 0; i < data.length; ++i) {
-			    vseValue =  data[i].vse_value;
-			    vseValue = parseInt(vseValue);
-			    result[0].data.push([i,vseValue]);
-				
-			}
-        }
-        return result;
-        
-    };
-    
     $scope.update = function () {
 		$scope.plot.setData($scope.dataToDraw);
 		$scope.plot.draw();
     };
         
-    $scope.updateChart = function() {
+    $scope.updateWidgets = function() {
+        $scope.lastValueWidgetUpdate = [];
+        if ($scope.offAndOn) {
+            $scope.offAndOn.requestData();
+        }
        if ($scope.charts && $scope.charts.length > 0) {
             for (var i = 0; i < $scope.charts.length; ++i) {
 			     $scope.charts[i].requestData();  	
 			}
         }
+        $scope.updateLastValues()
     };
     
-    $scope.getNextWidgetId = function(widgetType) {
+    $scope.getNextWidgetId = function(widgetType, id) {
         var widgetId = -1;
+        var findWidgetId = parseInt(id);
         if ($scope.page && $scope.page.widgets) {
             for (var i = 0; i < $scope.page.widgets.length; ++i) {
-			    if (!$scope.page.widgets[i].wasCreated && widgetType===$scope.page.widgets[i].widget_type_id) {
+			    if (!$scope.page.widgets[i].wasCreated && widgetType===$scope.page.widgets[i].widget_type_id && (!findWidgetId || $scope.page.widgets[i].widget_id===findWidgetId) ) {
 			        $scope.page.widgets[i].wasCreated = true;
 			        widgetId = $scope.page.widgets[i].widget_id;
 			        break;
@@ -231,6 +229,19 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 			}
         }
         return widgetId;
+    };
+    
+    $scope.checkedWidgetId = function(id) {
+        var findWidgetId = parseInt(id);
+        if ($scope.page && $scope.page.widgets) {
+            for (var i = 0; i < $scope.page.widgets.length; ++i) {
+			    if ($scope.page.widgets[i].widget_id===findWidgetId) {
+			        $scope.page.widgets[i].wasCreated = true;
+			        break;
+			    }	
+			}
+        }
+        
     };
     
     $scope.getTitleByWidgetId = function(widgetId) {
@@ -270,7 +281,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                         result.push(dataResult);
                     }
                 }
-			 
 			}
         }
         return result;
@@ -311,6 +321,18 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
       return $scope.chartTitle;
     };
     
+    $scope.getOffAndOnTitle = function() {
+      if (!$scope.offAndOnTitle) {
+         for (var i = 0; i < $scope.offAndOns; i++) {
+             if ($scope.offAndOns[i].title) {
+                $scope.offAndOnTitle = $scope.offAndOns[i].title;
+    		    break;
+             }
+		} 
+      }
+      return $scope.offAndOnTitle;
+    };
+    
     $scope.updateChiller = function(event) {
         var v = 0;
         if (event && event.toElement && event.toElement.value) {
@@ -318,6 +340,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         }
         
         $scope.addValue("CHILLER",v,"BOOLEAN"); 
+        $scope.chillerOn = event.toElement.checked;
       
     };
     
@@ -332,14 +355,14 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
     
     $scope.updatePump = function(event) {
-        
+       
         var v = 0;
         if (event && event.toElement && event.toElement.value) {
            v = $scope.translateToBoolean(event.toElement.checked);
         }
-        $scope.pumpOn = event.toElement.checked;
+        
         $scope.addValue("PUMP",v,"BOOLEAN"); 
-     
+        $scope.pumpOn = event.toElement.checked;
     };
     
     $window.FlotChart = function (element, widgetId) {
@@ -352,9 +375,10 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
         
         // Public method
         this.requestData = function () {
+            
             var self = this;
             if (this.widgetId===-1) {
-                this.widgetId = $scope.getNextWidgetId(WIDGET_TYPE_CHARTING);
+                this.widgetId = $scope.getNextWidgetId(WIDGET_TYPE_CHARTING,"");
             }
             if (!this.title) {
                 this.title = $scope.getTitleByWidgetId(this.widgetId);
@@ -366,9 +390,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             } else {
                 $scope.updateInterval = this.refreshFrequency;
             }
-            if ($scope.offAndOn) {
-                $scope.offAndOn.requestData();
-            }
+            
             vseWidgetValuesService.GetWidgetValues(this.widgetId,this.last_entry_id,$scope.MAX_LIMIT,$scope.app.app_id, $scope.accountId, $scope.token,$scope.app.api_key).$promise.then(function (response) {
                 UtilityService.ProcessServiceResponse(response,
                         function success(response) {
@@ -388,15 +410,18 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                                 }
                                 
                             }
-                            setTimeout($scope.updateChart, $scope.updateInterval);
+                            setTimeout($scope.updateWidgets, $scope.updateInterval);
                         },
                         function error(response) {
                             console.log("ERROR @ page " + response);
+                            setTimeout($scope.updateWidgets, $scope.updateInterval);
                             $location.path("/");
+                            
                         },
                         function exception(response) {
                             console.log("EXCEPTION @ page");
-                            alert("Disculpas por la interrupción. Ocurrió un problema.");
+                            setTimeout($scope.updateWidgets, $scope.updateInterval);
+                            console.log("Disculpas por la interrupción. Ocurrió un problema.");
                             $location.path("/");
                         });
             });
@@ -442,6 +467,91 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
               
   };
   
+  $scope.findVseLastValue =  function(label) {
+      var result = null;
+      if (!$scope.lastValueVse || $scope.lastValueVse.length ===0) {
+          return result;
+      }
+      
+        for (var i = 0; i < $scope.lastValueVse.length; ++i) {
+            if ($scope.lastValueVse[i].vse_label ===label) {
+                result = $scope.lastValueVse[i];
+                break;
+            }
+		 
+		}
+      return result;
+  };
+  
+  $scope.updateLastValueVse = function(label,niceLabel,value) {
+    
+    var objectVse = {};
+    var obj = $scope.findVseLastValue(label);
+    if (!obj) {
+        objectVse = {vse_label:label,friendly_label:niceLabel,vse_value:value};
+        $scope.lastValueVse.push(objectVse);
+        
+    } else {
+        objectVse = obj;
+        if (value) {
+            objectVse.vse_value = value;
+        }
+        
+    }
+    return objectVse;
+  };
+  
+  $scope.getLastValue = function(label, niceLabel) {
+         $scope.updateLastValueVse(label,niceLabel,null);  
+        vseLastValueService.GetValue(label,$scope.app.app_id, $scope.accountId, $scope.token,$scope.app.api_key).$promise.then(function (response) {
+            UtilityService.ProcessServiceResponse(response,
+                    function success(response) {
+                        console.log("SUCCESS @ get LAST VALUE");
+                        //$scope.lastValueVse.push(response.data);
+                        $scope.updateLastValueVse(response.data.vse_label,null,response.data.vse_value);  
+                        
+                    },
+                    function error(response) {
+                        console.log("ERROR @ get last value " + response);
+                        $location.path("/");
+                    },
+                    function exception(response) {
+                        console.log("EXCEPTION @ get last value");
+                        alert("Disculpas por la interrupción. Ocurrió un problema.");
+                        $location.path("/");
+                    });
+        });
+  };
+  
+  $scope.updateWidgetConfigsVSE = function(widget) {
+      if (!widget.widget_configs || widget.widget_configs.length <= 0) {
+          return;
+      }
+      
+        
+        for (var i = 0; i < widget.widget_configs.length; ++i) {
+            if (widget.widget_configs[i].vse_label) {
+                $scope.getLastValue(widget.widget_configs[i].vse_label, widget.widget_configs[i].friendly_label);
+            }
+		 
+		}
+		
+  };
+  
+  $scope.updateLastValues = function() {
+      $scope.lastValueVse = [];
+      for (var i = 0; i < $scope.page.widgets.length; ++i) {
+		    if ($scope.page.widgets[i].widget_type_id === WIDGET_TYPE_DISPLAY) {
+		        if (!$scope.isWidgetUpdated($scope.page.widgets[i].widget_id)) {
+                    $scope.lastValueWidgetUpdate.push(parseInt($scope.page.widgets[i].widget_id));
+                    $scope.updateWidgetConfigsVSE($scope.page.widgets[i])
+                }
+		    }	
+		}
+       
+        
+  };
+  
   $scope.updateOffAndOnValues = function(data) {
       if (data.entry_id)  {
         if (data.vse_value && data.vse_value === "1") {
@@ -468,12 +578,15 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     }
   }
   
-  $window.OffAndOn = function (element, widgetId) {
+  
+  $window.OffAndOn = function (element, widgetId, checked) {
         // Properties
         this.element = $(element);
         this.widgetId = widgetId;
         this.refreshFrequency = null;
         this.label = "";
+        this.title = "";
+        this.widgetIdChecked = checked;
         
         this.getLastValue = function(label) {
             
@@ -501,12 +614,26 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             var self = this;
             if (this.widgetId===-1) {
                 this.widgetId = $scope.getNextWidgetId(WIDGET_TYPE_DISPLAY);
+                this.widgetIdChecked = true;
                 
+            } else if (!this.widgetIdChecked) {
+                $scope.checkedWidgetId(this.widgetId);
+                this.widgetIdChecked = true;
+            }
+            
+            if (!this.title) {
+                this.title = $scope.getTitleByWidgetId(this.widgetId);
+                $scope.offAndOnTitle = this.title;
             }
             
             var widget = $scope.findWidgetById(this.widgetId);
             if (!widget) {
                 return;
+            }
+            if ($scope.isWidgetUpdated(this.widgetId)) {
+                return;
+            } else {
+                $scope.lastValueWidgetUpdate.push(parseInt(this.widgetId));
             }
             for (var i = 0; i < widget.widget_configs.length; ++i) {
                 if (widget.widget_configs[i].vse_label) {
@@ -683,7 +810,15 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
          (function () {
             var Selector = '.offon-values';
             $(Selector).each(function() {
-                $scope.offAndOn = new OffAndOn(this, $scope.getNextWidgetId(WIDGET_TYPE_DISPLAY));
+                var checked = false;
+                if (!this.id) {
+                    this.id = $scope.getNextWidgetId(WIDGET_TYPE_DISPLAY, "");
+                    if (this.id) {
+                        checked = true;
+                    }
+                    
+                }
+                $scope.offAndOn = new OffAndOn(this, this.id, checked);
                $scope.offAndOns.push($scope.offAndOn);
                if ($scope.page && $scope.app) {
                     $scope.offAndOn.pendingToRequestData = false;
