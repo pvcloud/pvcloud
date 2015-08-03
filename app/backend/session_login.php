@@ -94,4 +94,5 @@ class LoginWebService {
 $result = LoginWebService::DoLogin();
 
 include './inc/incJSONHeaders.php';
+setcookie("loginResult", json_encode($response));
 echo json_encode($result);
