@@ -4,7 +4,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
     $scope.Widgets = [];
     $scope.GoToWidgetDef = function (widget_id) {
         console.debug("hola");
-        $location.path("/mycloud/widgetsdef/" + app_id + "/" + page_id + "/" + widget_id);
+        $location.path("/widgetsdef/" + app_id + "/" + page_id + "/" + widget_id);
     };
 
 
@@ -21,7 +21,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
         var wsParameters = {
             account_id: sessionService.GetCurrentAccountID(),
             token: sessionService.GetCurrentToken(),
-            page_id: $routeParams.subarticle_id
+            page_id: $routeParams.p2
         };
 
         console.log(wsParameters);

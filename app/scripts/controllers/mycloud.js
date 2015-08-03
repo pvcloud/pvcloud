@@ -21,33 +21,49 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
     };
 
     validateSession();
-
+    console.log("IM HERE!!!!!");
+    console.log($location.$$path);
     console.log($routeParams);
 
     setSection();
 
     function setSection() {
-        var section = $routeParams.section || "myapps";
-        var article_id = $routeParams.article_id;
-        var subarticle_id = $routeParams.subarticle_id;
+        var sectionName = $routeParams.section;
+        console.log("LOCATION HERE");
+        console.log($location);
+        console.log(sectionName);
+        $scope.Section = sectionName;
+        switch (sectionName) {
+            case "pagesdef":
+                $scope.SectionURL = "views/_mycloud_pagesdef.html";
+                break;
+            case "apps":
+                if ($routeParams.p1) {
+                    $scope.SectionURL = "views/_mycloud_myapps_edit.html";
+                } else {
+                    $scope.SectionURL = "views/_mycloud_myapps.html";
+                }
+                break;
 
-        $scope.SectionURL = "views/_mycloud_" + section;
+            case "network":
+                $scope.SectionURL = "views/_mycloud_mynetwork.html";
+                break;
 
-        if (section === "myapps" && article_id) {
-            $scope.SectionURL += "_edit";
+            case "account":
+                $scope.SectionURL = "views/_mycloud_myaccount.html";
+                break;
+
+            case "about":
+                $scope.SectionURL = "views/about.html";
+                break;
         }
-
-        $scope.SectionURL += ".html";
-        $scope.Section = section;
-
-        console.log("SECTION URL:");
-        console.log($scope.SectionURL);
     }
+
     function goToInviteAFriend() {
         $location.path("/mycloud/inviteafriend");
     }
     function gotoNewApp() {
-        $location.path("/mycloud/myapps/new");
+        $location.path("/apps/new");
     }
     function logout() {
         if (confirm("¿Está seguro que desea cerrar su sesión?")) {

@@ -11,7 +11,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                 return;
             }
         }
-        $location.path("/mycloud/myapps/" + $scope.AppID + "/tab_pages");
+        $location.path("/apps/" + $scope.AppID + "/tab_pages");
     };
 
     $scope.SavePage = function () {
@@ -160,8 +160,8 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         $scope.FormIsClean = true;
 
         $scope.AccountID = sessionService.GetCurrentAccountID();
-        $scope.ArticleID = $routeParams.article_id;
-        $scope.SubArticleID = $routeParams.subarticle_id;
+        $scope.ArticleID = $routeParams.p1;
+        $scope.SubArticleID = $routeParams.p2;
 
 
         getDataFromServer();
@@ -175,8 +175,8 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
     function getDataFromServer() {
         var account_id = sessionService.GetCurrentAccountID();
         var token = sessionService.GetCurrentToken();
-        var app_id = $routeParams.article_id;
-        var page_id = $routeParams.subarticle_id;
+        var app_id = $routeParams.p1;
+        var page_id = $routeParams.p2;
 
         AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
             var app = appResponse.data;

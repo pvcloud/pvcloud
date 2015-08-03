@@ -67,7 +67,7 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
                         $scope.LoggedIn = true;
                         $scope.Email = sessionService.GetCurrentEmail();
                         $scope.AccountID = sessionService.GetCurrentAccountID();
-                        $location.path("/mycloud");
+                        $location.path("/apps");
                     },
                     function error(response) {
                         $scope.UIReady = true;
@@ -100,7 +100,7 @@ angular.module('pvcloudApp').controller('MainCtrl', function ($scope, $location,
                 case "OK":
                     $scope.CredentialsError = false;
                     sessionService.SetToken(response.data.token, response.data.email, response.data.account_id);
-                    $location.path("/mycloud");                     
+                    $location.path("/apps");                     
                     break;
                     
                 case "ERROR":
