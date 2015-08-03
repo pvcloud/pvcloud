@@ -44,7 +44,7 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
         console.log($scope.SectionURL);
     }
     function goToInviteAFriend() {
-        $location.path("/mycloud/mynetwork/inviteafriend");
+        $location.path("/mycloud/inviteafriend");
     }
     function gotoNewApp() {
         $location.path("/mycloud/myapps/new");

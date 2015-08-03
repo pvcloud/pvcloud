@@ -164,6 +164,10 @@ a {
     font-weight: bold;
 }
 
+.invite-a-friend-email{
+    width: 100%;
+}
+
 .ngview{
     height: 100%;
 }
