@@ -18,6 +18,7 @@
             <th>Nombre y Descripción 
                 <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Página</a>
             </th>
+            <th></th>
         </tr>
         <tr id="tr_page_{{page.page_id}}" data-ng-repeat="page in Pages | filter: txtSearchPages">
             <td class="td-app-info" style="vertical-align: middle">{{page.page_id}}</td>
