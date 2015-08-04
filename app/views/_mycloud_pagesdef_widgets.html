@@ -16,7 +16,7 @@
         <tr>
             <th>ID</th>
             <th>Nombre y Descripción 
-                <a data-ng-click="GoToWidgetDef('new')" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-plus'></i> Agregar Widget </a>
+                <a data-ng-click="GoToWidgetDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-plus'></i> Agregar Widget </a>
             </th>
         </tr>
         <tr id="tr_page_{{widget.widget_id}}" data-ng-repeat="widget in Widgets| filter: WidgetsSearchPhrase">
