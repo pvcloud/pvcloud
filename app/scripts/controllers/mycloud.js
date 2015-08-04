@@ -34,6 +34,9 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
         console.log(sectionName);
         $scope.Section = sectionName;
         switch (sectionName) {
+            case "widgetsdef":
+                $scope.SectionURL = "views/_mycloud_widgetsdef.html";
+                break;
             case "pagesdef":
                 $scope.SectionURL = "views/_mycloud_pagesdef.html";
                 break;
