@@ -26,6 +26,9 @@
                 <br>
                 <small class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{page.description}}</small>
             </td>
+            <td>
+                <a href="#page/{{page.page_id}}" target="_blank" title="Open Page in a new Tab"><i class="glyphicon glyphicon-eye-open"></i></a>
+            </td>
         </tr>
     </table>
     <div data-ng-if="Loading && (!Pages || Pages.length === 0)">No hay páginas definidas <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Página</a></div>
