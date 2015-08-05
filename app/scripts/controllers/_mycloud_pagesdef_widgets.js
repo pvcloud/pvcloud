@@ -7,7 +7,6 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
     
     $scope.GoToWidgetDef = function (widget_id) {
         if (widget_id === undefined || isNaN(widget_id)) widget_id = "new";
-        console.debug("hola");
         $location.path("/widgetsdef/" + page_id + "/" + widget_id);
     };
 

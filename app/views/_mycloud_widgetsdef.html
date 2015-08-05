@@ -3,7 +3,7 @@
 
     <!-- BREADCRUMB -->
     <ol class="breadcrumb">
-        <li><a href="#/apps/{{ArticleID}}/tab_pages">{{AppName}}(ID: {{ArticleID}})</a></li>
+        <li><a href="#/apps/{{ArticleID}}/tab_pages">{{AppName}}(ID: {{AppID}})</a></li>
         <li>Pages: {{PageTitle}} ({{PageID}})</li>
         <li>Widget: {{WidgetTitle}} ({{WidgetID}})</li>
     </ol>
@@ -22,14 +22,14 @@
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
                 <label for="txtTitulo">Título</label>
-                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título de la página." data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
+                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título del widget." data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
             </div>
 
             <!-- DESCRIPTION -->
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
                 <label for="txtDescripcion">Descripción</label>
-                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4" data-ng-model="PageDescription"></textarea>
+                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su widget" rows="4" data-ng-model="PageDescription"></textarea>
             </div>
             
             <!-- VISIBILITY -->

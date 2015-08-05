@@ -160,8 +160,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         $scope.FormIsClean = true;
 
         $scope.AccountID = sessionService.GetCurrentAccountID();
-        $scope.ArticleID = $routeParams.p1;
-        $scope.SubArticleID = $routeParams.p2;
+
 
 
         getDataFromServer();
@@ -175,13 +174,13 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
     function getDataFromServer() {
         var account_id = sessionService.GetCurrentAccountID();
         var token = sessionService.GetCurrentToken();
-        var app_id = $routeParams.p1;
-        var page_id = $routeParams.p2;
-
-        AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
-            var app = appResponse.data;
-
-            if (page_id === "new") {
+        var page_id = $routeParams.p1;
+        var app_id = $routeParams.p2;
+        
+        if(page_id === "new")
+        {
+            AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
+                var app = appResponse.data;
                 var page = {
                     page_id: "new",
                     app_id: app_id,
@@ -190,13 +189,25 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                     visibility_type_id: 1
                 };
                 loadDataToForm(app, page);
-            } else {
-                AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
-                    var page = pageResponse.data;
+            });
+        
+        }
+        else
+        {
+            AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
+                var page = pageResponse.data;
+                AppRegistryService.GetAppByID(account_id, token, page.app_id).$promise.then(function (appResponse) {
+                    var app = appResponse.data;
                     loadDataToForm(app, page);
                 });
-            }
-        });
+                
+            });
+        
+        }
+       
+
+      
+
     }
 
     function loadDataToForm(app, page) {

@@ -160,8 +160,8 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         $scope.FormIsClean = true;
 
         $scope.AccountID = sessionService.GetCurrentAccountID();
-        $scope.ArticleID = $routeParams.p1;
-        $scope.SubArticleID = $routeParams.p2;
+        $scope.AppID = $routeParams.p1;
+        $scope.PageID = $routeParams.p2;
 
 
         getDataFromServer();
