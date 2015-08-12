@@ -6,8 +6,16 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
     var page_id = $routeParams.p1;
     
     $scope.GoToWidgetDef = function (widget_id) {
-        if (widget_id === undefined || isNaN(widget_id)) widget_id = "new";
-        $location.path("/widgetsdef/" + page_id + "/" + widget_id);
+        console.log(widget_id);
+        if (widget_id === undefined || isNaN(widget_id))
+        { 
+            
+            $location.path("/widgetsdef/new/" + page_id);
+        }
+        else
+        {
+            $location.path("/widgetsdef/" + widget_id);
+        }
     };
 
 
@@ -24,7 +32,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
         var wsParameters = {
             account_id: sessionService.GetCurrentAccountID(),
             token: sessionService.GetCurrentToken(),
-            page_id: $routeParams.p2
+            page_id: $routeParams.p1
         };
 
         console.log(wsParameters);
