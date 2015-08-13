@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/new_account.php?email=jose.a.nunez@gmail.com&nickname=jose&pwdHash=1234pass
+ * http://localhost:8080/pvcloud/backend/new_account.php?email=jose.a.nunez@gmail.com&nickname=jose&pwdHash=1234pass
  * 
  * * */
 error_reporting(E_ERROR);

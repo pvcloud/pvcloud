@@ -11,27 +11,27 @@ angular.module('pvcloudApp').factory('sessionService', function ($resource, Util
     var sessionResource_Logout = $resource(baseURL + "session_logout.php?account_id=:account_id&token=:token", {});
 
     function setCurrentToken(token) {
-        sessionStorage.setItem("token", token);
+        localStorage.setItem("token", token);
     }
 
     function setCurrentAccountID(account_id) {
-        sessionStorage.setItem("account_id", account_id);
+        localStorage.setItem("account_id", account_id);
     }
 
     function getCurrentToken() {
-        return sessionStorage.getItem("token");
+        return localStorage.getItem("token");
     }
 
     function getCurrentAccountID() {
-        return sessionStorage.getItem("account_id");
+        return localStorage.getItem("account_id");
     }
 
     function setCurrentEmail(email) {
-        sessionStorage.setItem("email", email);
+        localStorage.setItem("email", email);
     }
 
     function getCurrentEmail() {
-        return sessionStorage.getItem("email");
+        return localStorage.getItem("email");
     }
 
     function login(email, pwd) {

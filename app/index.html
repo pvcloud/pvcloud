@@ -9,10 +9,12 @@
         <!-- build:css(.) styles/vendor.css -->
         <!-- bower:css -->
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="bower_components/simple-line-icons/css/simple-line-icons.css" />
         <!-- endbower -->
         <!-- endbuild -->
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
         <!-- endbuild -->
         <link rel="stylesheet" href="jqueryui-themes/smoothness/jquery-ui.min.css"/>
         <script type="text/javascript">
@@ -27,7 +29,6 @@
                     var newURL = currentURL.replace("http", "https").replace(":8080", "").replace(":9000", "");
                     window.location.href = newURL;
                 }
-            } else {
             }
         </script>
 
@@ -85,6 +86,11 @@
         <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="bower_components/flot/jquery.flot.time.js"></script>
+        <script src="bower_components/flot/jquery.flot.resize.js"></script>
+        <script src="bower_components/flot/jquery.flot.pie.js"></script>
+        <script src="bower_components/flot/jquery.flot.categories.js"></script>
+        
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
@@ -111,8 +117,11 @@
         <script src="scripts/services/pageService.js"></script>
         <script src="scripts/services/vseValuesService.js"></script>
         <script src="scripts/services/vseWidgetValuesService.js"></script>
+        <script src="scripts/services/vseLastValueService.js"></script>
+        <script src="scripts/services/addVseValueService.js"></script>
         <script src="scripts/controllers/_mycloud_inviteafriend.js"></script>
         <script src="scripts/controllers/_mycloud_mynetwork.js"></script>
+        <script src="scripts/services/invitationService.js"></script>
         <!-- endbuild -->
 
         <script>

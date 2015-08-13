@@ -1,4 +1,4 @@
-angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope, UtilityService, AppRegistryService, sessionService, $routeParams, $location) {
+angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope, UtilityService, PageService, WidgetService, sessionService, $routeParams, $location) {
     console.log("This is _mycloud_pagesdef controller being invoked");
 
     $scope.SetFormDirty = function () {
@@ -11,7 +11,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
                 return;
             }
         }
-        $location.path("/mycloud/myapps/" + $scope.AppID + "/tab_pages");
+        $location.path("/apps/" + $scope.AppID + "/tab_pages");
     };
 
     $scope.SaveWidget = function () {
@@ -158,15 +158,8 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         };
 
         $scope.FormIsClean = true;
-
         $scope.AccountID = sessionService.GetCurrentAccountID();
-        $scope.ArticleID = $routeParams.article_id;
-        $scope.SubArticleID = $routeParams.subarticle_id;
-
-
         getDataFromServer();
-
-
         $scope.CurrentTab = $scope.Tabs.Basics;
 
 
@@ -175,31 +168,38 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
     function getDataFromServer() {
         var account_id = sessionService.GetCurrentAccountID();
         var token = sessionService.GetCurrentToken();
-        var app_id = $routeParams.article_id;
-        var page_id = $routeParams.subarticle_id;
+        var widget_id = $routeParams.p1;
+        var page_id = $routeParams.p2;
 
-        AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
-            var app = appResponse.data;
-
-            if (page_id === "new") {
-                var page = {
-                    page_id: "new",
-                    app_id: app_id,
-                    title: "",
-                    description: "",
-                    visibility_type_id: 1
-                };
-                loadDataToForm(app, page);
-            } else {
-                AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
-                    var page = pageResponse.data;
-                    loadDataToForm(app, page);
+            if (widget_id === "new") {
+                
+                PageService.GetPage(account_id, token, page_id).$promise.then(function (response) {
+                    var page = response.data;
+                            
+                    var widget = {
+                        widget_id: "new",
+                        page_id: page_id,
+                        widget_type_id: 0,
+                        title: "",
+                        description: "",
+                        refresh_frequency_sec: 10,
+                        order: 0
+                    };
+                    loadDataToForm(widget, page);
+                });
+            } 
+            else 
+            {
+                WidgetService.GetWidgetAndPageByID(account_id, token, widget_id).$promise.then(function (response) {
+                    var widget = response.data.widget;
+                    var page = response.data.page;
+                    loadDataToForm(widget, page);
                 });
             }
-        });
+        
     }
 
-    function loadDataToForm(app, page) {
+    function loadDataToForm(widget, page) {
         $scope.Page = page;
         $scope.PageID = page.page_id;
         $scope.PageTitle = page.title;
@@ -207,12 +207,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         $scope.PageDescription = page.description;
         $scope.PageVisibility = page.visibility_type_id;
 
-        $scope.App = app;
-        $scope.AppID = app.app_id;
-        $scope.AppName = app.app_nickname;
-        $scope.AppDescription = app.app_description;
-        $scope.AppAPIKEY = app.api_key;
-        $scope.AppVisibility = app.visibility_type_id;
+        $scope.Widget = widget;
         $scope.FormIsClean = true;
 
     }
@@ -221,11 +216,12 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         var protocol = window.location.protocol;
         var hostname = window.location.host;
         var port = window.location.port;
+        var path = window.location.pathname;
 
-        if (port === 9000 || port === '9000') {
-            $scope.BackendURLBegin = protocol + "//" + window.location.hostname + ":8080";
+        if (port === 9000) {
+            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080" + path;
         } else {
-            $scope.BackendURLBegin = protocol + "//" + hostname;
+            $scope.URLBegin = protocol + "//" + hostname + path;
         }
     }
 });

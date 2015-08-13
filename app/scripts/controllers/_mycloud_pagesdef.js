@@ -11,7 +11,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                 return;
             }
         }
-        $location.path("/mycloud/myapps/" + $scope.AppID + "/tab_pages");
+        $location.path("/apps/" + $scope.AppID + "/tab_pages");
     };
 
     $scope.SavePage = function () {
@@ -91,9 +91,9 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                             ).$promise.then(function (response) {
                         UtilityService.ProcessServiceResponse(response,
                                 function success(response) {
-                                var page = response.data;
-                                loadDataToForm($scope.App, page);
-                                alert("Los datos se almacenaron satisfactoriamente.");
+                                    var page = response.data;
+                                    loadDataToForm($scope.App, page);
+                                    alert("Los datos se almacenaron satisfactoriamente.");
                                 },
                                 function error(response) {
                                     console.log(response);
@@ -160,8 +160,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         $scope.FormIsClean = true;
 
         $scope.AccountID = sessionService.GetCurrentAccountID();
-        $scope.ArticleID = $routeParams.article_id;
-        $scope.SubArticleID = $routeParams.subarticle_id;
+
 
 
         getDataFromServer();
@@ -175,13 +174,13 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
     function getDataFromServer() {
         var account_id = sessionService.GetCurrentAccountID();
         var token = sessionService.GetCurrentToken();
-        var app_id = $routeParams.article_id;
-        var page_id = $routeParams.subarticle_id;
-
-        AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
-            var app = appResponse.data;
-
-            if (page_id === "new") {
+        var page_id = $routeParams.p1;
+        var app_id = $routeParams.p2;
+        
+        if(page_id === "new")
+        {
+            AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
+                var app = appResponse.data;
                 var page = {
                     page_id: "new",
                     app_id: app_id,
@@ -190,13 +189,25 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                     visibility_type_id: 1
                 };
                 loadDataToForm(app, page);
-            } else {
-                AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
-                    var page = pageResponse.data;
+            });
+        
+        }
+        else
+        {
+            AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
+                var page = pageResponse.data;
+                AppRegistryService.GetAppByID(account_id, token, page.app_id).$promise.then(function (appResponse) {
+                    var app = appResponse.data;
                     loadDataToForm(app, page);
                 });
-            }
-        });
+                
+            });
+        
+        }
+       
+
+      
+
     }
 
     function loadDataToForm(app, page) {
@@ -222,10 +233,12 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         var hostname = window.location.host;
         var port = window.location.port;
 
-        if (port === 9000 || port === '9000') {
-            $scope.BackendURLBegin = protocol + "//" + window.location.hostname + ":8080";
+        var path = window.location.pathname;
+
+        if (port === 9000) {
+            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080" + path;
         } else {
-            $scope.BackendURLBegin = protocol + "//" + hostname;
+            $scope.URLBegin = protocol + "//" + hostname + path;
         }
     }
 });

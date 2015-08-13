@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud/backend/app_get_list_by_account.php?account_id=1
+ * http://localhost:8080/pvcloud/backend/widget_page_get_by_id.php?account_id=1&token=token_goes_here&widget_id=1
  * 
  * * */
 error_reporting(E_ERROR);
@@ -18,41 +18,47 @@ require_once './DA/da_conf.php';
 require_once './DA/da_helper.php';
 require_once './DA/da_account.php';
 require_once './DA/da_session.php';
+require_once './DA/da_widgets.php';
 require_once './DA/da_apps_registry.php';
 
-class GetPagesWebService {
+class WebService {
 
-    public static function GetPages() {
+    public static function GetData() {
         $response = new simpleResponse();
         include './inc/incWebServiceSessionValidation.php';
 
         try {
-            $parameters = GetPagesWebService::collectParameters();
-            $pages = da_apps_registry::GetListOfPages($parameters->app_id);
+            $parameters = WebService::collectParameters();
+            $widget = da_widgets::GetWidget($parameters->widget_id);
+            $page = da_apps_registry::GetPage($widget->page_id);
             $response->status = "OK";
             $response->message = "";
-            $response->data = $pages;
+            $response->data = new stdClass();
+            $response->data->widget = $widget;
+            $response->data->page = $page;
         } catch (Exception $ex) {
             $response->status = "EXCEPTION";
             $response->message = $ex->getMessage();
-            $response->data = $pages;
+            $response->data = new stdClass();
+            $response->data->widget = $widget;
+            $response->data->page = $page;
         }
         
         return $response;
     }
 
     private static function collectParameters() {
-        $app_id = filter_input(INPUT_GET, "app_id");
+        $widget_id = filter_input(INPUT_GET, "widget_id");
 
-        if (!isset($app_id) || !$app_id > 0) {
+        if (!isset($widget_id) || !$widget_id > 0) {
             die();
         }
         $parameters = new stdClass();
-        $parameters->app_id = $app_id;
+        $parameters->widget_id = $widget_id;
         return $parameters;
     }
 
 }
 
 include './inc/incJSONHeaders.php';
-echo json_encode(GetPagesWebService::GetPages());
+echo json_encode(WebService::GetData());

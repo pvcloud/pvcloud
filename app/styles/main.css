@@ -164,6 +164,10 @@ a {
     font-weight: bold;
 }
 
+.invite-a-friend-email{
+    width: 100%;
+}
+
 .ngview{
     height: 100%;
 }
@@ -327,6 +331,96 @@ span.glyphicon-copyright-mark{
 /* My Network*/
 .btn-connections{
     float:right
+}
+
+.switch .form-control {
+  padding-top: 7px;
+  margin-bottom: 0;
+}
+
+.switch * {
+  cursor: pointer;
+}
+
+.switch input {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.switch span {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 100px;
+  transition: all .5s;
+  box-shadow: -1px 2px 3px rgba(0, 0, 0, 0.1) inset;
+}
+
+.switch span:after {
+  content: "";
+  position: absolute;
+  background-color: #fff;
+  top: 0;
+  right: 0;
+  height: 18px;
+  width: 18px;
+  border: 1px solid #ddd;
+  border-radius: 400px;
+  box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-transition: all .2s;
+}
+
+.switch.switch-lg span {
+  width: 50px;
+  height: 25px;
+}
+
+.switch.switch-lg span:after {
+  height: 23px;
+  width: 23px;
+}
+
+.switch.switch-sm span {
+  width: 30px;
+  height: 15px;
+}
+
+.switch.switch-sm span:after {
+  height: 13px;
+  width: 13px;
+}
+
+.switch input:checked + span {
+  background-color: #5d9cec;
+  border-color: #5d9cec;
+  transition: all .5s;
+}
+
+.switch input:checked + span:after {
+  right: 50%;
+  transition: all .2s;
+}
+
+.row-table {
+  display: table;
+  table-layout: fixed;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+.row-table > [class*="col-"] {
+  display: table-cell;
+  float: none;
+  table-layout: fixed;
+  vertical-align: middle;
+}
+.row-flush > [class*="col-"] {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* Responsive: Portrait tablets and up */

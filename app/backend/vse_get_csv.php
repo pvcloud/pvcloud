@@ -1,8 +1,8 @@
 <?php
 
 /* TEST: 
- * https://localhost/pvcloud_backend/vse_get_csv.php?account_id=1&app_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e
- * https://localhost/pvcloud_backend/vse_get_csv.php?account_id=1&app_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e&value_label=TEST_01&count_limit=3
+ * https://localhost/pvcloud/backend/vse_get_csv.php?account_id=1&app_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e
+ * https://localhost/pvcloud/backend/vse_get_csv.php?account_id=1&app_id=1&api_key=c55452a9bdacdc0dc15919cdfe8d8f7d4c05ac5e&value_label=TEST_01&count_limit=3
  */
 error_reporting(E_ERROR);
 

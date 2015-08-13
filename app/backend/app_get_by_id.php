@@ -1,7 +1,7 @@
 <?php
 
 /* * *
- * http://localhost:8080/pvcloud_backend/app_get_by_id.php?account_id=1
+ * http://localhost:8080/pvcloud/backend/app_get_by_id.php?account_id=1
  * 
  * * */
 error_reporting(E_ERROR);

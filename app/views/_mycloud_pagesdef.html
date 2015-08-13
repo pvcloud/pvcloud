@@ -3,8 +3,8 @@
 
     <!-- BREADCRUMB -->
     <ol class="breadcrumb">
-        <li><a href="#/mycloud/myapps">My Apps</a></li>
-        <li><a href="#/mycloud/myapps/{{ArticleID}}/tab_pages">{{AppName}}(ID: {{ArticleID}})</a></li>
+        <li><a href="#/apps">My Apps</a></li>
+        <li><a href="#/apps/{{ArticleID}}/tab_pages">{{AppName}}(ID: {{AppID}})</a></li>
         <li>Pages: {{PageTitle}} ({{PageID}})</li>
     </ol>
 
@@ -51,8 +51,6 @@
     <!-- WIDGETS -->
     <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Widgets"> 
         <div data-ng-include="'views/_mycloud_pagesdef_widgets.html'"></div>
-
     </div>
-    
 </div>
 

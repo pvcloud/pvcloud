@@ -12,13 +12,23 @@ require_once './DA/da_vse_data.php';
 include_once './inc/incJSONHeaders.php';
 include_once './inc/incBaseURL.php';
 
+class simpleResponse {
+
+    public $status = "";
+    public $message = "";
+    public $data = null;
+
+}
+
 /**
  * 
  * 
  * @return be_vse_data
  */
 function execute() {
-    $entries = new be_vse_data();
+    $result = new simpleResponse();
+    $result->status = "OK";
+    $result->message = "SUCCESS";
     try {
         $access = "RO";  
         include './inc/incWebServiceAPIKeyValidation.php';
@@ -26,15 +36,22 @@ function execute() {
         $parameters = collectParameters();
 
         if (validate($parameters)) {
-            $entries = da_vse_data::GetLastEntry($parameters->app_id, $parameters->optional_vse_label);
+            $result->data = da_vse_data::GetLastEntry($parameters->app_id, $parameters->optional_vse_label);
+            $result->status = "OK";
+            $result->message = "SUCCESS";
         } else {
-            die("Parámetros Inválidos");
+            //die("Parámetros Inválidos");
+            $result->status = "ERROR";
+            $result->message = "ERROR";
+            
         }
     } catch (Exception $ex) {
-        die("EXCEPTION " . $ex->getCode());
+         $result->status = "EXCEPTION";
+         $result->message = "EXCEPTION";
+        
     }
 
-    return $entries;
+    return $result;
 }
 
 function collectParameters() {

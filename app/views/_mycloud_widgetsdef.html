@@ -3,15 +3,13 @@
 
     <!-- BREADCRUMB -->
     <ol class="breadcrumb">
-        <li><a href="#/mycloud/myapps">My Apps</a></li>
-        <li><a href="#/mycloud/myapps/{{ArticleID}}/tab_pages">{{AppName}}(ID: {{ArticleID}})</a></li>
-        <li>Pages: {{PageTitle}} ({{PageID}})</li>
-        <li>Widget: {{WidgetTitle}} ({{WidgetID}})</li>
+        <li>.../ <a href="#/pagesdef/{{Page.page_id}}/tab_widgets">Page: {{Page.title}}(ID: {{Page.page_id}})</a></li>
+        <li>Widget: {{Widget.title}} ({{Widget.widget_id}})</li>
     </ol>
 
     <!-- TABS -->
     <ul data-ng-show="PageID!=='new'" class="nav nav-tabs" data-ng-class="{'nav-justified':PageID != undefined}">
-        <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Página</a></li>
+        <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Widget</a></li>
         <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Configuration}"><a data-ng-click="SwitchToTab(Tabs.Configuration)">Configuración</a></li>
     </ul>
 
@@ -23,14 +21,14 @@
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
                 <label for="txtTitulo">Título</label>
-                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título de la página." data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
+                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título del widget." data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
             </div>
 
             <!-- DESCRIPTION -->
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
                 <label for="txtDescripcion">Descripción</label>
-                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4" data-ng-model="PageDescription"></textarea>
+                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su widget" rows="4" data-ng-model="PageDescription"></textarea>
             </div>
             
             <!-- VISIBILITY -->

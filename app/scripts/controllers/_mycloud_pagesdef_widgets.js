@@ -2,8 +2,20 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
 
     console.log("This is _mycloud_pagesdef_widgets controller being invoked");
     $scope.Widgets = [];
-    $scope.GoToEditWidget = function (widget_id) {
-        $location.path("/mycloud/widgetsdef/" + app_id + "/" + page_id + "/" + widget_id);
+    
+    var page_id = $routeParams.p1;
+    
+    $scope.GoToWidgetDef = function (widget_id) {
+        console.log(widget_id);
+        if (widget_id === undefined || isNaN(widget_id))
+        { 
+            
+            $location.path("/widgetsdef/new/" + page_id);
+        }
+        else
+        {
+            $location.path("/widgetsdef/" + widget_id);
+        }
     };
 
 
@@ -20,7 +32,7 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
         var wsParameters = {
             account_id: sessionService.GetCurrentAccountID(),
             token: sessionService.GetCurrentToken(),
-            page_id: $routeParams.subarticle_id
+            page_id: $routeParams.p1
         };
 
         console.log(wsParameters);
@@ -32,36 +44,18 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef_widgets', function ($
             }
         });
 
-//        AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
-//            var app = appResponse.data;
-//
-//            if (page_id === "new") {
-//                var page = {
-//                    page_id: "new",
-//                    app_id: app_id,
-//                    title: "",
-//                    description: "",
-//                    visibility_type_id: 1
-//                };
-//                loadDataToForm(app, page);
-//            } else {
-//                AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
-//                    var page = pageResponse.data;
-//                    loadDataToForm(app, page);
-//                });
-//            }
-//        });
     }
 
     function resolveBaseBackendURL() {
         var protocol = window.location.protocol;
         var hostname = window.location.host;
         var port = window.location.port;
+        var path = window.location.pathname;
 
-        if (port === 9000 || port === '9000') {
-            $scope.BackendURLBegin = protocol + "//" + window.location.hostname + ":8080";
+        if (port === 9000) {
+            $scope.URLBegin = protocol + "//" + window.location.hostname + ":8080" + path;
         } else {
-            $scope.BackendURLBegin = protocol + "//" + hostname;
+            $scope.URLBegin = protocol + "//" + hostname + path;
         }
     }
 });
