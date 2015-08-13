@@ -30,6 +30,18 @@
         "quick_links_logout":"Logout",
         "footer_brought_by":"Brought to you by"
     },
+    "passwordRecovery": {
+        "title":"Password Recovery",
+        "email":"Type your email account",
+        "newPassword":"Type your new password",
+        "newPasswordAgain":"Type your new password again"
+    },
+    "passwordRecoverySuccess": {
+        "success":"Your password has been successfully changed.", 
+        "click":"Click ",
+        "here":"here ",
+        "toAccess":"to access your account."
+    },
     "_mycloud_myapps_edit":{
         "app_name":"Name",
         "app_description":"Description",

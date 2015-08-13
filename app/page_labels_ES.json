@@ -29,6 +29,18 @@
         "quick_links_invite_a_friend":"Invitar a un Amigo",
         "quick_links_logout":"Salir",
         "footer_brought_by":"pvCloud llega a tí gracias a"
+    },    
+    "passwordRecovery": {
+        "title":"Recuperación de Contraseña",
+        "email":"Digite su cuenta de correo electrónico",
+        "newPassword":"Digite su nueva contraseña",
+        "newPasswordAgain":"Digite su nueva contraseña por segunda vez"
+    },
+    "passwordRecoverySuccess": {
+        "success":"Su clave fue cambiada satisfactoriamente.", 
+        "click":"Haga click ",
+        "here":"aqui ",
+        "toAccess":"para accesar su cuenta."
     },
     "_mycloud_myapps_edit":{
         "app_name":"Nombre",
