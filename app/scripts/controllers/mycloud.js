@@ -40,6 +40,9 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
             case "pagesdef":
                 $scope.SectionURL = "views/_mycloud_pagesdef.html";
                 break;
+            case "contentdef":
+                $scope.SectionURL = "views/_mycloud_contentdef.html";
+                break;
             case "apps":
                 if ($routeParams.p1) {
                     $scope.SectionURL = "views/_mycloud_myapps_edit.html";
