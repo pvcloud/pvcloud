@@ -77,6 +77,7 @@ class AddWidgetWebService {
         $parameters->title = $decodedPOSTParams->title;
         $parameters->description = $decodedPOSTParams->description;
         $parameters->order = $decodedPOSTParams->order;
+        $parameters->refresh_frequency_sec = $decodedPOSTParams->refresh_frequency_sec;
         
         return $parameters;
     }
@@ -103,6 +104,10 @@ class AddWidgetWebService {
         if (!is_numeric($parameters->order) || !($parameters->order >= 1)) {
             $errorsFound[] = "Orden del Widget es inválido.";
         }
+        
+        if (!is_numeric($parameters->refresh_frequency_sec) || !($parameters->refresh_frequency_sec >= 1)) {
+            $errorsFound[] = "Frecuencia es inválida.";
+        }
 
         return $errorsFound;
     }
@@ -112,6 +117,7 @@ class AddWidgetWebService {
     }
 
 }
-
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
 include './inc/incJSONHeaders.php';
 echo json_encode(AddWidgetWebService::AddWidget());

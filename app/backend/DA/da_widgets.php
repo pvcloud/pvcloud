@@ -111,9 +111,9 @@ class da_widgets {
     public static function AddWidget($widget) {
         
         $sqlCommand = "INSERT INTO widgets (page_id, widget_type_id, title, description, refresh_frequency_sec, `order`, created_datetime )"
-                . "VALUES (?,?,?,?,?, NOW())";
+                . "VALUES (?,?,?,?,?,?, NOW())";
 
-        $paramTypeSpec = "iissi";
+        $paramTypeSpec = "iissii";
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
@@ -126,7 +126,7 @@ class da_widgets {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec,$widget->page_id, $widget->widget_type_id, $widget->title, $widget->description, $widget->refresh_frequency_sec,$widget->order )) {
+        if (!$stmt->bind_param($paramTypeSpec,$widget->page_id, $widget->widget_type_id, $widget->title, $widget->description, $widget->refresh_frequency_sec,$widget->order)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }

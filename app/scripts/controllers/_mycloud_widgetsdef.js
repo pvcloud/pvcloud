@@ -11,7 +11,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
                 return;
             }
         }
-        $location.path("/apps/" + $scope.AppID + "/tab_pages");
+        $location.path("pagesdef/"+$scope.Page.page_id+"/tab_widgets");
     };
 
     $scope.SaveWidget = function () {
@@ -20,25 +20,17 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         $scope.ValidationError_Description = "";
 
 
-        var pageToSave = {
-            page_id: $scope.PageID,
-            app_id: $scope.AppID,
-            title: $scope.PageTitle,
-            description: $scope.PageDescription,
-            visibility_type_id: $scope.PageVisibility
-        };
+        console.log("WIDGET TO SAVE");
+        console.log($scope.Widget);
 
-        console.log("PAGE TO SAVE");
-        console.log(pageToSave);
-
-        if (pageToSave.page_id !== undefined && pageToSave.page_id > 0) {
-            updateWidget(pageToSave);
+        if ($scope.Widget.widget_id > 0) {
+            updateWidget($scope.Widget);
         } else {
-            createWidget(pageToSave);
+            createWidget($scope.Widget);
         }
 
 
-        console.log(pageToSave);
+
 
     };
 
@@ -73,22 +65,19 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
 
     initialize();
 
-    function createWidget(pageToSave) {
-        if (pageToSave.app_id !== undefined && pageToSave.app_id > 0) {
-            if (pageToSave.title !== undefined && pageToSave.title !== "") {
-                if (pageToSave.description !== undefined && pageToSave.description !== "") {
+    function createWidget(widgetToSave) {
+        if ( widgetToSave.page_id > 0) {
+            if (widgetToSave.title !== undefined && widgetToSave.title !== "") {
+                if (widgetToSave.description !== undefined && widgetToSave.description !== "") {
 
                     var account_id = sessionService.GetCurrentAccountID();
                     var token = sessionService.GetCurrentToken();
-
-                    AppRegistryService.CreatePage(
+//TODO: change to correct insert method
+                    WidgetService.WidgetInsert(
                             account_id,
                             token,
-                            pageToSave.app_id,
-                            pageToSave.title,
-                            pageToSave.description,
-                            pageToSave.visibility_type_id
-                            ).$promise.then(function (response) {
+                            $scope.Widget
+                            ).then(function (response) {
                         UtilityService.ProcessServiceResponse(response,
                                 function success(response) {
                                 var page = response.data;
@@ -109,13 +98,14 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
                 $scope.ValidationError_Name = "El nombre de la página es requerido y está vacío";
             }
         } else {
-            $scope.ValidationError_Name = "Se requiere una aplicación relacionada, y el ID suministrado es inválido.";
+            $scope.ValidationError_Name = "Se requiere una pagina relacionada, y el ID suministrado es inválido.";
         }
     }
 
     function updateWidget(pageToSave) {
         console.log("PAGE TO SAVE IN updatePage");
         console.log(pageToSave);
+        //TODO: change to correct insert method
         if (pageToSave.title !== undefined && pageToSave.title !== "") {
             if (pageToSave.description !== undefined && pageToSave.description !== "") {
                 var account_id = sessionService.GetCurrentAccountID();
