@@ -30,6 +30,8 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
 
     $scope.lastValueVse = [];
 
+    $scope.validateSession();
+    $scope.initPageData();
 
     $scope.validateSession = function () {
         sessionService.ValidateSession().$promise.then(function (response) {
@@ -51,8 +53,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                     });
         });
     };
-    
-    $scope.validateSession();
 
     $scope.findWidgetConfigFromList = function (label, widget) {
         var config = null;
@@ -311,7 +311,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             for (var i = 0; i < $scope.charts; i++) {
                 $scope.chartTitle = $scope.charts[i];
                 break;
-
             }
         }
         return $scope.chartTitle;
@@ -667,13 +666,10 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
             if ($scope.charts[i].pendingToRequestData) {
                 $scope.charts[i].requestData();
             }
-
         }
-
     };
 
     $scope.initAppById = function () {
-
         AppRegistryService.GetAppByID($scope.accountId, $scope.token, $scope.page.app_id).$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
                     function success(response) {
@@ -694,7 +690,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
     };
 
     $scope.initPageData = function () {
-
         PageService.GetPage($scope.accountId, $scope.token, $scope.pageId).$promise.then(function (response) {
             UtilityService.ProcessServiceResponse(response,
                     function success(response) {
@@ -713,8 +708,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                     });
         });
     };
-
-    $scope.initPageData();
 
     $scope.parseDate = function (s) {
         //2015-07-22 20:01:50
@@ -811,7 +804,6 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                     if (this.id) {
                         checked = true;
                     }
-
                 }
                 $scope.offAndOn = new OffAndOn(this, this.id, checked);
                 $scope.offAndOns.push($scope.offAndOn);
@@ -821,12 +813,7 @@ angular.module('pvcloudApp').controller('PageController', function ($scope, Labe
                 } else {
                     $scope.offAndOn.pendingToRequestData = true;
                 }
-
             });
         })();
-
-
-
     });
-    
 });
