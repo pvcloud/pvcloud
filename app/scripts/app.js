@@ -6,7 +6,8 @@ angular.module('pvcloudApp', [
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'textAngular'
 ])
         .config(function ($routeProvider) {
             $routeProvider

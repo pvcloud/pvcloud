@@ -21,29 +21,21 @@
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
                 <label for="txtTitulo">Título</label>
-                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título del widget." data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
+                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título del widget." data-ng-change="SetFormDirty()" data-ng-model="Widget.title">
             </div>
 
             <!-- DESCRIPTION -->
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
                 <label for="txtDescripcion">Descripción</label>
-                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su widget" rows="4" data-ng-model="PageDescription"></textarea>
+                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su widget" rows="4" data-ng-model="Widget.description"></textarea>
             </div>
             
-            <!-- VISIBILITY -->
-            <div class="form-group">
-                <label for="selVisibility">Visibilidad</label>
-                <select data-ng-change="SetFormDirty()" class="form-control" id="selVisbility" data-ng-model="PageVisibility">
-                    <option selected value="1">Privado</option>
-                    <option value="2">Compartido</option>
-                    <option value="3">Público</option>
-                </select>
-            </div>               
+               
 
-            <button class="btn btn-success" data-ng-click="SavePage()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
-            <button class="btn btn-danger" data-ng-if="PageID" data-ng-click="DeletePage()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
-            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Regresar al App':'Cancelar'}}</button>          
+            <button class="btn btn-success" data-ng-click="SaveWidget()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
+            <button class="btn btn-danger" data-ng-if="Widget.widget_id > 0" data-ng-click="DeletePage()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
+            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Regresar a la Pagina':'Cancelar'}}</button>          
         </form>        
     </div>
     
