@@ -56,5 +56,19 @@
         "type_your_new_password":"Digite aquí su nueva contraseña:",
         "type_your_new_password_2":"Repita aquí su nueva contraseña:",
         "btn_save":"Cambiar Contraseña"
+    },
+    "_mycloud_myapps_edit_dd":{
+        "title":"Cómo usar pvCloud en su app y dispositivos",
+        "lbl_app_id":"AppID:",
+        "lbl_app_name":"Nombre de App:",
+        "lbl_app_description":"Descripción:",
+        "title_introduction":"Introducción",
+        "intro_p1":"En este documento encontrará información (personalizada) para su App IoT.",
+        "intro_p2":"En las siguientes tres secciones se describe cómo utilizar pvCloud para subir y consumir datos usando su app IoT.",
+        "intro_p3":"Haga clic en el título de la sección que desee explorar para ver su contenido.",
+        "title_section1":"Cómo conectar su EDISON INTEL en 3 sencillos pasos",
+        "section1_step1_title":"PASO 1: Instale el Conector de pvCloud en Linux",
+        "sedtion1_step1_p1":"Copie el siguiente comando 'wget' con todos sus parámetros y ejecútelo en la terminal LINUX de su INTEL EDISON."
+        
     }
 }

@@ -1,22 +1,20 @@
 <!--API DOCUMENTATION-->
 <div style="text-align: justify; font-size:16px">
-    <h2 class="demoHeaders">Cómo usar pvCloud en su app</h2>
+    <h2 class="demoHeaders">{{PageLabels._mycloud_myapps_edit_dd.title}}</h2>
     <div class="alert alert-info">
-        <strong>ID de App:</strong> <span style="font-family: monospace">{{Application.app_id}}</span><br>
-        <strong>Nombre de App:</strong> <span style="font-family: monospace">{{Application.app_nickname}} ({{Application.app_id}})</span><br>
-        <strong>Descripción:</strong> <span style="font-family: monospace">{{Application.app_description}}</span><br>
-        <strong>API KEY:</strong> <span style="font-family: monospace">{{Application.api_key}}</span>
+        <strong>{{PageLabels._mycloud_myapps_edit_dd.lbl_app_id}}</strong> <span style="font-family: monospace">{{Application.app_id}}</span><br>
+        <strong>{{PageLabels._mycloud_myapps_edit_dd.lbl_app_name}}</strong> <span style="font-family: monospace">{{Application.app_nickname}} ({{Application.app_id}})</span><br>
+        <strong>{{PageLabels._mycloud_myapps_edit_dd.lbl_app_description}}</strong> <span style="font-family: monospace">{{Application.app_description}}</span><br>
+        <strong>API KEY: </strong> <span style="font-family: monospace; word-wrap: break-word">{{Application.api_key.substr(0,4) + "*******" + Application.api_key.substr(Application.api_key.length-4,Application.api_key.length)}}</span>
     </div>
-
-
     <div id="accordion">
-        <h3>Introducción</h3>
+        <h3>{{PageLabels._mycloud_myapps_edit_dd.title_introduction}}</h3>
         <div>
-            <p>En este documento encontrará información <strong>personalizada</strong> para su app IoT ({{Application.app_nickname}}) en particular.</p>
-            <p>En las siguientes tres secciones se describe cómo utilizar pvCloud para subir y consumir datos usando su app IoT </p>
-            <p>Haga clic en el título de la sección que desee explorar para ver su contenido</p>
+            <p>{{PageLabels._mycloud_myapps_edit_dd.intro_p1}}</p>
+            <p>{{PageLabels._mycloud_myapps_edit_dd.intro_p2}}</p>
+            <p>{{PageLabels._mycloud_myapps_edit_dd.intro_p3}}</p>
         </div>
-        <h3>La forma simple con ARDUINO y NODEJS</h3>
+        <h3>{{PageLabels._mycloud_myapps_edit_dd.title_section1}}</h3>
         <div>
             <p>En esta sección mostramos los pasos 1-2-3 para implementar PV Cloud en su app IoT compatible con Intel Galileo e Intel Edison.</p>
             <h3>Requisitos</h3>

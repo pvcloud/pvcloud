@@ -1,60 +1,74 @@
 {
-    "main":{
-        "slogan":"The power of simplicity in the Internet of the Things",
-        "email_palceholder":"Type your email here",
-        "password_placeholder":"Type your password here",
-        "login_button":"Login",
-        "how_to_get_account_link":"How do I get an account?",
-        "how_to_get_account_title":"How to Open an Account",
-        "how_to_get_account_p1":"Thank you so much for your interest in pvCloud platform.",
-        "how_to_get_account_p2":"pvCloud is now in \"BETA\" mode; this is, at this moment we are validating the product brefore officially launching it to mainstream.",
-        "how_to_get_account_p3":"At this moment pvCloud accounts are being opened through invitation from actual users / beta-testers.",
-        "how_to_get_account_p4":"If any of your friends has an account ask them to invite you! :-)",
-        "forgot_my_password_link":"I forgot my password",
-        "forgot_my_password_button":"Recover Password",
-        "forgot_my_password_cancel":"Cancel",
-        "wrong_credentials_message":"Wrong credentials",
-        "invalid_parameters_message":"Invalid parameters"      
+    "main": {
+        "slogan": "The power of simplicity in the Internet of the Things",
+        "email_palceholder": "Type your email here",
+        "password_placeholder": "Type your password here",
+        "login_button": "Login",
+        "how_to_get_account_link": "How do I get an account?",
+        "how_to_get_account_title": "How to Open an Account",
+        "how_to_get_account_p1": "Thank you so much for your interest in pvCloud platform.",
+        "how_to_get_account_p2": "pvCloud is now in \"BETA\" mode; this is, at this moment we are validating the product brefore officially launching it to mainstream.",
+        "how_to_get_account_p3": "At this moment pvCloud accounts are being opened through invitation from actual users / beta-testers.",
+        "how_to_get_account_p4": "If any of your friends has an account ask them to invite you! :-)",
+        "forgot_my_password_link": "I forgot my password",
+        "forgot_my_password_button": "Recover Password",
+        "forgot_my_password_cancel": "Cancel",
+        "wrong_credentials_message": "Wrong credentials",
+        "invalid_parameters_message": "Invalid parameters"
     },
     "mycloud": {
-        "menu_my_apps":"MY APPS",
-        "menu_my_network":"MY NETWORK",
-        "menu_my_account":"MY ACCOUNT",
-        "menu_about":"About Us",
-        "myapps_search_placeholder":"Type one or more words to filter the list",
-        "myapps_id":"ID",
-        "myapps_name_and_description":"Name and Description",
-        "myapps_new_app":"New App",
-        "quick_links_new_app":"Add New App",
-        "quick_links_invite_a_friend":"Invite a Friend",
-        "quick_links_logout":"Logout",
-        "footer_brought_by":"Brought to you by"
+        "menu_my_apps": "MY APPS",
+        "menu_my_network": "MY NETWORK",
+        "menu_my_account": "MY ACCOUNT",
+        "menu_about": "About Us",
+        "myapps_search_placeholder": "Type one or more words to filter the list",
+        "myapps_id": "ID",
+        "myapps_name_and_description": "Name and Description",
+        "myapps_new_app": "New App",
+        "quick_links_new_app": "Add New App",
+        "quick_links_invite_a_friend": "Invite a Friend",
+        "quick_links_logout": "Logout",
+        "footer_brought_by": "Brought to you by"
     },
     "passwordRecovery": {
-        "title":"Password Recovery",
-        "email":"Type your email account",
-        "newPassword":"Type your new password",
-        "newPasswordAgain":"Type your new password again"
+        "title": "Password Recovery",
+        "email": "Type your email account",
+        "newPassword": "Type your new password",
+        "newPasswordAgain": "Type your new password again"
     },
     "passwordRecoverySuccess": {
-        "success":"Your password has been successfully changed.", 
-        "click":"Click ",
-        "here":"here ",
-        "toAccess":"to access your account."
+        "success": "Your password has been successfully changed.",
+        "click": "Click ",
+        "here": "here ",
+        "toAccess": "to access your account."
     },
-    "_mycloud_myapps_edit":{
-        "app_name":"Nombre",
-        "app_description":"Descripción",
-        "basics_tab":"Basic Info",
-        "docs_n_drivers_tab":"Docs & Drivers",
-        "pages_tab":"Pages",
-        "data_tab":"Data"
+    "_mycloud_myapps_edit": {
+        "app_name": "Nombre",
+        "app_description": "Descripción",
+        "basics_tab": "Basic Info",
+        "docs_n_drivers_tab": "Docs & Drivers",
+        "pages_tab": "Pages",
+        "data_tab": "Data"
     },
-    "_mycloud_myaccount":{
-        "change_password_title":"Change my Password",
-        "type_your_current_password":"Type your current password:",
-        "type_your_new_password":"Type your new password:",
-        "type_your_new_password_2":"Type again your new password:",
-        "btn_save":"Change Password"
+    "_mycloud_myaccount": {
+        "change_password_title": "Change my Password",
+        "type_your_current_password": "Type your current password:",
+        "type_your_new_password": "Type your new password:",
+        "type_your_new_password_2": "Type again your new password:",
+        "btn_save": "Change Password"
+    },
+    "_mycloud_myapps_edit_dd": {
+        "title": "How to use pvCloud in your App/Devices",
+        "lbl_app_id": "AppID:",
+        "lbl_app_name": "App Name:",
+        "lbl_app_description": "Description:",
+        "title_introduction": "Introduction",
+        "intro_p1": "In this document you'll find (custom) information for your IoT App.",
+        "intro_p2": "The following three sections describe how to utilize pvCloud for uploading and consuming data through your IoT Application.",
+        "intro_p3": "Click on the title of the section you'd like to explore, to expand it and read its content.",
+        "title_section1":"Connect your INTEL EDISON in 3 simple steps",
+        "section1_step1_title":"STEP 1: Install the pvCloud connector in LINUX",
+        "sedtion1_step1_p1":"Copy the following 'wget' command with all of its parameters and execute it in your Edison's LINUX Terminal."
+        
     }
 }
