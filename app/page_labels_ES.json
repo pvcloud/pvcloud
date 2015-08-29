@@ -45,7 +45,16 @@
     "_mycloud_myapps_edit":{
         "app_name":"Nombre",
         "app_description":"Descripción",
-        "basics_tab":"Definición"
+        "basics_tab":"Definición",
+        "docs_n_drivers_tab":"Instrucciones",
+        "pages_tab":"Páginas",
+        "data_tab":"Datos"
+    },
+    "_mycloud_myaccount":{
+        "change_password_title":"Cambiar mi Contraseña",
+        "type_your_current_password":"Digite aquí su clave actual:",
+        "type_your_new_password":"Digite aquí su nueva contraseña:",
+        "type_your_new_password_2":"Repita aquí su nueva contraseña:",
+        "btn_save":"Cambiar Contraseña"
     }
-    
 }

@@ -43,9 +43,18 @@
         "toAccess":"to access your account."
     },
     "_mycloud_myapps_edit":{
-        "app_name":"Name",
-        "app_description":"Description",
-        "basics_tab":"Definition"
+        "app_name":"Nombre",
+        "app_description":"Descripción",
+        "basics_tab":"Basic Info",
+        "docs_n_drivers_tab":"Docs & Drivers",
+        "pages_tab":"Pages",
+        "data_tab":"Data"
+    },
+    "_mycloud_myaccount":{
+        "change_password_title":"Change my Password",
+        "type_your_current_password":"Type your current password:",
+        "type_your_new_password":"Type your new password:",
+        "type_your_new_password_2":"Type again your new password:",
+        "btn_save":"Change Password"
     }
-    
 }

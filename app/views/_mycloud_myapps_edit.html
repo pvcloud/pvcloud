@@ -10,9 +10,9 @@
     <!-- TABS -->
     <ul data-ng-show="ApplicationID" class="nav nav-tabs" data-ng-class="{'nav-justified':ApplicationID != undefined}">
         <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">{{PageLabels._mycloud_myapps_edit.basics_tab}}</a></li>
-        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.DocsNDrivers)">Docs&nbsp;&amp;&nbsp;Drivers</a></li>
-        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Pages}"><a data-ng-click="SwitchToTab(Tabs.Pages)">Páginas</a></li>
-        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Data}"><a data-ng-click="SwitchToTab(Tabs.Data)">Datos</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Pages}"><a data-ng-click="SwitchToTab(Tabs.Pages)">{{PageLabels._mycloud_myapps_edit.pages_tab}}</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.Data}"><a data-ng-click="SwitchToTab(Tabs.Data)">{{PageLabels._mycloud_myapps_edit.data_tab}}</a></li>
+        <li role="presentation" data-ng-show="ApplicationID" data-ng-class="{active:CurrentTab == Tabs.DocsNDrivers}"><a data-ng-click="SwitchToTab(Tabs.DocsNDrivers)">{{PageLabels._mycloud_myapps_edit.docs_n_drivers_tab}}</a></li>        
     </ul>
 
     <!-- BASIC DATA-->
