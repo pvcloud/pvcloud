@@ -100,7 +100,6 @@ class da_widgets {
         $stmt->close();
 
         return $widgetEntry;
-        return null;
     }
 
     /**
@@ -167,7 +166,7 @@ class da_widgets {
                 . " SET page_id= ?, widget_type_id= ?, title= ?, description= ?, refresh_frequency_sec=?,`order`= ? "
                 . " WHERE widget_id = ? ";
 
-        $paramTypeSpec = "iissii";
+        $paramTypeSpec = "iissiii";
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
