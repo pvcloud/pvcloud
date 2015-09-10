@@ -8,6 +8,7 @@
  */
 class be_invitation{
     
+    public $account_id = 0;
     public $invitation_id = 0;
     public $host_email = "";
     public $guest_email = "";
@@ -58,7 +59,7 @@ class da_invitation {
             return $retrievedInvitation;
     }
     
-     public static function GetInvitation($guest_email, $token) {
+    public static function GetInvitation($guest_email, $token) {
          
         $sqlCommand = "SELECT invitation_id,host_email,guest_email,token, created_datetime, expired_datetime"
                 . " FROM invitations "
@@ -133,6 +134,52 @@ class da_invitation {
 
         if (!$stmt->fetch()) {
             $result = NULL;
+        }
+
+        $stmt->close();
+
+        return $result;
+    }
+    
+    public static function GetInvitationAvailability($account_id){
+        $sqlCommand = "SELECT COUNT(DISTINCT app_registry.app_id) AS app_number" 
+                . "FROM app_registry"
+                . "INNER JOIN vse_data ON vse_data.app_id = app_registry.app_id" 
+                . "WHERE account_id=?";        
+        
+        $paramTypeSpec = "i";
+        
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->bind_param($paramTypeSpec, $invitation_id)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+        $app_count = 0;
+        $result = false;
+        $stmt->bind_result($app_count);
+
+        if (!$stmt->fetch()) {
+            $result = false;
+        }
+        else{
+            if ($app_count > 0) {
+                $result = true;
+            }
         }
 
         $stmt->close();

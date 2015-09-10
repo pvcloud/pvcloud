@@ -62,6 +62,10 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
             case "about":
                 $scope.SectionURL = "views/about.html";
                 break;
+                
+            case "inviteafriend":
+                $scope.SectionURL = "views/_mycloud_inviteafriend.html";
+                break;
         }
     }
 
