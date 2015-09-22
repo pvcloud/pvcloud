@@ -8,8 +8,6 @@ require_once './DA/da_apps_registry.php';
 require_once './DA/da_vse_data.php';
 require_once './DA/da_invitation.php';
 require_once './DA/da_widget_config.php';
-
-
 ?>
 <!DOCTYPE html>
 <html>

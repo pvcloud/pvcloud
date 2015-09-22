@@ -10,6 +10,24 @@ $(document).ready(function () {
  * @returns {undefined}
  */
 function configureEvents() {
+    $("#btn_SetMode_Setup").click(function () {
+        $("#panel-set-mode .btn-info").removeClass("btn-info");
+        $("#btn_SetMode_Setup").addClass("btn-success");
+        SetPVCLOUDValue("OP_MODE", "SETUP", function (data) {
+            $("#btn_SetMode_Setup").removeClass("btn-success").addClass("btn-info").removeClass("btn-link");
+            alert("Listo! SETUP");
+        });
+    });
+
+    $("#btn_SetMode_Active").click(function () {
+        $("#panel-set-mode .btn-info").removeClass("btn-info");
+        $("#btn_SetMode_Active").addClass("btn-success");
+        SetPVCLOUDValue("OP_MODE", "ACTIVE", function (data) {
+            $("#btn_SetMode_Active").removeClass("btn-success").addClass("btn-info").removeClass("btn-link");
+            alert("Listo! ACTIVE");
+        });
+    });
+
     $("#btnBegin").click(function () {
         $("#btnBegin").hide();
         $("#btnStop").show();
@@ -185,9 +203,29 @@ function GetPVCLOUDValue(callback) { /** /   Llamada en el browser, todo en el m
             console.log(error);
             return null;
         }
-
     });
+}
 
+/**
+ * 
+ * @param {string} label
+ * @param {string} value
+ * @param {fuction} callback
+ * @returns {undefined}
+ */
+function SetPVCLOUDValue(label, value, callback) { /** /   Llamada en el browser, todo en el main.js */
+    var url = "ws_SetPVCloudData.php?label=" + label + "&value=" + value;
+
+    $.ajax(url, {/** /Utiliza el url y hace que el browser llame a PVCloud, asincronica, no se detiene ahi, sigue llamando*/
+        success: function (data) { /** /Data son los datos de PVCloud */
+            console.log(data);
+            callback(data); /** / Cuando tiene el dato, hace el callback y devuelve la info GetPVCLOUDValue, si no hay valores data es null  */
+        },
+        error: function (error) { /** / Error de comunicacion  */
+            console.log(error);
+            return null;
+        }
+    });
 }
 
 /**
@@ -195,23 +233,23 @@ function GetPVCLOUDValue(callback) { /** /   Llamada en el browser, todo en el m
  * @param {type} callback
  * @returns {undefined}
  */
-function GetPVCLOUDValue(callback) { /** /   Llamada en el browser, todo en el main.js */
-    var url = BuildPVCloudURL_GetLastValue();
-
-    $.ajax(url, {/** /Utiliza el url y hace que el browser llame a PVCloud, asincronica, no se detiene ahi, sigue llamando*/
-        success: function (data) { /** /Data son los datos de PVCloud */
-            callback(data); /** / Cuando tiene el dato, hace el callback y devuelve la info GetPVCLOUDValue, si no hay valores data es null  */
-        },
-        error: function (error) { /** / Error de comunicacion  */
-            console.log("ERROR OCCURRED");
-            callback(null);
-            console.log(error);
-            return null;
-        }
-
-    });
-
-}
+//function GetPVCLOUDValue(callback) { /** /   Llamada en el browser, todo en el main.js */
+//    var url = BuildPVCloudURL_GetLastValue();
+//
+//    $.ajax(url, {/** /Utiliza el url y hace que el browser llame a PVCloud, asincronica, no se detiene ahi, sigue llamando*/
+//        success: function (data) { /** /Data son los datos de PVCloud */
+//            callback(data); /** / Cuando tiene el dato, hace el callback y devuelve la info GetPVCLOUDValue, si no hay valores data es null  */
+//        },
+//        error: function (error) { /** / Error de comunicacion  */
+//            console.log("ERROR OCCURRED");
+//            callback(null);
+//            console.log(error);
+//            return null;
+//        }
+//
+//    });
+//
+//}
 
 /**
  * Crafts a URL with the necessary parameters for getting last value from pvCloud
