@@ -30,7 +30,21 @@
                 <label for="txtDescripcion">Descripción</label>
                 <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su widget" rows="4" data-ng-model="Widget.description"></textarea>
             </div>
+            <!-- Widget Type-->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
+                <label for="txtType">Tipo de Widget</label>
+                    <select  class="form-control"  data-ng-model="Widget.type" data-ng-change="SetFormDirty()" required>
+                      <option ng-repeat="wt in WidgetTypeList.widget_types" value="{{wt.wid}}">{{wt.wname}}</option>
+                    </select>
+            </div>
             
+             <!-- Widget Type-->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
+                <label for="txtFrequency">Frequency</label>
+                <input type="text" class="form-control" id="txtFrequency" placeholder="Digite aquí la frecuencia del widget." data-ng-change="SetFormDirty()" data-ng-model="Widget.frequency">
+            </div>
                
 
             <button class="btn btn-success" data-ng-click="SaveWidget()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
