@@ -4,6 +4,16 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
     $scope.SetFormDirty = function () {
         $scope.FormIsClean = false;
     };
+    
+//TODO to call service
+    $scope.WidgetTypeList ={
+        "widget_types":[
+        {"wname":"Simple Object", "wid":"1"}, 
+        {"wname":"Simple Value", "wid":"2"},
+        {"wname":"KNOB", "wid":"3"}]};
+    
+  
+
 
     $scope.Cancelar = function () {
         if (!$scope.FormIsClean) {
