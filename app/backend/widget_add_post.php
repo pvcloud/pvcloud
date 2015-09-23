@@ -117,7 +117,5 @@ class AddWidgetWebService {
     }
 
 }
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
 include './inc/incJSONHeaders.php';
 echo json_encode(AddWidgetWebService::AddWidget());

@@ -175,10 +175,11 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         var account_id = sessionService.GetCurrentAccountID();
         var token = sessionService.GetCurrentToken();
         var page_id = $routeParams.p1;
-        var app_id = $routeParams.p2;
+        
         
         if(page_id === "new")
         {
+            var app_id = $routeParams.p2;
             AppRegistryService.GetAppByID(account_id, token, app_id).$promise.then(function (appResponse) {
                 var app = appResponse.data;
                 var page = {
@@ -194,6 +195,15 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
         }
         else
         {
+            var Tabs = $scope.Tabs;
+            var tabSpec = $routeParams.p2;
+            
+            if(tabSpec){
+                if(tabSpec === "tab_widgets"){
+                    $scope.CurrentTab = Tabs.Widgets;
+                }
+            }
+            
             AppRegistryService.GetPageByID(account_id, token, page_id).$promise.then(function (pageResponse) {
                 var page = pageResponse.data;
                 AppRegistryService.GetAppByID(account_id, token, page.app_id).$promise.then(function (appResponse) {

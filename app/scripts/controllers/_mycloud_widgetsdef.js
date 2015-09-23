@@ -24,8 +24,10 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         console.log($scope.Widget);
 
         if ($scope.Widget.widget_id > 0) {
+            console.log("UPDATE WIDGET");
             updateWidget($scope.Widget);
         } else {
+            console.log("CREATE WIDGET");
             createWidget($scope.Widget);
         }
 
@@ -73,16 +75,19 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
                     var account_id = sessionService.GetCurrentAccountID();
                     var token = sessionService.GetCurrentToken();
 //TODO: change to correct insert method
-                    WidgetService.WidgetInsert(
+                    var promise = WidgetService.WidgetInsert(
                             account_id,
                             token,
                             $scope.Widget
-                            ).then(function (response) {
-                        UtilityService.ProcessServiceResponse(response,
+                            );
+                    
+                    promise.then(function (response) {
+                        UtilityService.ProcessServiceResponse(response.data /*Used response.data as object returned by $http.post includes a lot more of unnecessary stuff*/,
                                 function success(response) {
-                                var page = response.data;
-                                loadDataToForm($scope.App, page);
-                                alert("Los datos se almacenaron satisfactoriamente.");
+                                    
+                                    var savedWidget = response.data;
+                                    $location.path("/widgetsdef/" + savedWidget.widget_id);
+                                    alert("Los datos se almacenaron satisfactoriamente.");
                                 },
                                 function error(response) {
                                     console.log(response);

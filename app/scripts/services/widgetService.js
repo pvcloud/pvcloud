@@ -15,8 +15,18 @@ angular.module('pvcloudApp').factory('WidgetService', function ($resource, $http
     }
     
     function WidgetInsert(account_id, token, Widget){
-        
-        return  $http.post(baseURL + "widget_add_post.php", {account_id: account_id, token: token, title: Widget.title, description: Widget.description, page_id: Widget.page_id, widget_type_id:2, order:1, refresh_frequency_sec:5 });
+        console.log("WidgetInsert --> http.post");
+        return  $http.post(baseURL + "widget_add_post.php", 
+            {   
+                account_id: account_id, 
+                token: token, 
+                title: Widget.title, 
+                description: Widget.description, 
+                page_id: Widget.page_id, 
+                widget_type_id:2, 
+                order:1, 
+                refresh_frequency_sec:5 
+            });
     }
     
     
