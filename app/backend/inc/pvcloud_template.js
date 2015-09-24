@@ -1,5 +1,5 @@
 /**
- * node pvcloud_api.js action=add_value value="abc 123" value_label="pvCloud_TEST" value_type="ALPHA OR WATEVER" captured_datetime="2014-12-19+12:27"
+ * node pvcloud_api.js action=add_value value="abc 123" label="pvCloud_TEST" type="ALPHA OR WATEVER"
  */
 
 var request = require('request');
@@ -19,21 +19,25 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
     var parameters = captureParameters();
 
     if (validateParameters()) {
+        log("-----------------------------------------");
+        log("-----------------------------------------");
+        log("VALIDATED PARAMS");
+        log(parameters);
         switch (parameters.action) {
             case "add_value":
-                pvCloud_AddValue(parameters.value_label, parameters.value, parameters.value_type, parameters.captured_datetime);
+                pvCloud_AddValue(parameters.label, parameters.value, parameters.type, parameters.captured_datetime);
                 break;
             case "get_last_value":
-                pvCloud_GetLastValue(parameters.value_label);
+                pvCloud_GetLastValue(parameters.label);
                 break;
             case "get_last_value_simple":
-                pvCloud_GetLastValue_Simple(parameters.value_label);
-                break;                
+                pvCloud_GetLastValue_Simple(parameters.label);
+                break;
             case "get_values":
-                pvCloud_GetValues(parameters.value_label, parameters.last_limit);
+                pvCloud_GetValues(parameters.label, parameters.last_limit);
                 break;
             case "clear_values":
-                pvCloud_ClearValues(parameters.value_label);
+                pvCloud_ClearValues(parameters.label);
                 break;
         }
     }
@@ -65,40 +69,75 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         var action = parameters.action;
         switch (action) {
             case "add_value":
-                if (parameters.value === undefined)
-                    throw("Invalid or missing parameter for action add_value: value");
-                if (parameters.value_label === undefined)
-                    throw("Invalid or missing parameter for action add_value: value_label");
-                if (parameters.value_type === undefined)
-                    throw("Invalid or missing parameter for action add_value: value_type");
-                if (parameters.captured_datetime === undefined)
-                    throw("Invalid or missing parameter for action add_value: captured_datetime");
-                else {
+                log("VALIDATE PARAMS: ADD VALUE ACTION");
+                if (parameters.value === undefined) {
+                    console.log("PVCLOUD_ERR: MISSING VALUE");
+                    return false;
+                }
+
+                if (parameters.label === undefined) {
+                    console.log("PVCLOUD_ERR: MISSING LABEL");
+                    return false;
+                }
+
+                if (parameters.type === undefined) {
+                    console.log("PVCLOUD_ERR: MISSING TYPE");
+                    return false;
+                }
+
+                if (parameters.captured_datetime === undefined) {
+                    var rawDate = new Date();
+                    var year = rawDate.getFullYear();
+                    var month = rawDate.getMonth();
+                    var day = rawDate.getDate();
+                    var hour = rawDate.getHours();
+                    var minute = rawDate.getMinutes();
+                    var second = rawDate.getSeconds();
+
+                    if (month < 10)
+                        month = "0" + month;
+                    if (day < 10)
+                        day = "0" + day;
+                    if (hour < 10)
+                        hour = "0" + hour;
+                    if (minute < 10)
+                        minute = "0" + minute;
+                    if (second < 10)
+                        second = "0" + second;
+
+                    parameters.captured_datetime = year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
+                } else {
                     var pattern01 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2})/;
                     var pattern02 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2}):(\d)/;
                     if (!parameters.captured_datetime.match(pattern01) && !parameters.captured_datetime.match(pattern02)) {
-                        throw("Invalid or missing parameter for action add_value: captured_datetime. Wrong Pattern");
+                        console.log("PVCLOUD_ERR: WRONG PATTERN IN CAPTURED DATETIME");
+                        return false;
                     }
                 }
                 break;
             case "get_last_value":
-                if (parameters.value_label === undefined)
-                    parameters.value_label = "";
+                log("VALIDATE PARAMS: GET LAST VALUE");
+                if (parameters.label === undefined)
+                    parameters.label = "";
                 break;
             case "get_last_value_simple":
-                if (parameters.value_label === undefined)
-                    parameters.value_label = "";
-                break;                
+                log("VALIDATE PARAMS: GET LAST VALUE SIMPLE");
+                if (parameters.label === undefined)
+                    parameters.label = "";
+                break;
             case "get_values":
-                if (parameters.value_label === undefined)
-                    parameters.value_label = "";
+                log("VALIDATE PARAMS: GET VALUES");
+                if (parameters.label === undefined)
+                    parameters.label = "";
                 break;
             case "clear_values":
-                if (parameters.value_label === undefined)
-                    parameters.value_label = "";
+                log("VALIDATE PARAMS: CLEAR VALUES");
+                if (parameters.label === undefined)
+                    parameters.label = "";
                 break;
             default:
-                //throw ("Invalid Action");
+                console.log("PVCLOUD_ERR: UNKNOWN ACTION ==>" + action);
+                return false;
         }
 
         return true;
@@ -110,123 +149,151 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         }
     }
 
-    function pvCloud_AddValue(value_label, value, value_type, captured_datetime, callback) {
-        log("AddValue()");
+    function pvCloud_AddValue(label, value, type, captured_datetime, callback) {
+        log("pvCloud_AddValue()");
         var wsURL = baseURL;
         wsURL += "vse_add_value.php";
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
 
-        wsURL += '&label=' + value_label;
+        wsURL += '&label=' + label;
         wsURL += '&value=' + value;
-        wsURL += '&type=' + value_type;
+        wsURL += '&type=' + type;
         wsURL += '&captured_datetime=' + captured_datetime;
 
         log(wsURL);
+        
+        log("CALLING REQUEST!!!--------------------------------------------");
 
         request(wsURL, function (error, response, body) {
 
             if (!error && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
                 console.log(body);
             } else {
-                console.log(response);
-                console.log(error);
+                log("ERROR!!!--------------------------------------------");
+                log(response);
+                log(error);
+                console.log("PVCLOUD_ERR: " + error);
             }
             if (callback) {
+                log("CALLING CALLBACK!!!--------------------------------------------");
                 callback(error, response, body);
             }
         });
     }
 
-    function pvCloud_ClearValues(value_label, callback) {
+    function pvCloud_ClearValues(label, callback) {
+        log("pvCloud_ClearValues");
         var wsURL = baseURL;
         wsURL += "vse_clear_values.php";
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
 
-        wsURL += '&optional_label=' + value_label;
+        wsURL += '&optional_value_label=' + label;
 
         request(wsURL, function (error, response, body) {
-
             if (!error && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
                 console.log(body);
             } else {
-                console.log(response);
-                console.log(error);
+                log("ERROR!!!--------------------------------------------");
+                log(response);
+                log(error);
+                console.log("PVCLOUD_ERR: " + error);
             }
             if (callback) {
+                log("CALLING CALLBACK!!!--------------------------------------------");
                 callback(error, response, body);
             }
         });
     }
 
-    function pvCloud_GetLastValue(value_label, callback) {
+    function pvCloud_GetLastValue(label, callback) {
+        log("pvCloud_GetLastValue");
         var wsURL = baseURL;
         wsURL += "vse_get_value_last.php";
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
 
-        wsURL += '&optional_label=' + value_label;
+        wsURL += '&optional_value_label=' + label;
 
         request(wsURL, function (error, response, body) {
 
             if (!error && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
                 console.log(body);
             } else {
-                console.log(response);
-                console.log(error);
+                log("ERROR!!!--------------------------------------------");
+                log(response);
+                log(error);
+                console.log("PVCLOUD_ERR: " + error);
             }
             if (callback) {
+                log("CALLING CALLBACK!!!--------------------------------------------");
                 callback(error, response, body);
             }
         });
     }
-    
-    function pvCloud_GetLastValue_Simple(value_label, callback) {
+
+    function pvCloud_GetLastValue_Simple(label, callback) {
+        log("pvCloud_GetLastValue_Simple");
         var wsURL = baseURL;
         wsURL += "vse_get_value_last.php";
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
 
-        wsURL += '&optional_label=' + value_label;
+        wsURL += '&optional_label=' + label;
 
         request(wsURL, function (error, response, body) {
 
             if (!error && response.statusCode === 200) {
                 console.log(JSON.parse(body).vse_value);
             } else {
-                console.log(response);
-                console.log(error);
+                log("ERROR!!!--------------------------------------------");
+                log(response);
+                log(error);
+                console.log("PVCLOUD_ERR: " + error);
             }
             if (callback) {
+                log("CALLING CALLBACK!!!--------------------------------------------");
                 callback(error, response, body);
             }
         });
-    }    
-    
+    }
 
-    function pvCloud_GetValues(value_label, last_limit, callback) {
+    function pvCloud_GetValues(label, last_limit, callback) {
+        log("pvCloud_GetValues");
         var wsURL = baseURL;
         wsURL += "vse_get_values.php";
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
 
-        wsURL += '&optional_label=' + value_label;
+        wsURL += '&optional_label=' + label;
         wsURL += '&optional_last_limit=' + last_limit;
 
         request(wsURL, function (error, response, body) {
             if (!error && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
                 console.log(body);
             } else {
-                console.log(response);
-                console.log(error);
+                log("ERROR!!!--------------------------------------------");
+                log(response);
+                log(error);
+                
+                if(error!=null){
+                console.log("PVCLOUD_ERR: " + error);
+                } else {
+                    console.log("PVCLOUD_ERR: " + response);
+                }
             }
             if (callback) {
+                log("CALLING CALLBACK!!!--------------------------------------------");
                 callback(error, response, body);
             }
         });
