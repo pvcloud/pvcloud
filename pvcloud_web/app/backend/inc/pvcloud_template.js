@@ -227,7 +227,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         requestWrapper(wsURL, undefined, undefined, callback);
     }
 
- 
+
     /**
      * Wraps the inner call of an HTTP Request
      * @param {type} url URL to call
@@ -248,10 +248,14 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 else
                     console.log(body);
             } else {
-                log("ERROR!!!----------------------------------------------");
-                log("STATUS CODE:" + response.statusCode);
                 log("RESPONSE:---------------------------------------------");
                 log(response);
+
+                if (response && response.statusCode) {
+                    log("STATUS CODE!!!----------------------------------------------");
+                    log(response.statusCode);
+                }
+
                 log("ERROR:------------------------------------------------");
                 log(error);
                 log("PVCLOUD ERROR PROCESSING:-----------------------------");
