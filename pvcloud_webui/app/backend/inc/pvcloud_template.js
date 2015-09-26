@@ -3,45 +3,47 @@
  */
 
 var request = require('request');
-
 var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
+
+
     var DEBUG = false;
-
-    log("started");
-    log("process.argv: ");
-    log(process.argv);
-
-    app_id = app_id || 0;
-    api_key = api_key || "";
-    account_id = account_id || 0;
-    baseURL = baseURL || "";
-
-    var parameters = captureParameters();
-
-    if (validateParameters()) {
-        log("-----------------------------------------");
-        log("-----------------------------------------");
-        log("VALIDATED PARAMS");
-        log(parameters);
-        switch (parameters.action) {
-            case "add_value":
-                pvCloud_AddValue(parameters.label, parameters.value, parameters.type, parameters.captured_datetime);
-                break;
-            case "get_last_value":
-                pvCloud_GetLastValue(parameters.label);
-                break;
-            case "get_last_value_simple":
-                pvCloud_GetLastValue_Simple(parameters.label);
-                break;
-            case "get_values":
-                pvCloud_GetValues(parameters.label, parameters.last_limit);
-                break;
-            case "clear_values":
-                pvCloud_ClearValues(parameters.label);
-                break;
+    var executeNow = function () {
+        log("started");
+        log("process.argv: ");
+        log(process.argv);
+        app_id = app_id || 0;
+        api_key = api_key || "";
+        account_id = account_id || 0;
+        baseURL = baseURL || "";
+        var parameters = captureParameters();
+        if (parameters.debug) {
+            DEBUG = parameters.debug;
         }
-    }
 
+        if (validateParameters(parameters)) {
+            log("-----------------------------------------");
+            log("-----------------------------------------");
+            log("VALIDATED PARAMS");
+            log(parameters);
+            switch (parameters.action) {
+                case "add_value":
+                    pvCloud_AddValue(parameters.label, parameters.value, parameters.type, parameters.captured_datetime);
+                    break;
+                case "get_last_value":
+                    pvCloud_GetLastValue(parameters.label);
+                    break;
+                case "get_last_value_simple":
+                    pvCloud_GetLastValue_Simple(parameters.label);
+                    break;
+                case "get_values":
+                    pvCloud_GetValues(parameters.label, parameters.last_limit);
+                    break;
+                case "clear_values":
+                    pvCloud_ClearValues(parameters.label);
+                    break;
+            }
+        }
+    }();
 
     /* PRIVATE FUNCTIONS */
     function captureParameters() {
@@ -65,7 +67,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         return parameters;
     }
 
-    function validateParameters() {
+    function validateParameters(parameters) {
         var action = parameters.action;
         switch (action) {
             case "add_value":
@@ -81,8 +83,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 }
 
                 if (parameters.type === undefined) {
-                    console.log("PVCLOUD_ERR: MISSING TYPE");
-                    return false;
+                    parameters.type = "TEXT";
                 }
 
                 if (parameters.captured_datetime === undefined) {
@@ -93,7 +94,6 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                     var hour = rawDate.getHours();
                     var minute = rawDate.getMinutes();
                     var second = rawDate.getSeconds();
-
                     if (month < 10)
                         month = "0" + month;
                     if (day < 10)
@@ -104,7 +104,6 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                         minute = "0" + minute;
                     if (second < 10)
                         second = "0" + second;
-
                     parameters.captured_datetime = year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
                 } else {
                     var pattern01 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2})/;
@@ -156,32 +155,13 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
-
         wsURL += '&label=' + label;
         wsURL += '&value=' + value;
         wsURL += '&type=' + type;
         wsURL += '&captured_datetime=' + captured_datetime;
-
         log(wsURL);
-        
         log("CALLING REQUEST!!!--------------------------------------------");
-
-        request(wsURL, function (error, response, body) {
-
-            if (!error && response.statusCode === 200) {
-                log("SUCCESS!!!--------------------------------------------");
-                console.log(body);
-            } else {
-                log("ERROR!!!--------------------------------------------");
-                log(response);
-                log(error);
-                console.log("PVCLOUD_ERR: " + error);
-            }
-            if (callback) {
-                log("CALLING CALLBACK!!!--------------------------------------------");
-                callback(error, response, body);
-            }
-        });
+        requestWrapper(wsURL, undefined, undefined, callback);
     }
 
     function pvCloud_ClearValues(label, callback) {
@@ -191,24 +171,8 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
-
-        wsURL += '&optional_value_label=' + label;
-
-        request(wsURL, function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                log("SUCCESS!!!--------------------------------------------");
-                console.log(body);
-            } else {
-                log("ERROR!!!--------------------------------------------");
-                log(response);
-                log(error);
-                console.log("PVCLOUD_ERR: " + error);
-            }
-            if (callback) {
-                log("CALLING CALLBACK!!!--------------------------------------------");
-                callback(error, response, body);
-            }
-        });
+        wsURL += '&optional_label=' + label;
+        requestWrapper(wsURL, undefined, undefined, callback);
     }
 
     function pvCloud_GetLastValue(label, callback) {
@@ -218,25 +182,9 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
+        wsURL += '&optional_label=' + label;
 
-        wsURL += '&optional_value_label=' + label;
-
-        request(wsURL, function (error, response, body) {
-
-            if (!error && response.statusCode === 200) {
-                log("SUCCESS!!!--------------------------------------------");
-                console.log(body);
-            } else {
-                log("ERROR!!!--------------------------------------------");
-                log(response);
-                log(error);
-                console.log("PVCLOUD_ERR: " + error);
-            }
-            if (callback) {
-                log("CALLING CALLBACK!!!--------------------------------------------");
-                callback(error, response, body);
-            }
-        });
+        requestWrapper(wsURL, undefined, undefined, callback);
     }
 
     function pvCloud_GetLastValue_Simple(label, callback) {
@@ -246,24 +194,25 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
-
         wsURL += '&optional_label=' + label;
 
-        request(wsURL, function (error, response, body) {
+        var onsuccess = function (response, body, error) {
+            try {
+                var responseObject = JSON.parse(body);
+                if (responseObject) {
+                    var value = responseObject.vse_value;
+                    console.log(value);
+                } else {
+                    console.log("PVCLOUD_ERR: LABEL NOT FOUND");
+                }
 
-            if (!error && response.statusCode === 200) {
-                console.log(JSON.parse(body).vse_value);
-            } else {
-                log("ERROR!!!--------------------------------------------");
-                log(response);
-                log(error);
-                console.log("PVCLOUD_ERR: " + error);
+            } catch (ex) {
+                console.log("PVCLOUD_ERR: " + ex);
             }
-            if (callback) {
-                log("CALLING CALLBACK!!!--------------------------------------------");
-                callback(error, response, body);
-            }
-        });
+        };
+
+        requestWrapper(wsURL, onsuccess/*NOTICE THIS!!!*/, undefined, callback);
+
     }
 
     function pvCloud_GetValues(label, last_limit, callback) {
@@ -273,29 +222,51 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         wsURL += '?app_id=' + app_id;
         wsURL += '&api_key=' + api_key;
         wsURL += '&account_id=' + account_id;
-
         wsURL += '&optional_label=' + label;
-        wsURL += '&optional_last_limit=' + last_limit;
+        wsURL += '&optional_limit=' + last_limit;
+        requestWrapper(wsURL, undefined, undefined, callback);
+    }
 
-        request(wsURL, function (error, response, body) {
+ 
+    /**
+     * Wraps the inner call of an HTTP Request
+     * @param {type} url URL to call
+     * @param {type} successCallback Function to call when HTTP Request is successful (Status code 200). Receives parameters response, body, error
+     * @param {type} errorCallback Function to call when HTTP Request is NOT successful (Status code not 200). Receives parameters response, body, error
+     * @param {type} finallyCallback Function to call at the end of the process, passing parameters response, body, error
+     * @returns {undefined}
+     */
+    function requestWrapper(url, successCallback, errorCallback, finallyCallback) {
+        log("requestWrapper()");
+        log("URL: ");
+        log(url);
+        request(url, function (error, response, body) {
             if (!error && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
-                console.log(body);
+                if (successCallback)
+                    successCallback(response, body, error);
+                else
+                    console.log(body);
             } else {
-                log("ERROR!!!--------------------------------------------");
+                log("ERROR!!!----------------------------------------------");
+                log("STATUS CODE:" + response.statusCode);
+                log("RESPONSE:---------------------------------------------");
                 log(response);
+                log("ERROR:------------------------------------------------");
                 log(error);
-                
-                if(error!=null){
-                console.log("PVCLOUD_ERR: " + error);
+                log("PVCLOUD ERROR PROCESSING:-----------------------------");
+                if (error) {
+                    console.log("PVCLOUD_ERR: " + error);
                 } else {
                     console.log("PVCLOUD_ERR: " + response);
                 }
+
+                if (errorCallback)
+                    errorCallback(response, body, error);
             }
-            if (callback) {
-                log("CALLING CALLBACK!!!--------------------------------------------");
-                callback(error, response, body);
-            }
+
+            if (finallyCallback)
+                finallyCallback(response, body, error);
         });
     }
 

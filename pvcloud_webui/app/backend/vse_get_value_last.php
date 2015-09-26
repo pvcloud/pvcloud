@@ -26,7 +26,7 @@ function execute() {
         $parameters = collectParameters();
 
         if (validate($parameters)) {
-            $entries = da_vse_data::GetLastEntry($parameters->app_id, $parameters->optional_vse_label);
+            $entries = da_vse_data::GetLastEntry($parameters->app_id, $parameters->optional_label);
         } else {
             die("Parámetros Inválidos");
         }
@@ -40,10 +40,10 @@ function execute() {
 function collectParameters() {
     $parameters = new stdClass();
     $parameters->app_id = filter_input(INPUT_GET, "app_id");
-    $parameters->optional_vse_label = filter_input(INPUT_GET, "optional_label");
+    $parameters->optional_label = filter_input(INPUT_GET, "optional_label");
 
-    if (!isset($parameters->optional_vse_label) || $parameters->optional_vse_label == NULL) {
-        $parameters->optional_vse_label = '';
+    if (!isset($parameters->optional_label) || $parameters->optional_label == NULL) {
+        $parameters->optional_label = '';
     }
 
     return $parameters;
@@ -51,7 +51,7 @@ function collectParameters() {
 
 function validate($parameters) {
     if (is_numeric($parameters->app_id) && $parameters->app_id > 0) {
-        if (is_string($parameters->optional_vse_label)) {
+        if (is_string($parameters->optional_label)) {
             return true;
         }
     }

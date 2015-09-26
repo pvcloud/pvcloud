@@ -60,11 +60,11 @@ class da_vse_data {
     /**
      * 
      * @param int $app_id
-     * @param int $optional_vse_label Use it to retrieve specific labels for a app. Leave NULL to return all values of app regardless of label
+     * @param int $optional_label Use it to retrieve specific labels for a app. Leave NULL to return all values of app regardless of label
      * @param int $optional_last_limit Max Quantity to return. Will return last number of records specified.
      * @return array
      */
-    public static function GetEntries($app_id, $optional_vse_label, $optional_last_limit) {
+    public static function GetEntries($app_id, $optional_label, $optional_last_limit) {
         
         $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
              . " FROM vse_data "
@@ -96,8 +96,8 @@ class da_vse_data {
             echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
         }
         
-        //if (!$stmt->bind_param("iss", $app_id, $optional_vse_label, $optional_vse_label)) {
-          if (!$stmt->bind_param("iss", $app_id, $optional_vse_label, $optional_vse_label)) {
+        //if (!$stmt->bind_param("iss", $app_id, $optional_label, $optional_label)) {
+          if (!$stmt->bind_param("iss", $app_id, $optional_label, $optional_label)) {
         //if (!$stmt->bind_param("is", $app_id)) {
             echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
         }
@@ -170,10 +170,10 @@ class da_vse_data {
     /**
      * 
      * @param type $app_id
-     * @param type $optional_vse_label
+     * @param type $optional_label
      * @return \be_vse_data
      */
-    public static function GetLastEntry($app_id, $optional_vse_label) {
+    public static function GetLastEntry($app_id, $optional_label) {
         $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
                 . " FROM vse_data "
                 . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
@@ -191,7 +191,7 @@ class da_vse_data {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param("iss", $app_id, $optional_vse_label, $optional_vse_label)) {
+        if (!$stmt->bind_param("iss", $app_id, $optional_label, $optional_label)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -218,10 +218,10 @@ class da_vse_data {
     /**
      * 
      * @param type $app_id
-     * @param type $optional_vse_label Use it to clear entries of an specific label for the provided app.
+     * @param type $optional_label Use it to clear entries of an specific label for the provided app.
      * @return boolean
      */
-    public static function ClearEntries($app_id, $optional_vse_label) {
+    public static function ClearEntries($app_id, $optional_label) {
         $sqlCommand = "DELETE FROM vse_data "
                 . " WHERE app_id = ? AND (vse_label = ? OR ? = '') ";
 
@@ -238,7 +238,7 @@ class da_vse_data {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec, $app_id, $optional_vse_label, $optional_vse_label)) {
+        if (!$stmt->bind_param($paramTypeSpec, $app_id, $optional_label, $optional_label)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -250,7 +250,7 @@ class da_vse_data {
 
         $stmt->close();
 
-        $retrievedEntries = da_vse_data::GetEntries($app_id, $optional_vse_label, 0);
+        $retrievedEntries = da_vse_data::GetEntries($app_id, $optional_label, 0);
         return $retrievedEntries;
     }
 

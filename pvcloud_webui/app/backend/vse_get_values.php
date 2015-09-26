@@ -24,7 +24,7 @@ function execute() {
         $parameters = collectParameters();
 
         if (validate($parameters)) {
-            $entries = da_vse_data::GetEntries($parameters->app_id, $parameters->optional_vse_label, $parameters->optional_last_limit);
+            $entries = da_vse_data::GetEntries($parameters->app_id, $parameters->optional_label, $parameters->optional_last_limit);
         } else {
             die("Parámetros Inválidos");
         }
@@ -37,10 +37,10 @@ function execute() {
 function collectParameters() {
     $parameters = new stdClass();
     $parameters->app_id = filter_input(INPUT_GET, "app_id");
-    $parameters->optional_vse_label = filter_input(INPUT_GET, "optional_label");
+    $parameters->optional_label = filter_input(INPUT_GET, "optional_label");
     $parameters->optional_last_limit = filter_input(INPUT_GET, "optional_last_limit");
 
-    if (!isset($parameters->optional_vse_label) || $parameters->optional_vse_label == NULL) $parameters->optional_vse_label='';
+    if (!isset($parameters->optional_label) || $parameters->optional_label == NULL) $parameters->optional_label='';
     if (!isset($parameters->optional_last_limit) || $parameters->optional_last_limit == NULL || !is_numeric($parameters->optional_last_limit)) $parameters->optional_last_limit=0;
     
         return $parameters;
@@ -48,7 +48,7 @@ function collectParameters() {
 
 function validate($parameters) {
     if(is_numeric($parameters->app_id) && $parameters->app_id >0){
-        if(is_string($parameters->optional_vse_label)) {
+        if(is_string($parameters->optional_label)) {
             if(is_numeric($parameters->optional_last_limit) && $parameters->optional_last_limit >= 0){
                 return true;
             }
