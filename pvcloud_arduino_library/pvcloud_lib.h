@@ -9,8 +9,8 @@ class PVCloud
 {
   public:
 	void WriteAsync(String, String);
-	void WriteAsync(char *, float)
 	void ReadAsync(String);
+	void FileCleanup(String label);
 	String Check(String);
 
 	void LogEntry(String message);

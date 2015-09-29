@@ -20,19 +20,70 @@ PVCloud pvcloud;
 void setup() {
   delay(1000);
   Serial.begin(9600);
-  serialOut("SETUP BEGIN!");
+  Serial.println("SETUP BEGIN!");
   lcd.begin(16,2);
   lcd.setRGB(255,255,255);//WHITE
-  
-  test_WriteAsync();
 }
 
 
 
 void loop() {
-  
+  test_WriteAsync();
 
+  while(1);
 }
+
+long minTimeInStatus = 1000;
+long statusMillis = 0;
+bool readyForMore = true;
+long errorMillis = 0;
+String prevReturnedValue = "";
+long errorRetryTimeout = 30000;
+void test_WriteAsync(){
+  lcdOut("test_WriteAsync: SENDING...",0);
+  statusMillis=millis();
+  while(1==1){
+    lcdOut(millis(),0);
+    String returnedValue = prevReturnedValue;
+
+    if(readyForMore) {
+      serialOut("WRITING TO PVCLOUD");
+      pvcloud.WriteAsync("TEST","TESTVAL");
+      readyForMore=false;
+    }
+    serialOut("READING FROM PVCLOUD...");
+    returnedValue = pvcloud.Check("TEST");
+    serialOut("READ COMPLETE");
+    serialOut(returnedValue);
+    if(returnedValue!= prevReturnedValue){
+      Serial.println("Change Detected");
+      Serial.print("PRV: ");
+      Serial.print(prevReturnedValue);
+      Serial.print("RV: ");
+      Serial.println(returnedValue);
+
+      serialOut("NEW VALUE DETECTED: " + returnedValue);
+      lcdOut(returnedValue,1);
+      
+      prevReturnedValue = returnedValue;
+      statusMillis = millis();
+
+      if(returnedValue=="PVCLOUD_ERROR"){
+        errorMillis = millis();
+      }
+      
+      if(returnedValue=="TESTVAL"){
+        lcd.setRGB(0,255,0);
+      } else if(returnedValue=="PVCLOUD_ERROR"){
+        lcd.setRGB(255,0,0);
+      } else {
+        lcd.setRGB(255,255,255);
+      }
+    } 
+  }  
+}
+
+
 
 void test_NOBODY_INACTIVE(){
   lcd.setRGB(0,255,0);
@@ -80,34 +131,6 @@ void test_Setup_ALARM(){
   lcd.setRGB(255,0,0);//RED
   lcdOut("SETUP MODE",0);
   lcdOut("ALARM (0011)",1);
-}
-long statusMoment = 0;
-String prevReturnedValue = "";
-long statusRetryTimeout = 10000;
-void test_WriteAsync(){
-  lcdOut("test_WriteAsync: SENDING...",0);
-  pvcloud.WriteAsync("TEST","TESTVAL");
-  while(1==1){
-    long timeInSketch = millis();
-    lcdOut(timeInSketch,0);
-    delay(10);
-    String returnedValue = pvcloud.Check("TEST");
-    if(millis()-statusMoment > statusRetryTimeout){
-      pvcloud.WriteAsync("TEST","TESTVAL");
-      statusMoment = millis();
-    }
-    
-    if(returnedValue!= prevReturnedValue){
-      serialOut("NEW VALUE IN FILE: " + returnedValue);
-      prevReturnedValue = returnedValue;
-      statusMoment = millis();
-      lcdOut(returnedValue,1);
-      if(returnedValue=="TESTVAL"){
-        pvcloud.WriteAsync("TEST","TESTVAL");
-      }
-    }
-  }
-  
 }
 
 void lcdMillis(){

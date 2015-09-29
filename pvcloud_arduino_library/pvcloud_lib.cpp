@@ -30,24 +30,6 @@ void PVCloud::WriteAsync(String label, String value){
 	system(command.buffer);
 }
 
-void PVCloud::WriteAsync(char  *label, float value){
-
-	String fileCleanupCommand = "echo \"\" > ";
-	fileCleanupCommand += asyncFilePath + "out_pvcloud_" + label;
-	system(fileCleanupCommand.buffer);
-
-	String command = "node /home/root/pvcloud_api.js action='write' ";
-	command += " label='" + label + "' ";
-	command += " value='" + value + "' ";
-	command += " error_log_file='" + errorFile + "'";
-
-
-	command += " async=true";
-	command += " async_path='" + asyncFilePath + "'";
-	command += " &";
-
-	system(command.buffer);
-}
 
 void PVCloud::ReadAsync(String label){
 	String fileCleanupCommand = "echo \"\" > ";
