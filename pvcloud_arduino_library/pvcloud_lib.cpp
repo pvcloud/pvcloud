@@ -7,6 +7,62 @@
 
 #include "pvcloud_lib.h"
 
+void PVCloud::SendStringValueNowait(String label, String value){
+	//log("BEGIN: SendStringValueNowait");
+	Serial.println("PVCloud::SendStringValueNowait()");
+
+	String command = "node /home/root/pvcloud_api.js action='send_value_nowait' type='STRING'";
+	command = command + " label='" + label + "' ";
+	command = command + " value='";
+	command = command + value;
+	command = command + "' > /home/root/log_pvcloud.txt &";
+	//log(command);
+	Serial.println(command);
+
+	//log("call to Linux now...");
+	system(command.buffer);
+	//log("COMLPETE: pvCloud_Send_String");  
+}
+
+void PVCloud::RequestLastValueStringNowait(String label, String value){
+	//log("BEGIN: RequestLastValueStringNowait");
+	Serial.println("PVCloud::RequestLastValueStringNowait()");
+
+	String command = "node /home/root/pvcloud_api.js action='request_last_value_nowait' ";
+	command = command + " label='" + label + "' ";
+	command = command + " &";
+	//log(command);
+	Serial.println(command);
+
+	//log("call to Linux now...");
+	system(command.buffer);
+	//log("COMLPETE: pvCloud_Send_String");  
+}
+
+String PVCloud::GetRequestStatusFromFile(String label){
+	Serial.println("PVCloud::GetRequestStatusFromFile()");
+
+	String fileName = "/out_pvcloud_";
+
+	if (label != ""){
+		fileName += label;
+	}
+	else {
+		fileName += "any";
+	}
+
+	FILE *filePointer;
+	filePointer = fopen(fileName.buffer, "r");
+	char fileContent[200];
+	fgets(fileContent, 200, filePointer);
+
+	String value = fileContent;
+	value.trim();
+
+	fclose(filePointer);
+	return value;
+}
+
 String PVCloud::ReadFileValue(){
 	String fileName = "/pvcloud_file_interface.txt";
 

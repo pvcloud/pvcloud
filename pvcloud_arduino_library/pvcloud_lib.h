@@ -10,6 +10,10 @@ class PVCloud
   public:
 	String ReadFileValue();
 
+	void SendStringValueNowait(String, String);
+	void RequestLastValueStringNowait(String, String);
+	String GetRequestStatusFromFile(String);
+
     void SendString(String label, String value);
 	void SendStringNoWait(String label, String value);
     void SendFloat(char *label, float value);
