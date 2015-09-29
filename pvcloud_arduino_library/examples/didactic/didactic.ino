@@ -22,7 +22,7 @@ void setup() {
   lcd.begin(16,2);
   lcd.setRGB(255,255,255);//WHITE
 
-  test_NOBODY_BREACH();
+  test_WriteAsync();
 }
 
 
@@ -30,23 +30,6 @@ void setup() {
 void loop() {
   
 
-}
-
-void test_HelloWorld(){
-  SendStringValueNowait("DIDACTIC_FLOW", "HELLO WORLD");
-
-  
-  serialOut("SETUP BEGIN");
-  lcdOut("SETUP BEGIN",0);
-  lcdOut("waiting 3 sec",1);
-  delay(3000);
-
-
-
-  
-  serialOut("SETUP COMPELETE");
-  lcdOut("SETUP COMPLETE",0);
-  lcdOut("                  ",1);  
 }
 
 void test_NOBODY_INACTIVE(){
@@ -97,35 +80,23 @@ void test_Setup_ALARM(){
   lcdOut("ALARM (0011)",1);
 }
 
-int found = 0;
-void test_GetHelloWorld(){
-  if(found==0){
-    lcdOut("Reading Value",0);
-    serialOut("Reading Value");
-    String label = "DIDACTIC_FLOW";
-    String requestStatus = pvcloud.GetRequestStatusFromFile(label);
-    lcdOut(requestStatus,1); 
-    if(requestStatus=="PVCLOUD_WAITING_FOR_RESPONSE"){
-      lcdMillis();
-    } else if(requestStatus=="HELLO WORLD") {
-      found = 1;
-      serialOut("FOUND IT!!!");
-      
-      lcdOut("FOUND IT",0);
-         
-      serialOut(requestStatus);
-    } else {
-      serialOut("NOT WAITING...");
-      lcdOut(requestStatus,1);
-      serialOut(requestStatus);
-      lcdMillis();
+String prevReturnedValue = "";
+void test_WriteAsync(){
+  lcdOut("test_WriteAsync: SENDING...",0);
+  pvcloud.WriteAsync("TEST","TESTVAL");
+  while(1==1){
+    delay(10);
+    String returnedValue = pvcloud.Check("TEST");
+    if(returnedValue!= prevReturnedValue){
+      serialOut("NEW VALUE IN FILE: " + returnedValue);
+      prevReturnedValue = returnedValue;
+      lcdOut(returnedValue,1);
+      if(returnedValue=="TESTVAL"){
+        pvcloud.WriteAsync("TEST","TESTVAL");
+      }
     }
-  }  
-}
-
-void SendStringValueNowait(String label, String value){
-  serialOut("SendStringValueNowait()");
-  pvcloud.SendStringValueNowait(label, value);
+  }
+  
 }
 
 void lcdMillis(){
