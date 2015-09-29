@@ -271,7 +271,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         message += "\n";
         log("errorLog()");
 
-        var errorLogFilePath = parameters.error_log_file || "/log_error_pvcloud.log";
+        var errorLogFilePath = parameters.error_log_file || "/error_pvcloud.log";
         log(errorLogFilePath);
 
         fs.appendFile(errorLogFilePath, message, function (err) {

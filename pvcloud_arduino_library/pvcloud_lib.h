@@ -9,6 +9,7 @@ class PVCloud
 {
   public:
 	void WriteAsync(String, String);
+	void WriteAsync(char *, float)
 	void ReadAsync(String);
 	String Check(String);
 

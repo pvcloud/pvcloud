@@ -18,10 +18,12 @@ rgb_lcd lcd;
 PVCloud pvcloud;
 
 void setup() {
+  delay(1000);
   Serial.begin(9600);
+  serialOut("SETUP BEGIN!");
   lcd.begin(16,2);
   lcd.setRGB(255,255,255);//WHITE
-
+  
   test_WriteAsync();
 }
 
@@ -79,17 +81,26 @@ void test_Setup_ALARM(){
   lcdOut("SETUP MODE",0);
   lcdOut("ALARM (0011)",1);
 }
-
+long statusMoment = 0;
 String prevReturnedValue = "";
+long statusRetryTimeout = 10000;
 void test_WriteAsync(){
   lcdOut("test_WriteAsync: SENDING...",0);
   pvcloud.WriteAsync("TEST","TESTVAL");
   while(1==1){
+    long timeInSketch = millis();
+    lcdOut(timeInSketch,0);
     delay(10);
     String returnedValue = pvcloud.Check("TEST");
+    if(millis()-statusMoment > statusRetryTimeout){
+      pvcloud.WriteAsync("TEST","TESTVAL");
+      statusMoment = millis();
+    }
+    
     if(returnedValue!= prevReturnedValue){
       serialOut("NEW VALUE IN FILE: " + returnedValue);
       prevReturnedValue = returnedValue;
+      statusMoment = millis();
       lcdOut(returnedValue,1);
       if(returnedValue=="TESTVAL"){
         pvcloud.WriteAsync("TEST","TESTVAL");
@@ -125,5 +136,11 @@ void lcdOut(String message, int row){
   lcd.setCursor(0,row);
   lcd.print(message);
   lcd.print("           ");  
+}
+
+void lcdOut(long lvalue, int row){
+  lcd.setCursor(0,row);
+  lcd.print(lvalue);
+  lcd.print("           ");
 }
 
