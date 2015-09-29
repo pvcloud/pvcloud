@@ -62,7 +62,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 log("consoleAPI.Check('" + label + "')");
                 readResultFromFile(label, function (err, data) {
                     if (err) {
-                        errorLog(err)
+                        errorLog(err);
                         console.log("PVCLOUD_ERROR");
                     } else {
                         console.log(data);
@@ -143,6 +143,27 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         return params;
     }
 
+    function getFormattedDateTime() {
+        var rawDate = new Date();
+        var year = rawDate.getFullYear();
+        var month = rawDate.getMonth() + 1;
+        var day = rawDate.getDate();
+        var hour = rawDate.getHours();
+        var minute = rawDate.getMinutes();
+        var second = rawDate.getSeconds();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        if (hour < 10)
+            hour = "0" + hour;
+        if (minute < 10)
+            minute = "0" + minute;
+        if (second < 10)
+            second = "0" + second;
+        return year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
+    }
+
     /**
      * Validates paramameters and sets defaults
      * @returns {String} String containing the first error found during validation or empty string if there was no errors found.
@@ -166,24 +187,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 }
 
                 if (parameters.captured_datetime === undefined) {
-                    var rawDate = new Date();
-                    var year = rawDate.getFullYear();
-                    var month = rawDate.getMonth();
-                    var day = rawDate.getDate();
-                    var hour = rawDate.getHours();
-                    var minute = rawDate.getMinutes();
-                    var second = rawDate.getSeconds();
-                    if (month < 10)
-                        month = "0" + month;
-                    if (day < 10)
-                        day = "0" + day;
-                    if (hour < 10)
-                        hour = "0" + hour;
-                    if (minute < 10)
-                        minute = "0" + minute;
-                    if (second < 10)
-                        second = "0" + second;
-                    parameters.captured_datetime = year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
+                    parameters.captured_datetime = getFormattedDateTime();
                 } else {
                     var pattern01 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2})/;
                     var pattern02 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2}):(\d)/;
@@ -215,24 +219,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 }
 
                 if (parameters.captured_datetime === undefined) {
-                    var rawDate = new Date();
-                    var year = rawDate.getFullYear();
-                    var month = rawDate.getMonth();
-                    var day = rawDate.getDate();
-                    var hour = rawDate.getHours();
-                    var minute = rawDate.getMinutes();
-                    var second = rawDate.getSeconds();
-                    if (month < 10)
-                        month = "0" + month;
-                    if (day < 10)
-                        day = "0" + day;
-                    if (hour < 10)
-                        hour = "0" + hour;
-                    if (minute < 10)
-                        minute = "0" + minute;
-                    if (second < 10)
-                        second = "0" + second;
-                    parameters.captured_datetime = year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
+                    parameters.captured_datetime = getFormattedDateTime();
                 } else {
                     var pattern01 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2})/;
                     var pattern02 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2}):(\d)/;
@@ -280,6 +267,21 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
     }
 
     function errorLog(message) {
+        message = getFormattedDateTime() + " - " + message;
+        message += "\n";
+        log("errorLog()");
+
+        var errorLogFilePath = parameters.error_log_file || "/log_error_pvcloud.log";
+        log(errorLogFilePath);
+
+        fs.appendFile(errorLogFilePath, message, function (err) {
+            if (err) {
+                console.log(err);
+                console.log("ERROR @ errorLog()");
+                console.log("Try adding an error_log_file parameter");
+                console.log(err);
+            }
+        });
 
     }
 
@@ -322,23 +324,32 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         console.log(result);
     }
 
-    function resultToFile(tag, result) {
+    function    resultToFile(tag, result) {
         if (!tag)
             tag = "any";
 
         var filePath = parameters.async_path || "";
 
         log("WRITING TO FILE...");
-        var resultFile = filePath + "/out_pvcloud_" + tag;
-        log(resultFile);
-        var stream = fs.createWriteStream(resultFile);
-        stream.once('open', function (fd) {
-            stream.write(result);
-            stream.end();
-            stream.close();
-            log("FS END REACHED!");
-        });
-        log("END OF resultToFile()");
+
+        try {
+            var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
+            log(resultFile);
+            var stream = fs.createWriteStream(resultFile);
+            stream.once('open', function (fd) {
+                try {
+                    stream.write(result);
+                    stream.end();
+                    stream.close();
+                    log("FS END REACHED!");
+                } catch (ex) {
+                    errorLog(ex);
+                }
+            });
+            log("END OF resultToFile()");
+        } catch (ex) {
+            errorLog(ex);
+        }
     }
 
     /**
@@ -349,7 +360,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
      */
     function readResultFromFile(tag, callback) {
         var filePath = parameters.async_path || "";
-        var resultFile = filePath + "/out_pvcloud_" + tag;
+        var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
         log("READING FROM FILE...");
         log(resultFile);
 
@@ -458,11 +469,11 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                     successCallback(response, body, error);
                 else {
                     if (parameters.async) {
-                        try{
+                        try {
                             var bodyObject = JSON.parse(body);
                             var value = bodyObject.vse_value;
                             OutputResult(value);
-                        } catch (ex){
+                        } catch (ex) {
                             errorLog("ASYNC CALL COULD NOT PARSE RESULT");
                             errorLog(ex);
                             OutputResult("PVCLOUD_ERROR");
@@ -523,4 +534,3 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         GetValues: pvCloud_GetValues
     };
 };
-
