@@ -10,13 +10,16 @@
 String asyncFilePath = "/home/root";
 String errorFile = "/home/root/err_pvcloud.txt";
 
+void fileCleanup(String label){
+	
+	String fileCleanupCommand = "echo \"\" > ";
+	fileCleanupCommand += asyncFilePath + "/out_pvcloud_" + label + ".txt";
+	Serial.println("FILE CLEANUP FOR " + label + " as " + fileCleanupCommand);
+	system(fileCleanupCommand.buffer);
+}
 
 void PVCloud::WriteAsync(String label, String value){
-
-	String fileCleanupCommand = "echo \"\" > ";
-	fileCleanupCommand += asyncFilePath + "out_pvcloud_" + label;
-	system(fileCleanupCommand.buffer);
-
+	fileCleanup(label);
 	String command = "node /home/root/pvcloud_api.js action='write' ";
 	command += " label='" + label + "' ";
 	command += " value='" + value + "' ";
@@ -32,9 +35,7 @@ void PVCloud::WriteAsync(String label, String value){
 
 
 void PVCloud::ReadAsync(String label){
-	String fileCleanupCommand = "echo \"\" > ";
-	fileCleanupCommand += asyncFilePath + "out_pvcloud_" + label;
-	system(fileCleanupCommand.buffer);
+	fileCleanup(label);
 
 	String command = "node /home/root/pvcloud_api.js action='read' ";
 	command += " label='" + label + "' ";
@@ -61,8 +62,8 @@ String PVCloud::Check(String label){
 	FILE *filePointer;
 	filePointer = fopen(fileName.buffer, "r");
 	char fileContent[200];
-	fgets(fileContent, 200, filePointer);
 
+	fgets(fileContent, 200, filePointer);
 	String value = fileContent;
 	value.trim();
 

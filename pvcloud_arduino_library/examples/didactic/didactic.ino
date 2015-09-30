@@ -28,61 +28,125 @@ void setup() {
 
 
 void loop() {
-  test_WriteAsync();
-
+  //test_WriteAsync();
+  test_MonitorAsync();
   while(1);
 }
 
-long minTimeInStatus = 1000;
-long statusMillis = 0;
-bool readyForMore = true;
+long minMillisBeforeNextRequest = 5000;
+long requestCompleteMillis = 0;
+bool asyncCallInProgress = false;
 long errorMillis = 0;
 String prevReturnedValue = "";
 long errorRetryTimeout = 30000;
 void test_WriteAsync(){
-  lcdOut("test_WriteAsync: SENDING...",0);
-  statusMillis=millis();
-  while(1==1){
+  lcdOut("test_WriteAsync",0);
+  while(1){
     lcdOut(millis(),0);
     String returnedValue = prevReturnedValue;
 
-    if(readyForMore) {
-      serialOut("WRITING TO PVCLOUD");
-      pvcloud.WriteAsync("TEST","TESTVAL");
-      readyForMore=false;
-    }
-    serialOut("READING FROM PVCLOUD...");
-    returnedValue = pvcloud.Check("TEST");
-    serialOut("READ COMPLETE");
-    serialOut(returnedValue);
-    if(returnedValue!= prevReturnedValue){
-      Serial.println("Change Detected");
-      Serial.print("PRV: ");
-      Serial.print(prevReturnedValue);
-      Serial.print("RV: ");
-      Serial.println(returnedValue);
-
-      serialOut("NEW VALUE DETECTED: " + returnedValue);
-      lcdOut(returnedValue,1);
-      
-      prevReturnedValue = returnedValue;
-      statusMillis = millis();
-
-      if(returnedValue=="PVCLOUD_ERROR"){
-        errorMillis = millis();
+    if(! asyncCallInProgress) {
+      if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
+        pvcloud.WriteAsync("TEST","TESTVAL");
+        asyncCallInProgress=true;
       }
-      
-      if(returnedValue=="TESTVAL"){
-        lcd.setRGB(0,255,0);
-      } else if(returnedValue=="PVCLOUD_ERROR"){
-        lcd.setRGB(255,0,0);
-      } else {
-        lcd.setRGB(255,255,255);
+    } else {
+      returnedValue = pvcloud.Check("TEST");
+      if(returnedValue!= prevReturnedValue){
+        test_WriteAsync_ProcessChange(returnedValue);
       }
     } 
   }  
 }
 
+void test_WriteAsync_ProcessChange(String returnedValue){
+  
+  Serial.println("Change Detected");
+  Serial.print("PRV: '");
+  Serial.print(prevReturnedValue);
+  Serial.print("'   RV: '");
+  Serial.print(returnedValue);
+  Serial.println("'");
+
+  serialOut("NEW VALUE DETECTED: " + returnedValue);
+  lcdOut(returnedValue,1);
+  
+  prevReturnedValue = returnedValue;
+  
+  if(returnedValue=="PVCLOUD_ERROR"){
+    errorMillis = millis();
+  }
+  
+  if(returnedValue=="TESTVAL"){
+    lcd.setRGB(0,255,0);
+    asyncCallInProgress=false;
+    requestCompleteMillis=millis();
+  } else if(returnedValue=="PVCLOUD_ERROR"){
+    lcd.setRGB(255,0,0);
+    asyncCallInProgress=false;
+    requestCompleteMillis=millis();
+  } else if (returnedValue=="LA PUTA"){
+    lcd.setRGB(255,128,128);
+    asyncCallInProgress=false;
+  } else {
+    lcd.setRGB(255,255,255);
+  }  
+}
+
+void test_MonitorAsync(){
+  lcdOut("test_MonitorAsync",0);
+  while(1){
+    lcdOut(millis(),0);
+    String returnedValue = prevReturnedValue;
+
+    if(! asyncCallInProgress) {
+      if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
+        pvcloud.ReadAsync("TEST");
+        asyncCallInProgress=true;
+      }
+    } else {
+      returnedValue = pvcloud.Check("TEST");
+      if(returnedValue!= prevReturnedValue){
+        test_MonitorAsync_ProcessChange(returnedValue);
+      }
+    } 
+  }  
+}
+
+void test_MonitorAsync_ProcessChange(String returnedValue){
+  
+  Serial.println("Change Detected");
+  Serial.print("PRV: '");
+  Serial.print(prevReturnedValue);
+  Serial.print("'   RV: '");
+  Serial.print(returnedValue);
+  Serial.println("'");
+
+  serialOut("NEW VALUE DETECTED: " + returnedValue);
+  lcdOut(returnedValue,1);
+  
+  prevReturnedValue = returnedValue;
+  
+  if(returnedValue=="PVCLOUD_ERROR"){
+    errorMillis = millis();
+  }
+  
+  if(returnedValue=="TESTVAL"){
+    lcd.setRGB(0,255,0);
+    asyncCallInProgress=false;
+    requestCompleteMillis=millis();
+  } else if(returnedValue=="PVCLOUD_ERROR"){
+    lcd.setRGB(255,0,0);
+    asyncCallInProgress=false;
+    requestCompleteMillis=millis();
+  } else if (returnedValue=="LA PUTA"){
+    lcd.setRGB(255,128,128);
+    asyncCallInProgress=false;
+    requestCompleteMillis=millis();
+  } else {
+    lcd.setRGB(255,255,255);
+  }  
+}
 
 
 void test_NOBODY_INACTIVE(){
