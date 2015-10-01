@@ -64,7 +64,7 @@ String PVCloud::Check(String label){
 	fileName += ".txt";
 
 	FILE *filePointer;
-	filePointer = fopen(fileName.buffer, "r");
+	filePointer = fopen(fileName.buffer, "rb");
 	char fileContent[200];
 
 	fgets(fileContent, 200, filePointer);
@@ -73,35 +73,6 @@ String PVCloud::Check(String label){
 
 	fclose(filePointer);
 	return value;
-}
-
-String PVCloud::Check2(String label){
-	String fileName = asyncFilePath + "/out_pvcloud_";
-
-	if (label != ""){
-		fileName += label;
-	}
-	else {
-		fileName += "any";
-	}
-	fileName += ".txt";
-
-
-	FILE *f = fopen(fileName.buffer, "rb");
-	if (f != NULL) {
-		fseek(f, 0, SEEK_END);
-		long pos = ftell(f);
-		fseek(f, 0, SEEK_SET);
-
-		char *bytes = (char*)malloc(pos);
-		fread(bytes, pos, 1, f);
-		fclose(f);
-
-		return bytes;
-	}
-	else {
-		return NULL;
-	}
 }
 
 

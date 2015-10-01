@@ -16,7 +16,7 @@
 
 rgb_lcd lcd;
 PVCloud pvcloud;
-bool DEBUG = true;
+bool DEBUG = false;
 
 int TriggerPins[] = {2,4,6,8};
 int EchoPins[] = {3,5,7,9};
@@ -76,13 +76,8 @@ String SensorsLine = "0000";
 String PanicChar = "";
 
 void loop() {
-
-  /* BEGIN: THE FOLLOWING CODE COULD NOT BE MOVED OUT TO A FUNCTION BECAUSE THE SYSTEM LOSES ITS ABILITY TO READASYNC PVCLOUD */
-  String curMillis = String(millis()); //(!!!) Initializing curMillis to "0000" causes a lot of unrelated garbage on file read.
-  String header = "TOMBO(" + CheckChar + ")" + curMillis; //Removing curMillis variable DOESN'T seem to cause garbage in file read.
-  lcdOut(header,0);//(!!!) calling lcdOut(header) overloaded method causes unrelated garbage on file read!!!
-  /* END: THE PRECEDING CODE COULD NOT BE MOVED OUT TO A FUNCTION BECAUSE THE SYSTEM LOSES ITS ABILITY TO READASYNC PVCLOUD */
-
+  lcdTomboHeader();
+  
   lcdCompositeOPMode();
   
   detectPushButton();
@@ -107,6 +102,12 @@ void processAlarmConditionChanges(){
       pvcloud.WriteAsync("ALARM_CONDITION","QUIET");
     }
   } 
+}
+
+void lcdTomboHeader(){
+  String curMillis = String(millis()); 
+  String header = "TOMBO(" + CheckChar + ")" + curMillis; 
+  lcdOut(header);//(!!!) calling lcdOut(header) overloaded method causes unrelated garbage on file read!!!
 }
 
 void lcdCompositeOPMode(){
