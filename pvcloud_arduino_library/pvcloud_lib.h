@@ -12,7 +12,7 @@ class PVCloud
 	void ReadAsync(String);
 	void FileCleanup(String label);
 	String Check(String);
-
+	String Check2(String);
 	void LogEntry(String message);
     void LogEntry(double value);
  
