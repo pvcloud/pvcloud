@@ -16,7 +16,7 @@
 
 rgb_lcd lcd;
 PVCloud pvcloud;
-bool DEBUG = false;
+bool DEBUG = true;
 
 int TriggerPins[] = {2,4,6,8};
 int EchoPins[] = {3,5,7,9};
@@ -102,14 +102,18 @@ void loop() {
     }
   }
 
-  obtainDistancesInCM();
-
+  if(OPMode!="OFF"){
+    obtainDistancesInCM();
+  }
+  
   if(OPMode=="SETUP"){
     ProcessOPMode_SETUP();
   } else if (OPMode=="ACTIVE") {
     ProcessOPMode_ACTIVE();
   } else if (OPMode=="NOBODY") {
     ProcessOPMode_NOBODY();
+  } else if (OPMode=="OFF"){
+    lcd.setRGB(100,100,100);
   }
 }
 
@@ -243,10 +247,11 @@ void CheckForOPModeChanges(String returnedValue){
   String expectedValues [] = {
     "SETUP",
     "ACTIVE",
-    "NOBODY"
+    "NOBODY",
+    "OFF"
   };
 
-  int expectedValuesQty = 3;
+  int expectedValuesQty = 4;
   bool expectedValueFound = false;
   for(int i =0; i<expectedValuesQty; i++){
     if(returnedValue == expectedValues[i]){
@@ -340,6 +345,11 @@ void detectPushButton(){
       OPMode="SW TO NOBODY";
       makingOPModeSwitch = true;
       pvcloud.WriteAsync("OPMODE","NOBODY");
+      delay(100);
+    } else if(OPMode=="NOBODY" && !makingOPModeSwitch){
+      OPMode="SW TO OFF";
+      makingOPModeSwitch = true;
+      pvcloud.WriteAsync("OPMODE","OFF");
       delay(100);
     } else if(OPMode=="NOBODY" && !makingOPModeSwitch){
       OPMode="SW TO SETUP";
