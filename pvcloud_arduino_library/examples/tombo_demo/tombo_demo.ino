@@ -126,9 +126,11 @@ void ProcessOPMode_SETUP(){
   if(oneOrMoreSensorsActivated){
     digitalWrite(buzzer, HIGH);
     digitalWrite(light_alarm, HIGH);
+    lcd.setRGB(255,0,0);
   } else {
     digitalWrite(buzzer, LOW);
     digitalWrite(light_alarm, LOW);    
+    lcd.setRGB(0,0,255);
   }
 
   if(millis()>activeTriggerLimit){
@@ -160,9 +162,11 @@ void ProcessOPMode_ACTIVE(){
   }
 
   if(oneOrMoreSensorsActivated){
+    lcd.setRGB(0,128,0);
     serialOut("RESETTING NOBODY TRIGGER LIMIT!!!!!!");
     nobodyTriggerLimit = millis() + maxInactiveMillis;
   } else {
+    lcd.setRGB(128,128,128);
     if(millis()>nobodyTriggerLimit){
       OPMode="NOBODY DETECTED";
       makingOPModeSwitch = true;
@@ -187,12 +191,14 @@ void ProcessOPMode_NOBODY(){
   }
 
   if(oneOrMoreSensorsActivated){
+    lcd.setRGB(255,0,0);
     digitalWrite(buzzer, HIGH);
     digitalWrite(light_alarm, HIGH); 
     alarmOffTriggerLimit = millis() + maxAlarmTime;
     PanicChar = "!";
   } else {
     if(millis()>alarmOffTriggerLimit){
+      lcd.setRGB(0,255,0);
       digitalWrite(buzzer, LOW);
       digitalWrite(light_alarm, LOW); 
       PanicChar = "";
