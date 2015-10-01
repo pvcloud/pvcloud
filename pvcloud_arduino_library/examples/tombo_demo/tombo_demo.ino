@@ -92,7 +92,21 @@ void loop() {
   processOPMode();
 
   processSensorsLineChanges();
-   
+
+  processAlarmConditionChanges();
+}
+
+bool alarmCondition = false;
+bool prevAlarmCondition = false;
+void processAlarmConditionChanges(){
+  if(alarmCondition != prevAlarmCondition){
+    prevAlarmCondition = alarmCondition;
+    if(alarmCondition){
+      pvcloud.WriteAsync("ALARM_CONDITION","PANIC");
+    } else {
+      pvcloud.WriteAsync("ALARM_CONDITION","QUIET");
+    }
+  } 
 }
 
 void lcdCompositeOPMode(){
@@ -141,10 +155,12 @@ void processOPMode(){
     lcd.setRGB(100,100,100);
     digitalWrite(light_alarm, LOW);
     digitalWrite(buzzer, LOW);
+    alarmCondition = false;
   }
 }
 
 void ProcessOPMode_SETUP(){
+  alarmCondition=false;
   nobodyTriggerLimit=0;
   bool oneOrMoreSensorsActivated = false;
   for(int i=0; i<SensorsQty; i++){
@@ -174,6 +190,7 @@ void ProcessOPMode_SETUP(){
 long maxInactiveMillis = 30000;
 bool makingOPModeSwitch = false;
 void ProcessOPMode_ACTIVE(){
+  alarmCondition = false;
   bool oneOrMoreSensorsActivated = false;
   activeTriggerLimit = millis() + maxTimeInSetup;
   digitalWrite(buzzer, LOW);
@@ -226,6 +243,7 @@ void ProcessOPMode_NOBODY(){
     digitalWrite(buzzer, HIGH);
     digitalWrite(light_alarm, HIGH); 
     alarmOffTriggerLimit = millis() + maxAlarmTime;
+    alarmCondition = true;
     PanicChar = "!";
   } else {
     if(millis()>alarmOffTriggerLimit){
@@ -233,6 +251,7 @@ void ProcessOPMode_NOBODY(){
       digitalWrite(buzzer, LOW);
       digitalWrite(light_alarm, LOW); 
       PanicChar = "";
+      alarmCondition = false;
     }
   }  
 }
