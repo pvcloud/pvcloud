@@ -25,19 +25,10 @@ long OperationModeCheckMinDuration = 5000;
 long OperationModeCheckStartMillis = 0;
 
 String alarmStatus = "QUIET";
-
-#define trigger_1 2
-#define echo_1    3
-
-#define trigger_2 4
-#define echo_2    5
-
-#define trigger_3 6
-#define echo_3    7
-
-
-#define trigger_4 8
-#define echo_4    9
+int TriggerPins[] = {2,4,6,8};
+int EchoPins[] = {3,4,7,9};
+int SensorsQty = 4;
+int DistancesInCM [] = {0,0,0,0};
 
 #define buzzer    12
 #define light_alarm 13 
@@ -86,38 +77,77 @@ bool asyncCallInProgress = false;
 long errorMillis = 0;
 String prevReturnedValue = "";
 long errorRetryTimeout = 30000;
+String OPMode = "";
+String CheckChar = "R";
+String SensorsLine = "0000";
 
 
 void loop() {
   String curMillis = String(millis());
-  String strMillis = "TOMBO - " + curMillis;
+  String strMillis = "TOMBO(" + CheckChar + ")" + curMillis;
   lcdOut(strMillis,0);
-
+  String compositeOPMode = OPMode + "(" + SensorsLine + ")";
+  lcdOut(compositeOPMode,1);
   
   String returnedValue = prevReturnedValue;
 
   
   if(! asyncCallInProgress) {
     if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
-      pvcloud.ReadAsync("TEST");
+      pvcloud.ReadAsync("OPMODE");
       asyncCallInProgress=true;
       millisForRequestTimeout = millis() + maxTimeInRequest;
     }
   } else {
-    returnedValue = pvcloud.Check("TEST");
+    returnedValue = pvcloud.Check("OPMODE");
     if(returnedValue!= prevReturnedValue){
-      test_MonitorAsync_ProcessChange(returnedValue);
+      CheckForOPModeChanges(returnedValue);
     } else if(millis() > millisForRequestTimeout){
       asyncCallInProgress=false;
       requestCompleteMillis=millis();
     }
-  }  
- 
+  }
+
+  obtainDistancesInCM();
+
+  if(OPMode=="SETUP"){
+    ProcessOPMode_SETUP();
+  } else if (OPMode=="ACTIVE") {
+    ProcessOPMode_ACTIVE();
+  } else if (OPMode=="NOBODY") {
+    ProcessOPMode_NOBODY();
+  }
 }
 
+void ProcessOPMode_SETUP(){
+  bool oneOrMoreSensorsActivated = false;
+  for(int i=0; i<SensorsQty; i++){
+    if(DistancesInCM[i] != 0 && DistancesInCM[i]<25){
+      oneOrMoreSensorsActivated = true;
+      break;
+    } else {
+      
+    }
+  }
 
+  if(oneOrMoreSensorsActivated){
+    digitalWrite(buzzer, HIGH);
+    digitalWrite(light_alarm, HIGH);
+  } else {
+    digitalWrite(buzzer, HIGH);
+    digitalWrite(light_alarm, HIGH);    
+  }
+}
 
-void test_MonitorAsync_ProcessChange(String returnedValue){
+void ProcessOPMode_ACTIVE(){
+  
+}
+
+void ProcessOPMode_NOBODY(){
+  
+}
+
+void CheckForOPModeChanges(String returnedValue){
   
   Serial.println("Change Detected");
   Serial.print("PRV: '");
@@ -127,7 +157,6 @@ void test_MonitorAsync_ProcessChange(String returnedValue){
   Serial.println("'");
 
   serialOut("NEW VALUE DETECTED: " + returnedValue);
-  lcdOut(returnedValue,1);
   
   prevReturnedValue = returnedValue;
   
@@ -153,15 +182,16 @@ void test_MonitorAsync_ProcessChange(String returnedValue){
   //EXPECTED VALUES:
 
   String expectedValues [] = {
-    "TESTVAL",
-    "TEST2",
-    "OTHER"
+    "SETUP",
+    "ACTIVE",
+    "NOBODY"
   };
 
   int expectedValuesQty = 3;
   bool expectedValueFound = false;
   for(int i =0; i<expectedValuesQty; i++){
     if(returnedValue == expectedValues[i]){
+      OPMode = returnedValue;
       asyncCallInProgress=false;
       requestCompleteMillis = millis();
       expectedValueFound = true;
@@ -169,13 +199,14 @@ void test_MonitorAsync_ProcessChange(String returnedValue){
   }
 
   if(controlValueFound) {
-    lcd.setRGB(0,255,255);
+    if(returnedValue=="PVCLOUD_ERROR") CheckChar = "!";
+    else CheckChar = "C";
   } else if (expectedValueFound){
-    lcd.setRGB(0,255,0);
+    CheckChar = "E";
   } else if(returnedValue.length()>3){
-      asyncCallInProgress=false;
-      requestCompleteMillis = millis();
-      lcd.setRGB(255,255,0);
+    asyncCallInProgress=false;
+    requestCompleteMillis = millis();
+    CheckChar = "U";
   }
   
 }
@@ -193,6 +224,22 @@ void test_MonitorAsync_ProcessChange(String returnedValue){
 
   pvc_CheckOperationModeResult();
 
+}
+*/
+
+void obtainDistancesInCM(){
+  SensorsLine = "";
+  for(int i=0; i<SensorsQty; i++){
+    serialOut("Obtaining Distance " + String(i) + String(TriggerPins[i]));
+    DistancesInCM[i] = getSanitizedDistanceInCM(TriggerPins[i], EchoPins[i]);
+    String strDistance = String(DistancesInCM[i]);
+    if (DistancesInCM[i]>0 && DistancesInCM[i]<25){
+      SensorsLine +="1";
+    } else {
+      SensorsLine +="0";
+    }
+    serialOut("Distance on Sensor " + String(i) + ": "+ strDistance + "cm ");
+  }
 }
 
 long getSanitizedDistanceInCM(int triggerPin, int echoPin){
@@ -234,11 +281,11 @@ long getRawDistanceInCM(int triggerPin, int echoPin){
     pulseDuration = pulseIn(echoPin, HIGH,500);
     
     distanceInCM = (pulseDuration/2)/29.1;
-    
+    Serial.println(distanceInCM);
     return distanceInCM;
 }
 
-
+/*
 
 void pvc_SwitchOperationMode(String mode){
   lcd_printMessage("PVC OPM ..." + mode,0);
@@ -308,22 +355,6 @@ void lcd_printMessage(String message,int row){
   lcd.print("                 ");
 }
 
-void setup_pinModes(){
-  pinMode(13, OUTPUT);
-
-  pinMode (trigger_1, OUTPUT);
-  pinMode (trigger_2, OUTPUT);
-  pinMode (trigger_3, OUTPUT);
-  pinMode (trigger_4, OUTPUT);
-
-  
-  pinMode (echo_1, INPUT);
-  pinMode (echo_2, INPUT);
-  pinMode (echo_3, INPUT);
-  pinMode (echo_4, INPUT);
-  pinMode (buzzer, OUTPUT);
-  pinMode (light_alarm, OUTPUT);
-}
 
 void OPMode_SETUP(){
   long distanceValue[3] = {-1,-1,-1};
@@ -447,16 +478,12 @@ void OPMode_NOBODY(){
 void setup_pinModes(){
   pinMode(13, OUTPUT);
 
-  pinMode (trigger_1, OUTPUT);
-  pinMode (trigger_2, OUTPUT);
-  pinMode (trigger_3, OUTPUT);
-  pinMode (trigger_4, OUTPUT);
+  for(int i=0; i<SensorsQty; i++){
+    pinMode(TriggerPins[i], OUTPUT);
+    pinMode(EchoPins[i], OUTPUT);
+  }
 
-  
-  pinMode (echo_1, INPUT);
-  pinMode (echo_2, INPUT);
-  pinMode (echo_3, INPUT);
-  pinMode (echo_4, INPUT);
+
   pinMode (buzzer, OUTPUT);
   pinMode (light_alarm, OUTPUT);
 }
