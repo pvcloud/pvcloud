@@ -71,20 +71,44 @@ String prevReturnedValue = "";
 long errorRetryTimeout = 30000;
 String OPMode = "SETUP INIT";
 String CheckChar = "R";
+String PrevSensorsLine = "0000";
 String SensorsLine = "0000";
 String PanicChar = "";
 
-
 void loop() {
-  String curMillis = String(millis());
-  String strMillis = "TOMBO(" + CheckChar + ")" + curMillis;
-  lcdOut(strMillis,0);
-  String compositeOPMode = OPMode + "(" + SensorsLine + ")" + PanicChar;
-  lcdOut(compositeOPMode,1);
-  
-  String returnedValue = prevReturnedValue;
 
+  /* BEGIN: THE FOLLOWING CODE COULD NOT BE MOVED OUT TO A FUNCTION BECAUSE THE SYSTEM LOSES ITS ABILITY TO READASYNC PVCLOUD */
+  String curMillis = String(millis()); //(!!!) Initializing curMillis to "0000" causes a lot of unrelated garbage on file read.
+  String header = "TOMBO(" + CheckChar + ")" + curMillis; //Removing curMillis variable DOESN'T seem to cause garbage in file read.
+  lcdOut(header,0);//(!!!) calling lcdOut(header) overloaded method causes unrelated garbage on file read!!!
+  /* END: THE PRECEDING CODE COULD NOT BE MOVED OUT TO A FUNCTION BECAUSE THE SYSTEM LOSES ITS ABILITY TO READASYNC PVCLOUD */
+
+  lcdCompositeOPMode();
+  
   detectPushButton();
+  
+  asyncPVCloudUpdate();
+
+  processOPMode();
+
+  processSensorsLineChanges();
+   
+}
+
+void lcdCompositeOPMode(){
+  String compositeOPMode = OPMode + "(" + SensorsLine + ")" + PanicChar;
+  lcdOut(compositeOPMode,1);  
+}
+
+void processSensorsLineChanges(){
+  if(SensorsLine!=PrevSensorsLine){
+    PrevSensorsLine = SensorsLine;
+    pvcloud.WriteAsync("SENSORS_LINE",SensorsLine);
+  } 
+}
+
+void asyncPVCloudUpdate(){
+  String returnedValue = prevReturnedValue;
   
   if(! asyncCallInProgress) {
     if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
@@ -100,20 +124,23 @@ void loop() {
       asyncCallInProgress=false;
       requestCompleteMillis=millis();
     }
-  }
+  }  
+}
 
-  if(OPMode!="OFF"){
-    obtainDistancesInCM();
-  }
-  
+void processOPMode(){
   if(OPMode=="SETUP"){
+    obtainDistancesInCM();
     ProcessOPMode_SETUP();
   } else if (OPMode=="ACTIVE") {
+    obtainDistancesInCM();
     ProcessOPMode_ACTIVE();
   } else if (OPMode=="NOBODY") {
+    obtainDistancesInCM();
     ProcessOPMode_NOBODY();
   } else if (OPMode=="OFF"){
     lcd.setRGB(100,100,100);
+    digitalWrite(light_alarm, LOW);
+    digitalWrite(buzzer, LOW);
   }
 }
 
@@ -351,7 +378,7 @@ void detectPushButton(){
       makingOPModeSwitch = true;
       pvcloud.WriteAsync("OPMODE","OFF");
       delay(100);
-    } else if(OPMode=="NOBODY" && !makingOPModeSwitch){
+    } else if(OPMode=="OFF" && !makingOPModeSwitch){
       OPMode="SW TO SETUP";
       makingOPModeSwitch = true;
       pvcloud.WriteAsync("OPMODE","SETUP");
