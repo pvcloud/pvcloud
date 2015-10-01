@@ -26,9 +26,9 @@ long OperationModeCheckStartMillis = 0;
 
 String alarmStatus = "QUIET";
 int TriggerPins[] = {2,4,6,8};
-int EchoPins[] = {3,4,7,9};
+int EchoPins[] = {3,5,7,9};
 int SensorsQty = 4;
-int DistancesInCM [] = {0,0,0,0};
+long DistancesInCM [] = {0,0,0,0};
 
 #define buzzer    12
 #define light_alarm 13 
@@ -125,8 +125,6 @@ void ProcessOPMode_SETUP(){
     if(DistancesInCM[i] != 0 && DistancesInCM[i]<25){
       oneOrMoreSensorsActivated = true;
       break;
-    } else {
-      
     }
   }
 
@@ -134,8 +132,8 @@ void ProcessOPMode_SETUP(){
     digitalWrite(buzzer, HIGH);
     digitalWrite(light_alarm, HIGH);
   } else {
-    digitalWrite(buzzer, HIGH);
-    digitalWrite(light_alarm, HIGH);    
+    digitalWrite(buzzer, LOW);
+    digitalWrite(light_alarm, LOW);    
   }
 }
 
@@ -480,7 +478,7 @@ void setup_pinModes(){
 
   for(int i=0; i<SensorsQty; i++){
     pinMode(TriggerPins[i], OUTPUT);
-    pinMode(EchoPins[i], OUTPUT);
+    pinMode(EchoPins[i], INPUT);
   }
 
 
@@ -554,4 +552,5 @@ void lcdOut(long lvalue, int row){
   lcd.print(lvalue);
   lcd.print("                ");
 }
+
 
