@@ -34,6 +34,8 @@ void loop() {
 }
 
 long minMillisBeforeNextRequest = 5000;
+long maxTimeInRequest = 30000;
+long millisForRequestTimeout = 0;
 long requestCompleteMillis = 0;
 bool asyncCallInProgress = false;
 long errorMillis = 0;
@@ -99,15 +101,20 @@ void test_MonitorAsync(){
     lcdOut(millis(),0);
     String returnedValue = prevReturnedValue;
 
+    
     if(! asyncCallInProgress) {
       if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
         pvcloud.ReadAsync("TEST");
         asyncCallInProgress=true;
+        millisForRequestTimeout = millis() + maxTimeInRequest;
       }
     } else {
       returnedValue = pvcloud.Check("TEST");
       if(returnedValue!= prevReturnedValue){
         test_MonitorAsync_ProcessChange(returnedValue);
+      } else if(millis() > millisForRequestTimeout){
+        asyncCallInProgress=false;
+        requestCompleteMillis=millis();
       }
     } 
   }  
@@ -130,22 +137,50 @@ void test_MonitorAsync_ProcessChange(String returnedValue){
   if(returnedValue=="PVCLOUD_ERROR"){
     errorMillis = millis();
   }
-  
-  if(returnedValue=="TESTVAL"){
-    lcd.setRGB(0,255,0);
-    asyncCallInProgress=false;
-    requestCompleteMillis=millis();
-  } else if(returnedValue=="PVCLOUD_ERROR"){
-    lcd.setRGB(255,0,0);
-    asyncCallInProgress=false;
-    requestCompleteMillis=millis();
-  } else if (returnedValue=="LA PUTA"){
-    lcd.setRGB(255,128,128);
-    asyncCallInProgress=false;
-    requestCompleteMillis=millis();
+
+  //CHECK FOR CONTROL VALUES
+  bool controlValueFound = false;
+  if(returnedValue==""){
+      serialOut("CONTROL VALUE: EMPTY");
+      controlValueFound = true;
+  } else if (returnedValue == "PVCLOUD_ERROR") {
+      serialOut("CONTROL VALUE: ERROR");
+      controlValueFound = true;
+  } else if (returnedValue == "PVCLOUD_WAITING_FOR_RESPONSE") {
+      serialOut("CONTROL VALUE: WAIT-");
+      controlValueFound = true;
   } else {
-    lcd.setRGB(255,255,255);
-  }  
+      serialOut("NO CONTROL VALUE RECEIVED");
+  }
+
+  //EXPECTED VALUES:
+
+  String expectedValues [] = {
+    "TESTVAL",
+    "TEST2",
+    "OTHER"
+  };
+
+  int expectedValuesQty = 3;
+  bool expectedValueFound = false;
+  for(int i =0; i<expectedValuesQty; i++){
+    if(returnedValue == expectedValues[i]){
+      asyncCallInProgress=false;
+      requestCompleteMillis = millis();
+      expectedValueFound = true;
+    }
+  }
+
+  if(controlValueFound) {
+    lcd.setRGB(0,255,255);
+  } else if (expectedValueFound){
+    lcd.setRGB(0,255,0);
+  } else if(returnedValue.length()>3){
+      asyncCallInProgress=false;
+      requestCompleteMillis = millis();
+      lcd.setRGB(255,255,0);
+  }
+  
 }
 
 
@@ -222,12 +257,12 @@ void serialOut (String message){
 void lcdOut(String message, int row){
   lcd.setCursor(0,row);
   lcd.print(message);
-  lcd.print("           ");  
+  lcd.print("                ");  
 }
 
 void lcdOut(long lvalue, int row){
   lcd.setCursor(0,row);
   lcd.print(lvalue);
-  lcd.print("           ");
+  lcd.print("                ");
 }
 

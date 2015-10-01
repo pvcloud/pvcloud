@@ -52,19 +52,22 @@ long alarmMillisInitiated = 0;
 **/
 void setup() {
   Serial.begin(9600);
-  
   lcd.begin(16, 2);
-  lcd.setRGB(6, 251, 202); //VERDE AGUA
- 
-  lcd_printMessage("PVC: Begin...",0);
-  pvcloud.SendStringNoWait("DEBUG","SMART HOME START");
+  lcd.setRGB(255, 255, 0); //YELLOW
 
-  pvc_SwitchOperationMode("SETUP");
+  serialOut("WELCOME TO TOMBO - SETUP");
+  //      01234567890123456
+  lcdOut("TOMBO SETUP");
 
-  setup_pinModes();
+  delay(1000);
   
+  serialOut("SETUP: Setting Pin Modes"); 
+  setup_pinModes();
+
+  serialOut("SETUP: Initial Blink");
   initialBlink();
-  lcd_printMessage("Setup Complete!",0);
+  
+  lcdOut("TOMBO SETUP OK",0);
    
 }
 
@@ -74,7 +77,110 @@ void setup() {
   LOOP FUNCTION
 
 **/
+
+long minMillisBeforeNextRequest = 5000;
+long maxTimeInRequest = 30000;
+long millisForRequestTimeout = 0;
+long requestCompleteMillis = 0;
+bool asyncCallInProgress = false;
+long errorMillis = 0;
+String prevReturnedValue = "";
+long errorRetryTimeout = 30000;
+
+
 void loop() {
+  String curMillis = String(millis());
+  String strMillis = "TOMBO - " + curMillis;
+  lcdOut(strMillis,0);
+
+  
+  String returnedValue = prevReturnedValue;
+
+  
+  if(! asyncCallInProgress) {
+    if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
+      pvcloud.ReadAsync("TEST");
+      asyncCallInProgress=true;
+      millisForRequestTimeout = millis() + maxTimeInRequest;
+    }
+  } else {
+    returnedValue = pvcloud.Check("TEST");
+    if(returnedValue!= prevReturnedValue){
+      test_MonitorAsync_ProcessChange(returnedValue);
+    } else if(millis() > millisForRequestTimeout){
+      asyncCallInProgress=false;
+      requestCompleteMillis=millis();
+    }
+  }  
+ 
+}
+
+
+
+void test_MonitorAsync_ProcessChange(String returnedValue){
+  
+  Serial.println("Change Detected");
+  Serial.print("PRV: '");
+  Serial.print(prevReturnedValue);
+  Serial.print("'   RV: '");
+  Serial.print(returnedValue);
+  Serial.println("'");
+
+  serialOut("NEW VALUE DETECTED: " + returnedValue);
+  lcdOut(returnedValue,1);
+  
+  prevReturnedValue = returnedValue;
+  
+  if(returnedValue=="PVCLOUD_ERROR"){
+    errorMillis = millis();
+  }
+
+  //CHECK FOR CONTROL VALUES
+  bool controlValueFound = false;
+  if(returnedValue==""){
+      serialOut("CONTROL VALUE: EMPTY");
+      controlValueFound = true;
+  } else if (returnedValue == "PVCLOUD_ERROR") {
+      serialOut("CONTROL VALUE: ERROR");
+      controlValueFound = true;
+  } else if (returnedValue == "PVCLOUD_WAITING_FOR_RESPONSE") {
+      serialOut("CONTROL VALUE: WAIT-");
+      controlValueFound = true;
+  } else {
+      serialOut("NO CONTROL VALUE RECEIVED");
+  }
+
+  //EXPECTED VALUES:
+
+  String expectedValues [] = {
+    "TESTVAL",
+    "TEST2",
+    "OTHER"
+  };
+
+  int expectedValuesQty = 3;
+  bool expectedValueFound = false;
+  for(int i =0; i<expectedValuesQty; i++){
+    if(returnedValue == expectedValues[i]){
+      asyncCallInProgress=false;
+      requestCompleteMillis = millis();
+      expectedValueFound = true;
+    }
+  }
+
+  if(controlValueFound) {
+    lcd.setRGB(0,255,255);
+  } else if (expectedValueFound){
+    lcd.setRGB(0,255,0);
+  } else if(returnedValue.length()>3){
+      asyncCallInProgress=false;
+      requestCompleteMillis = millis();
+      lcd.setRGB(255,255,0);
+  }
+  
+}
+
+  /*
   lcd_printMessage(OperationMode,0);
   if(OperationMode == "SETUP" ) OPMode_SETUP();
   if(OperationMode == "ACTIVE") OPMode_ACTIVE();
@@ -132,17 +238,7 @@ long getRawDistanceInCM(int triggerPin, int echoPin){
     return distanceInCM;
 }
 
-void initialBlink(){
-  for (int i=0; i<10; i++){
-    digitalWrite(light_alarm,HIGH);
-    digitalWrite(buzzer,HIGH);
-    delay(5);
-    digitalWrite(light_alarm,LOW);
-    digitalWrite(buzzer,LOW);
-    delay(100);
-  }
-  pinMode(13, OUTPUT);
-}
+
 
 void pvc_SwitchOperationMode(String mode){
   lcd_printMessage("PVC OPM ..." + mode,0);
@@ -341,5 +437,94 @@ void OPMode_NOBODY(){
       digitalWrite(light_alarm, LOW);
     }
   }
+}
+*/
+
+/***************************************************
+ * SETUP FUNCTIONS
+ ***************************************************/
+
+void setup_pinModes(){
+  pinMode(13, OUTPUT);
+
+  pinMode (trigger_1, OUTPUT);
+  pinMode (trigger_2, OUTPUT);
+  pinMode (trigger_3, OUTPUT);
+  pinMode (trigger_4, OUTPUT);
+
+  
+  pinMode (echo_1, INPUT);
+  pinMode (echo_2, INPUT);
+  pinMode (echo_3, INPUT);
+  pinMode (echo_4, INPUT);
+  pinMode (buzzer, OUTPUT);
+  pinMode (light_alarm, OUTPUT);
+}
+
+void initialBlink(){
+  for (int i=0; i<10; i++){
+    digitalWrite(light_alarm,HIGH);
+    digitalWrite(buzzer,HIGH);
+    delay(5);
+    digitalWrite(light_alarm,LOW);
+    digitalWrite(buzzer,LOW);
+    delay(100);
+  }
+  lcd.setRGB(0,0,0);
+  delay(100);
+  lcd.setRGB(0,0,255);
+  delay(100);
+  lcd.setRGB(0,255,0);
+  delay(100);
+  lcd.setRGB(0,255,255);
+  delay(100);
+  lcd.setRGB(255,0,0);  
+  delay(100);
+  lcd.setRGB(255,0,255);  
+  delay(100);
+  lcd.setRGB(255,255,0);  
+  delay(100);
+  lcd.setRGB(255,255,255);  
+  delay(100); 
+}
+
+/*******************************************************
+ * LCD AND SERIAL OUT WITH TIMING
+ *******************************************************/
+
+void lcdMillis(){
+  float now = millis();
+  char strNow[100];
+  sprintf(strNow, "%.2f", now);
+  lcdOut(strNow,1);
+}
+
+long millisPrev = 0;
+void serialOut (String message){
+  long currentMillis = millis();
+  String completeMessage = "|";
+  completeMessage = completeMessage + currentMillis;
+  completeMessage = completeMessage + "| ";
+  completeMessage = completeMessage + message;
+  completeMessage = completeMessage + " Duration: ";
+  long diff = currentMillis - millisPrev;
+  completeMessage += diff;
+
+  millisPrev = currentMillis;
+  Serial.println(completeMessage);
+}
+void lcdOut(String message){
+  lcdOut(message,0);
+}
+void lcdOut(String message, int row){
+  lcd.setCursor(0,row);
+  lcd.print(message);
+  lcd.print("                ");  
+}
+
+void lcdOut(long lvalue, int row){
+  lcd.setCursor(0,row);
+  lcd.print(lvalue);
+  lcd.print("                ");
 }
 
