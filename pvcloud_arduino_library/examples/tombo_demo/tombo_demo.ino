@@ -16,36 +16,26 @@
 
 rgb_lcd lcd;
 PVCloud pvcloud;
+bool DEBUG = false;
 
-String OperationMode =  "";
-int OperationModeRequestInProgress = 0;
-long NextOperationModeCheckMillis = 0;
-long OperationModeCheckTime = 10000; //10 seconds
-long OperationModeCheckMinDuration = 5000;
-long OperationModeCheckStartMillis = 0;
-
-String alarmStatus = "QUIET";
 int TriggerPins[] = {2,4,6,8};
 int EchoPins[] = {3,5,7,9};
 int SensorsQty = 4;
 long DistancesInCM [] = {0,0,0,0};
-
+long nobodyTriggerLimit=0;
+long activeTriggerLimit=0;
+long maxTimeInSetup=120000;
 #define buzzer    12
 #define light_alarm 13 
 
-long alarmMillisInitiated = 0;
-
-
 /**
-
   SETUP FUNCTION
-
 **/
 void setup() {
   Serial.begin(9600);
   lcd.begin(16, 2);
   lcd.setRGB(255, 255, 0); //YELLOW
-
+  
   serialOut("WELCOME TO TOMBO - SETUP");
   //      01234567890123456
   lcdOut("TOMBO SETUP");
@@ -59,7 +49,9 @@ void setup() {
   initialBlink();
   
   lcdOut("TOMBO SETUP OK",0);
-   
+
+  pvcloud.WriteAsync("OPMODE", "SETUP"); 
+  activeTriggerLimit = millis() + maxTimeInSetup;
 }
 
 
@@ -77,20 +69,22 @@ bool asyncCallInProgress = false;
 long errorMillis = 0;
 String prevReturnedValue = "";
 long errorRetryTimeout = 30000;
-String OPMode = "";
+String OPMode = "SETUP INIT";
 String CheckChar = "R";
 String SensorsLine = "0000";
+String PanicChar = "";
 
 
 void loop() {
   String curMillis = String(millis());
   String strMillis = "TOMBO(" + CheckChar + ")" + curMillis;
   lcdOut(strMillis,0);
-  String compositeOPMode = OPMode + "(" + SensorsLine + ")";
+  String compositeOPMode = OPMode + "(" + SensorsLine + ")" + PanicChar;
   lcdOut(compositeOPMode,1);
   
   String returnedValue = prevReturnedValue;
 
+  detectPushButton();
   
   if(! asyncCallInProgress) {
     if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
@@ -120,6 +114,7 @@ void loop() {
 }
 
 void ProcessOPMode_SETUP(){
+  nobodyTriggerLimit=0;
   bool oneOrMoreSensorsActivated = false;
   for(int i=0; i<SensorsQty; i++){
     if(DistancesInCM[i] != 0 && DistancesInCM[i]<25){
@@ -135,24 +130,84 @@ void ProcessOPMode_SETUP(){
     digitalWrite(buzzer, LOW);
     digitalWrite(light_alarm, LOW);    
   }
+
+  if(millis()>activeTriggerLimit){
+    OPMode="SW TO ACTIVE";
+    pvcloud.WriteAsync("OPMODE","ACTIVE");
+  }
 }
 
+
+long maxInactiveMillis = 30000;
+bool makingOPModeSwitch = false;
 void ProcessOPMode_ACTIVE(){
+  bool oneOrMoreSensorsActivated = false;
+  activeTriggerLimit = millis() + maxTimeInSetup;
+  digitalWrite(buzzer, LOW);
+  digitalWrite(light_alarm, LOW);     
+
+  if(nobodyTriggerLimit==0){
+    nobodyTriggerLimit = millis() + maxInactiveMillis;
+  }
+  serialOut(String (millis()));
+  serialOut(String(nobodyTriggerLimit));
   
+  for(int i=0; i<SensorsQty; i++){
+    if(DistancesInCM[i] != 0 && DistancesInCM[i]<25){
+      oneOrMoreSensorsActivated = true;
+      break;
+    }
+  }
+
+  if(oneOrMoreSensorsActivated){
+    serialOut("RESETTING NOBODY TRIGGER LIMIT!!!!!!");
+    nobodyTriggerLimit = millis() + maxInactiveMillis;
+  } else {
+    if(millis()>nobodyTriggerLimit){
+      OPMode="NOBODY DETECTED";
+      makingOPModeSwitch = true;
+      pvcloud.WriteAsync("OPMODE","NOBODY");
+    }
+  }  
+
+  serialOut("limit:" + String(nobodyTriggerLimit) + " , " + String(millis()));
 }
 
+long alarmOffTriggerLimit = 0;
+long maxAlarmTime = 10000;
 void ProcessOPMode_NOBODY(){
-  
+  bool oneOrMoreSensorsActivated = false;
+  nobodyTriggerLimit=0;
+  activeTriggerLimit = millis() + maxTimeInSetup;
+  for(int i=0; i<SensorsQty; i++){
+    if(DistancesInCM[i] != 0 && DistancesInCM[i]<25){
+      oneOrMoreSensorsActivated = true;
+      break;
+    }
+  }
+
+  if(oneOrMoreSensorsActivated){
+    digitalWrite(buzzer, HIGH);
+    digitalWrite(light_alarm, HIGH); 
+    alarmOffTriggerLimit = millis() + maxAlarmTime;
+    PanicChar = "!";
+  } else {
+    if(millis()>alarmOffTriggerLimit){
+      digitalWrite(buzzer, LOW);
+      digitalWrite(light_alarm, LOW); 
+      PanicChar = "";
+    }
+  }  
 }
 
 void CheckForOPModeChanges(String returnedValue){
   
-  Serial.println("Change Detected");
-  Serial.print("PRV: '");
-  Serial.print(prevReturnedValue);
-  Serial.print("'   RV: '");
-  Serial.print(returnedValue);
-  Serial.println("'");
+  serialOut("Change Detected");
+  serialOut("PRV: '");
+  serialOut(prevReturnedValue);
+  serialOut("'   RV: '");
+  serialOut(returnedValue);
+  serialOut("'");
 
   serialOut("NEW VALUE DETECTED: " + returnedValue);
   
@@ -209,22 +264,6 @@ void CheckForOPModeChanges(String returnedValue){
   
 }
 
-  /*
-  lcd_printMessage(OperationMode,0);
-  if(OperationMode == "SETUP" ) OPMode_SETUP();
-  if(OperationMode == "ACTIVE") OPMode_ACTIVE();
-  if(OperationMode == "NOBODY") OPMode_NOBODY();
-  if(OperationMode == "") pvc_SwitchOperationMode("SETUP");
-
-  if(millis() > NextOperationModeCheckMillis) {
-    pvc_RequestOperationMode();
-  }
-
-  pvc_CheckOperationModeResult();
-
-}
-*/
-
 void obtainDistancesInCM(){
   SensorsLine = "";
   for(int i=0; i<SensorsQty; i++){
@@ -279,195 +318,34 @@ long getRawDistanceInCM(int triggerPin, int echoPin){
     pulseDuration = pulseIn(echoPin, HIGH,500);
     
     distanceInCM = (pulseDuration/2)/29.1;
-    Serial.println(distanceInCM);
     return distanceInCM;
 }
 
-/*
-
-void pvc_SwitchOperationMode(String mode){
-  lcd_printMessage("PVC OPM ..." + mode,0);
-  pvcloud.SendString("OP_MODE",mode);
-  lcd_printMessage("PVC OPM COMPLETE.",0);
-  OperationMode = mode;
-  refreshNextOperationModeCheck();
-}
-
-void refreshNextOperationModeCheck(){
-  NextOperationModeCheckMillis = millis() + OperationModeCheckTime;
-}
-
-void pvc_CheckOperationMode(){
-  lcd_printMessage("PVC CHECKING OP MODE...",0);
-  
-  String opMode = pvcloud.RetrieveStringValue("OP_MODE");
-  refreshNextOperationModeCheck();
-  if(opMode!=OperationMode) OperationMode = opMode;
-}
-
-long NoWaitTimeout = 10000;
-void pvc_RequestOperationMode(){
-  refreshNextOperationModeCheck();
-  Serial.println("pvc_RequestOperationMode()");
-  if(OperationModeRequestInProgress==0){
-    refreshNextOperationModeCheck();
-    Serial.println("CHECK FOR OPERATION MODE REQUESTED");
-    OperationModeCheckStartMillis = millis();
-    lcd_printMessage("PVC OP MODE NW",0); //NO WAIT
-    pvcloud.RetrieveString_NoWait("OP_MODE");
-    OperationModeRequestInProgress = 1;
-  } else if( millis() > OperationModeCheckStartMillis + NoWaitTimeout){
-    Serial.println("USING SYCHRONOUS CALL FOR OP MODE REQUEST");
-    OperationModeCheckStartMillis = millis();
-    lcd_printMessage("PVC OP MODE NW",0); //NO WAIT
-    String result  = pvcloud.RetrieveStringValue("OP_MODE");
-    OperationModeRequestInProgress = 0;
-    OperationMode = result;
-    Serial.println(OperationMode);
-    refreshNextOperationModeCheck();
-  }
-}
-
-
-
-void pvc_CheckOperationModeResult(){
-  if(millis() > OperationModeCheckStartMillis + OperationModeCheckMinDuration){
-    if(OperationModeRequestInProgress == 1){
-      String result = pvcloud.RetrieveString_CheckResult("OP_MODE");
-      Serial.print("OP MODE NOWAIT RESULT: ---");
-      Serial.print(result);
-      Serial.println("---");
-    
-      if(result == "SETUP" || result == "ACTIVE" || result == "NOBODY") {
-        if(result != OperationMode) OperationMode = result;
-        //OperationModeCheckMinDuration = millis() - OperationModeCheckStartMillis;
-        OperationModeRequestInProgress = 0;
-      }
-    }
-  }
-}
-
-void lcd_printMessage(String message,int row){
-  lcd.setCursor(0,row);
-  lcd.print(message);
-  lcd.print("                 ");
-}
-
-
-void OPMode_SETUP(){
-  long distanceValue[3] = {-1,-1,-1};
-  long triggers[4] = {2,4,6,8};
-  long echos[4] = {3,5,7,9};
-  lcd.setCursor(0,1);
-
-  int alarmedSensors = 0;
-  
-  for (int i = 0; i<4; i++){
-    long distance = getSanitizedDistanceInCM(triggers[i], echos[i]);
-    distanceValue[i] = distance;
-
-    lcd.print(distance);
-    lcd.print("*");  
-    if(distance > 0 && distance < 20){
-      alarmedSensors ++;
-    }
-  }
-
-  if(alarmedSensors > 0){
-      digitalWrite(light_alarm,HIGH);
-      if(alarmMillisInitiated == 0) alarmMillisInitiated = millis();
-      if(millis() - alarmMillisInitiated > 1000) {
-        digitalWrite(buzzer, HIGH);
-        lcd.setRGB(255,0,0); //ROJO   
-      } else {
-        digitalWrite(buzzer, LOW);
-        lcd.setRGB(0,255,0); //ROJO   
-      }
-      
-  } else {
-      alarmMillisInitiated =0;
-      digitalWrite(light_alarm,LOW);
-      digitalWrite(buzzer,LOW);
-      lcd.setRGB(0,0,255); //VERDE
-  }
-
-  lcd.print("     ");  
-}
-
-long maxInactiveMillis = 10000;
-long lastActivityMillis = 0;
-void OPMode_ACTIVE(){
-  lcd.setRGB(0, 200, 0); //VERDE  
-
-  digitalWrite(buzzer,LOW);
-  digitalWrite(light_alarm,LOW);
-
-  if(lastActivityMillis==0) lastActivityMillis = millis();
-
-  long distanceValue[3] = {-1,-1,-1};
-  long triggers[4] = {2,4,6,8};
-  long echos[4] = {3,5,7,9};
-
-  int alarmedSensors = 0;
-  
-  for (int i = 0; i<4; i++){
-    long distance = getSanitizedDistanceInCM(triggers[i], echos[i]);
-    distanceValue[i] = distance;
-
-    if(distance > 0 && distance < 20){
-      alarmedSensors ++;
-    }
-  }
-
-  if(alarmedSensors == 0){
-    lcd_printMessage("INACTIVITY DETECTED",1);
-    if(millis() > lastActivityMillis + maxInactiveMillis){
-      lastActivityMillis = 0;
-      pvc_SwitchOperationMode("NOBODY");
+void detectPushButton(){
+  int pushButton = analogRead(0);
+  if(pushButton > 500) {
+    if(OPMode=="SETUP" && !makingOPModeSwitch){
+      OPMode="SW TO ACTIVE";
+      makingOPModeSwitch = true;
+      pvcloud.WriteAsync("OPMODE","ACTIVE");
+      nobodyTriggerLimit = millis() + maxInactiveMillis;
+      delay(100);
+    } else if(OPMode=="ACTIVE" && !makingOPModeSwitch){
+      OPMode="SW TO NOBODY";
+      makingOPModeSwitch = true;
+      pvcloud.WriteAsync("OPMODE","NOBODY");
+      delay(100);
+    } else if(OPMode=="NOBODY" && !makingOPModeSwitch){
+      OPMode="SW TO SETUP";
+      makingOPModeSwitch = true;
+      pvcloud.WriteAsync("OPMODE","SETUP");
+      delay(100);
     }
   } else {
-    lcd_printMessage("ACTIVITY DETECTED",1);
-    lastActivityMillis = millis();
-  }
-
-  lcd.print("     ");    
-
-}
-
-long maxAlarmTime = 20000;
-long alarmCutoff = 0;
-void OPMode_NOBODY(){
-  lcd.setRGB(255, 255, 0); //AMARILLO
-  long distanceValue[3] = {-1,-1,-1};
-  long triggers[4] = {2,4,6,8};
-  long echos[4] = {3,5,7,9};
-
-  int alarmedSensors = 0;
-  
-  for (int i = 0; i<4; i++){
-    long distance = getSanitizedDistanceInCM(triggers[i], echos[i]);
-    distanceValue[i] = distance;
-
-    if(distance > 0 && distance < 20){
-      alarmedSensors ++;
-    }
-  }
-
-  if(alarmedSensors > 0){
-    lcd_printMessage("ALARM CONDITION DETECTED",1);
-    alarmCutoff = millis() + maxAlarmTime;
-    digitalWrite(buzzer,HIGH);
-    digitalWrite(light_alarm, HIGH);
-     
-  } else {
-    if(millis() > alarmCutoff){
-      lcd_printMessage("INACTIBVE CONDITION",1);
-      digitalWrite(buzzer,LOW);
-      digitalWrite(light_alarm, LOW);
-    }
+    makingOPModeSwitch = false;
   }
 }
-*/
+
 
 /***************************************************
  * SETUP FUNCTIONS
@@ -526,6 +404,7 @@ void lcdMillis(){
 
 long millisPrev = 0;
 void serialOut (String message){
+  if(!DEBUG) return;
   long currentMillis = millis();
   String completeMessage = "|";
   completeMessage = completeMessage + currentMillis;
