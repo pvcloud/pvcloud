@@ -10,34 +10,101 @@ $(document).ready(function () {
  * @returns {undefined}
  */
 function configureEvents() {
-    $("#btn_SetMode_Setup").click(function () {
-        $("#panel-set-mode .btn-info").removeClass("btn-info");
-        $("#btn_SetMode_Setup").addClass("btn-success");
-        SetPVCLOUDValue("OP_MODE", "SETUP", function (data) {
-            $("#btn_SetMode_Setup").removeClass("btn-success").addClass("btn-info").removeClass("btn-link");
-            alert("Listo! SETUP");
+    function disableButtons() {
+
+    }
+
+    function paintProcessing() {
+
+    }
+
+    function paintCurrentOPMode(data) {
+        alert("COMPLETE");
+    }
+
+    $("#btnMode_SETUP").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "SETUP", function (data) {
+            paintCurrentOPMode(data);
         });
     });
 
-    $("#btn_SetMode_Active").click(function () {
-        $("#panel-set-mode .btn-info").removeClass("btn-info");
-        $("#btn_SetMode_Active").addClass("btn-success");
-        SetPVCLOUDValue("OP_MODE", "ACTIVE", function (data) {
-            $("#btn_SetMode_Active").removeClass("btn-success").addClass("btn-info").removeClass("btn-link");
-            alert("Listo! ACTIVE");
+    $("#btnMode_ACTIVE, #btnMode_ACTIVE2").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "ACTIVE", function (data) {
+            paintCurrentOPMode(data);
         });
     });
+
+    $("#btnMode_OFF").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "OFF", function (data) {
+            paintCurrentOPMode(data);
+        });
+    });
+
+    $("#btnMode_NOBODY").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "NOBODY", function (data) {
+            paintCurrentOPMode(data);
+        });
+    });
+
+    $("#btnMode_PANIC").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "PANIC", function (data) {
+            paintCurrentOPMode(data);
+        });
+    });
+
+    $("#btnMode_SLEEP").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "PANIC", function (data) {
+            paintCurrentOPMode(data);
+        });
+    });
+
+    $("#btnMode_CHILDCARE").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "PANIC", function (data) {
+            paintCurrentOPMode(data);
+        });
+    });
+
+    $("#btnMode_VACATIONS").click(function () {
+        disableButtons();
+        paintProcessing();
+
+        pvCloud_WRITE("OPMODE", "PANIC", function (data) {
+            paintCurrentOPMode(data);
+        });
+    });
+
 
     heartbeat();
-    
+
     var currentStatus = "Connecting...";
     function heartbeat() {
         console.log("Heartbeat!");
 
         $("#spn_status").text(currentStatus);
-        
-        
-        
+
+
+
         setAgain();
 
         function setAgain() {
@@ -54,7 +121,7 @@ function configureEvents() {
  * @param {type} callback
  * @returns {undefined}
  */
-function GetPVCLOUDValue(label, callback) { /** /   Llamada en el browser, todo en el main.js */
+function pvCloud_READ(label, callback) { /** /   Llamada en el browser, todo en el main.js */
     var url = "ws_GetPVCloudData.php";
 
     $.ajax(url, {/** /Utiliza el url y hace que el browser llame a PVCloud, asincronica, no se detiene ahi, sigue llamando*/
@@ -69,14 +136,7 @@ function GetPVCLOUDValue(label, callback) { /** /   Llamada en el browser, todo 
     });
 }
 
-/**
- * 
- * @param {string} label
- * @param {string} value
- * @param {fuction} callback
- * @returns {undefined}
- */
-function SetPVCLOUDValue(label, value, callback) { /** /   Llamada en el browser, todo en el main.js */
+function pvCloud_WRITE(label, value, callback) { /** /   Llamada en el browser, todo en el main.js */
     var url = "ws_SetPVCloudData.php?label=" + label + "&value=" + value;
 
     $.ajax(url, {/** /Utiliza el url y hace que el browser llame a PVCloud, asincronica, no se detiene ahi, sigue llamando*/
