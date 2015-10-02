@@ -24,7 +24,7 @@ int SensorsQty = 4;
 long DistancesInCM [] = {0,0,0,0};
 long nobodyTriggerLimit=0;
 long activeTriggerLimit=0;
-long maxTimeInSetup=120000;
+long maxTimeInSetup=30000;
 #define buzzer    12
 #define light_alarm 13 
 
@@ -144,23 +144,26 @@ void asyncPVCloudUpdate(){
 
 void processOPMode(){
   if(OPMode=="SETUP"){
-    obtainDistancesInCM();
     ProcessOPMode_SETUP();
   } else if (OPMode=="ACTIVE") {
-    obtainDistancesInCM();
     ProcessOPMode_ACTIVE();
   } else if (OPMode=="NOBODY") {
-    obtainDistancesInCM();
     ProcessOPMode_NOBODY();
   } else if (OPMode=="OFF"){
+    ProcessOPMode_OFF();
+  }
+}
+
+void ProcessOPMode_OFF(){
     lcd.setRGB(100,100,100);
     digitalWrite(light_alarm, LOW);
     digitalWrite(buzzer, LOW);
     alarmCondition = false;
-  }
+    activeTriggerLimit = millis() + maxTimeInSetup;
 }
 
 void ProcessOPMode_SETUP(){
+  obtainDistancesInCM();
   alarmCondition=false;
   nobodyTriggerLimit=0;
   bool oneOrMoreSensorsActivated = false;
@@ -191,12 +194,13 @@ void ProcessOPMode_SETUP(){
 long maxInactiveMillis = 30000;
 bool makingOPModeSwitch = false;
 void ProcessOPMode_ACTIVE(){
+  activeTriggerLimit = millis() + maxTimeInSetup;
+  obtainDistancesInCM();
   alarmCondition = false;
   bool oneOrMoreSensorsActivated = false;
-  activeTriggerLimit = millis() + maxTimeInSetup;
   digitalWrite(buzzer, LOW);
   digitalWrite(light_alarm, LOW);     
-
+  
   if(nobodyTriggerLimit==0){
     nobodyTriggerLimit = millis() + maxInactiveMillis;
   }
@@ -229,6 +233,7 @@ void ProcessOPMode_ACTIVE(){
 long alarmOffTriggerLimit = 0;
 long maxAlarmTime = 10000;
 void ProcessOPMode_NOBODY(){
+  obtainDistancesInCM();
   bool oneOrMoreSensorsActivated = false;
   nobodyTriggerLimit=0;
   activeTriggerLimit = millis() + maxTimeInSetup;
