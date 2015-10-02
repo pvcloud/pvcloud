@@ -259,7 +259,7 @@ function configureEvents() {
                     text = element.captured_datetime + " | SENSORS STATUS CHANGED: " + icons;
                 } else {
 
-                    text = element.captured_datetime + " | " + element.vse_label + ": " + element.vse_value;
+                    text = element.created_datetime + " | " + element.vse_label + ": " + element.vse_value;
                 }
 
 
@@ -292,6 +292,8 @@ function configureEvents() {
 
 /**
  * Actually pefroms a Web Service Call to pvCloud to retrieve last value registered for the app.
+ * 
+ * @param {type} label
  * @param {type} callback
  * @returns {undefined}
  */
