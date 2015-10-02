@@ -47,13 +47,15 @@
                     <p  class="explanation">This section demonstrates how a device can send data to pvCloud and a registered system can interpret such data.</p>
 
                     <div class="panel panel-info">
-                        <div class="panel-heading">Smart Home Status</div>
+                        <div class="panel-heading">Smart Home Status
+                            <img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control3" style="float:right"/>
+                        </div>
                         <div class="panel-body" style="text-align: center">
                             <!-- VISUALIZATION / STATUS AND CONNECT-->
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="col-sm-4">
-                                        <i id="iconHouse" class="glyphicon glyphicon-home" style="color:green; font-size: 3em"></i><br>
+                                    <div class="col-sm-4" id="div_AlarmCondition">
+                                        <i id="iconHouse" class="glyphicon glyphicon-home" style="font-size: 3em"></i><br>
                                         <span id="spn_status">STATUS - PAUSED</span>
                                     </div>    
                                     <div class="col-sm-8">
@@ -71,18 +73,18 @@
                             <!-- VISUALIZAION / 1st SET of 3 ICONS-->
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="col-sm-4">
-                                        <i id="iconFrontDoor" class="glyphicon glyphicon-eye-open" style="color:green; font-size: 3em"></i><br>
+                                    <div class="col-sm-4" id="div_Sensor3">
+                                        <i id="iconFrontDoor" class="glyphicon glyphicon-eye-open" style="font-size: 3em"></i><br>
                                         <span>FRONT DOOR</span>
                                     </div>
 
-                                    <div class="col-sm-4">
-                                        <i id="iconZ1" class="glyphicon glyphicon-user" style="color:green; font-size: 3em"></i><br>
+                                    <div class="col-sm-4" id="div_Sensor0">
+                                        <i id="iconZ1" class="glyphicon glyphicon-user" style="font-size: 3em"></i><br>
                                         <span>LIVING ROOM</span>
                                     </div>
 
-                                    <div class="col-sm-4">
-                                        <i id="iconZ2" class="glyphicon glyphicon-bell" style="color:green; font-size: 3em"></i><br>
+                                    <div class="col-sm-4" id="div_Sensor2">
+                                        <i id="iconZ2" class="glyphicon glyphicon-bell" style="font-size: 3em"></i><br>
                                         <span>BEDROOM</span>
                                     </div>                            
                                 </div>
@@ -92,16 +94,16 @@
 
                                 <!-- VISUALIZAION / 2nd SET of 3 ICONS-->
                                 <div class="col-sm-12">
-                                    <div class="col-sm-4">
-                                        <i id="iconPerimeter" class="glyphicon glyphicon-tree-deciduous" style="color:green; font-size: 3em"></i><br>
+                                    <div class="col-sm-4" id="div_Sensor1">
+                                        <i id="iconPerimeter" class="glyphicon glyphicon-tree-deciduous" style="font-size: 3em"></i><br>
                                         <span>BACKYARD</span>
                                     </div>
                                     <div class="col-sm-4">
-                                        <i id="iconTemp" class="glyphicon glyphicon-fire" style="color:green; font-size: 3em"></i><br>
+                                        <i id="iconTemp" class="glyphicon glyphicon-fire disabled" style="color:gray; font-size: 3em"></i><br>
                                         <span>TEMPERATURE</span>
                                     </div>
                                     <div class="col-sm-4">
-                                        <i id="iconLight" class="glyphicon glyphicon-flash" style="color:green; font-size: 3em"></i><br>
+                                        <i id="iconLight" class="glyphicon glyphicon-flash disabled" style="color:gray; font-size: 3em"></i><br>
                                         <span>POWER</span>
                                     </div>                            
                                 </div>
@@ -114,30 +116,33 @@
 
                 <!-- CONTROL  COL 6 on MAIN ROW-->
                 <div class="col-lg-6"> <!-- Momento en que pasan de estar horizontales a verticales las columnas, md=medium (size tablet) -->
-                    <h2>Control</h2>
+                    <h2>Control </h2>
                     <p  class="explanation">In this section you can send control commands to your smart home system such as changing Smart Modes</p>
-                    <div class="panel panel-info">
-                        <div class="panel-heading">Operational Mode</div>
+                    <div class="panel panel-info control-widget">
+                        <div class="panel-heading">Operational Mode
+                            <span id="spnLoader_Control" style="display:none;float:right;" class="label label-warning">loading... <img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control"/></span>
+                            <span id="lblCurrentOPMode" style="float:right;font-size: 1em;"  class="label label-success"><b>CURRENT MODE:</b> <span id="spnOPMODE">unknown...</span><img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control2"/></span>
+                        </div>
                         <div id="panel-set-mode" class="panel-body" style="text-align:center">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-sm-4">
-                                        <div id="btnMode_SETUP" class="btn btn-sm btn-info" style="width:150px">
-                                            <i class="glyphicon glyphicon-wrench" style="color:green; font-size: 3em"></i><br>
+                                        <button type="button" id="btnMode_SETUP" class="btn btn-default" style="width:150px">
+                                            <i class="glyphicon glyphicon-wrench"></i><br>
                                             <span>Setup</span>
-                                        </div>
+                                        </button>
                                     </div>
                                     <div class="col-sm-4">
-                                        <div id="btnMode_ACTVE" class="btn btn-sm btn-link">
-                                            <i class="glyphicon glyphicon-user" style="color:green; font-size: 3em"></i><br>
+                                        <button type="button" id="btnMode_ACTIVE" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-user"></i><br>
                                             <span>Active @ Home</span>
-                                        </div>
+                                        </button>
                                     </div>
                                     <div class="col-sm-4">
-                                        <div id="btnMode_OFF" class="btn btn-sm btn-link">
-                                            <i class="glyphicon glyphicon-off" style="color:green; font-size: 3em"></i><br>
+                                        <button type="button" id="btnMode_OFF" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-off"></i><br>
                                             <span>OFF</span>
-                                        </div>
+                                        </button>
                                     </div>    
                                     &nbsp;<hr>
                                 </div>
@@ -146,22 +151,22 @@
                             <div class="row">                              
                                 <div class="col-md-12">
                                     <div class="col-sm-4">
-                                        <div id="btnMode_ACTIVE2" class="btn btn-sm btn-link">
-                                            <i class="glyphicon glyphicon-user" style="color:green; font-size: 3em"></i><br>
+                                        <button type="button" id="btnMode_ACTIVE2" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-user"></i><br>
                                             <span>Active @ Home</span>
-                                        </div>
+                                        </button>
                                     </div>       
                                     <div class="col-sm-4">
-                                        <div id="btnMode_NOBODY" class="btn btn-sm btn-link" style="width:150px">
-                                            <i class="glyphicon glyphicon-eye-open" style="color:green; font-size: 3em"></i><br>
+                                        <button type="button" id="btnMode_NOBODY" class="btn btn-default" style="width:150px">
+                                            <i class="glyphicon glyphicon-eye-open"></i><br>
                                             <span>Nobody @ Home</span>
-                                        </div>
+                                        </button>
                                     </div>     
                                     <div class="col-sm-4">
-                                        <div id="btnMode_PANIC" class="btn btn-sm btn-link">
-                                            <i class="glyphicon glyphicon-warning-sign" style="color:red; font-size: 3em"></i><br>
+                                        <button type="button" id="btnMode_PANIC" class="btn btn-default disabled">
+                                            <i class="glyphicon glyphicon-warning-sign"></i><br>
                                             <span>PANIC</span>
-                                        </div>
+                                        </button>
                                     </div>                                    
 
                                     &nbsp;<hr>
@@ -171,20 +176,20 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-sm-4">
-                                        <div id="btnMode_SLEEP" class="btn btn-sm btn-link disabled" style="width:150px">
-                                            <i class="glyphicon glyphicon-headphones" style="color:gray; font-size: 3em"></i><br>
+                                        <div id="btnMode_SLEEP" class="btn btn-default disabled" style="width:150px">
+                                            <i class="glyphicon glyphicon-headphones"></i><br>
                                             <span>Sleep Mode</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
-                                        <div id="btnMode_CHILDCARE" class="btn btn-sm btn-link disabled">
-                                            <i class="glyphicon glyphicon-ban-circle" style="color:gray; font-size: 3em"></i><br>
+                                        <div id="btnMode_CHILDCARE" class="btn btn-default disabled">
+                                            <i class="glyphicon glyphicon-ban-circle" ></i><br>
                                             <span>Child Care</span>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
-                                        <div id="btnMode_VACATIONS" class="btn btn-sm btn-link disabled">
-                                            <i class="glyphicon glyphicon-briefcase" style="color:gray; font-size: 3em"></i><br>
+                                        <div id="btnMode_VACATIONS" class="btn btn-default disabled">
+                                            <i class="glyphicon glyphicon-briefcase"></i><br>
                                             <span>Out on Vacations</span>
                                         </div>
                                     </div>   
@@ -213,6 +218,26 @@
             <!-- FOOTER -->
             <footer style="text-align:center">
                 <p><a href="https://costaricamakers.com" target="_blank">Project Hosted by costaricamakers.com</a></p>
+                <!-- Standard button -->
+<button type="button" class="btn btn-default">Default</button>
+
+<!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+<button type="button" class="btn btn-primary">Primary</button>
+
+<!-- Indicates a successful or positive action -->
+<button type="button" class="btn btn-success">Success</button>
+
+<!-- Contextual button for informational alert messages -->
+<button type="button" class="btn btn-info">Info</button>
+
+<!-- Indicates caution should be taken with this action -->
+<button type="button" class="btn btn-warning">Warning</button>
+
+<!-- Indicates a dangerous or potentially negative action -->
+<button type="button" class="btn btn-danger">Danger</button>
+
+<!-- Deemphasize a button by making it look like a link while maintaining button behavior -->
+<button type="button" class="btn btn-link">Link</button>
             </footer>
         </div> <!-- /container -->        
 

@@ -16,7 +16,7 @@
 
 rgb_lcd lcd;
 PVCloud pvcloud;
-bool DEBUG = false;
+bool DEBUG = true;
 
 int TriggerPins[] = {2,4,6,8};
 int EchoPins[] = {3,5,7,9};

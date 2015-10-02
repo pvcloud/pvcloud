@@ -11,6 +11,44 @@ a.btn{
 
 }
 
+.tombo-sensor-red{
+    color:red;
+}
+
+.tombo-sensor-green{
+    color:green;
+}
+
+.tombo-sensor-gray{
+    color:gray
+}
+
+#btnMode_PANIC span, #btnMode_PANIC i{
+    color:red;
+}
+.btn{
+    width:150px;
+}
+.btn-default{
+    background-color: transparent;
+}
+
+.btn-default:hover{
+    background-color: lightgrey;
+}
+.btn-default i {
+    font-size: 3em;
+    color:green;
+}
+.btn-default span{
+    color:green;
+}
+
+.btn-danger i{
+    font-size: 3em;
+}
+
+
 #btnStop {
     display:none;
 }
@@ -32,16 +70,3 @@ a.btn{
     h2,.explanation{
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
