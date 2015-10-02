@@ -15,7 +15,7 @@ function configureEvents() {
     GetSensorsStatus();
     GetAlarmCondition();
     GetOPModeFromPVCloud();
-    GetLast10Events();
+    GetLastEvents();
 
     function showLoading() {
         $("#spnLoader_Control").show();
@@ -227,15 +227,64 @@ function configureEvents() {
         });
     }
 
-    function GetLast10Events() {
+    function GetLastEvents() {
         $("#imgLoader_Control4").show();
-        pvCloud_READ_LIST("ALARM_CONDITION", 10, function (data) {
+        pvCloud_READ_LIST("", 30, function (data) {
             console.log(data);
+            var totalHTML = "";
+            $(data).each(function (index, element) {
+
+                var text = "";
+                if (element.vse_label == "SENSORS_LINE") {
+                    var icons = "";
+                    for (i = 0; i < 4; i++) {
+                        var color = element.vse_value[i] == "1" ? "red" : "green";
+
+                        switch (i) {
+                            case 0:
+                                icons += '&nbsp;<span class="badge"><i class="glyphicon glyphicon-user" style="color:' + color + '"></i></span>';
+                                break;
+                            case 1:
+                                icons += '&nbsp;<span class="badge"><i class="glyphicon glyphicon-tree-deciduous" style="color:' + color + '"></i></span>';
+                                break;
+                            case 2:
+                                icons += '&nbsp;<span class="badge"><i class="glyphicon glyphicon-bell" style="color:' + color + '"></i></span>';
+                                break;
+                            case 3:
+                                icons += '&nbsp;<span class="badge"><i class="glyphicon glyphicon-eye-open" style="color:' + color + '"></i></span>';
+                        }
+
+                    }
+
+                    text = element.captured_datetime + " | SENSORS STATUS CHANGED: " + icons;
+                } else {
+
+                    text = element.captured_datetime + " | " + element.vse_label + ": " + element.vse_value;
+                }
 
 
+                var alert_class = "";
+                if (element.vse_label == "ALARM_CONDITION" && element.vse_value == "PANIC") {
+                    alert_class = "alert-danger";
+                } else if (element.vse_label == "ALARM_CONDITION" && element.vse_value == "QUIET") {
+                    alert_class = "alert-success";
+                } else if (element.vse_label == "OPMODE") {
+                    alert_class = "alert-warning";
+                } else {
+                    alert_class = "alert-info";
+                }
 
-            setTimeout(GetAlarmCondition, 5000);
-        }
+
+                var htmlCode = '<div class="alert ' + alert_class + '">' + text + '</div>';
+
+                totalHTML += htmlCode;
+            })
+
+            $("#panelEvents").html(totalHTML);
+
+            $("#imgLoader_Control4").hide();
+            setTimeout(GetLastEvents, 3000);
+        });
 
     }
 }

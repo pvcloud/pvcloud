@@ -59,11 +59,8 @@
                                         <span id="spn_status">STATUS - PAUSED</span>
                                     </div>    
                                     <div class="col-sm-8">
-                                        <div class="alert alert-info">
-                                            <ul style="text-align: left">
-                                                <li>Unable to connect to pvCloud! I will retry in a few seconds...</li>
-                                                <li>Please check your device is connected to the Internet.</li>
-                                            </ul>
+                                        <div id="divSystemConnectivityMessage" class="alert alert-info">
+                                            Connection is Healthy
                                         </div>
 
                                     </div>    
@@ -121,7 +118,7 @@
                     <div class="panel panel-info control-widget">
                         <div class="panel-heading">Operational Mode
                             <span id="spnLoader_Control" style="display:none;float:right;" class="label label-warning">loading... <img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control"/></span>
-                            <span id="lblCurrentOPMode" style="float:right;font-size: 1em;"  class="label label-success"><b>CURRENT MODE:</b> <span id="spnOPMODE">unknown...</span><img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control2"/></span>
+                            <span id="lblCurrentOPMode" style="float:right;font-size: 1em;"  class="label label-success">MODE: <span id="spnOPMODE">unknown...</span><img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control2"/></span>
                         </div>
                         <div id="panel-set-mode" class="panel-body" style="text-align:center">
                             <div class="row">
@@ -204,8 +201,8 @@
                     <h2>EVENT LOG</h2>
                     <p  class="explanation">In this section you can see the recent events at your smart home</p>
                     <div class="panel panel-info">
-                        <div class="panel-heading">Events for the past 24 hours</div>
-                        <div class="panel-body">
+                        <div class="panel-heading">Last 30 Events <img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control4" style="float:right"/></div>
+                        <div class="panel-body" id="panelEvents">
                             <div class="alert alert-warning">2015-09-19 15:20 | SETUP MODE: ALARM  Event at Living Room</div>
                             <div class="alert alert-info">2015-09-19 15:20 | SETUP MODE: Detect Event at Living Room</div>
                             <div class="alert alert-info">2015-09-19 15:20 | SETUP MODE: Detect Event at Front Door, Living Room, Garden, Bedroom</div>
@@ -218,26 +215,7 @@
             <!-- FOOTER -->
             <footer style="text-align:center">
                 <p><a href="https://costaricamakers.com" target="_blank">Project Hosted by costaricamakers.com</a></p>
-                <!-- Standard button -->
-<button type="button" class="btn btn-default">Default</button>
 
-<!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-<button type="button" class="btn btn-primary">Primary</button>
-
-<!-- Indicates a successful or positive action -->
-<button type="button" class="btn btn-success">Success</button>
-
-<!-- Contextual button for informational alert messages -->
-<button type="button" class="btn btn-info">Info</button>
-
-<!-- Indicates caution should be taken with this action -->
-<button type="button" class="btn btn-warning">Warning</button>
-
-<!-- Indicates a dangerous or potentially negative action -->
-<button type="button" class="btn btn-danger">Danger</button>
-
-<!-- Deemphasize a button by making it look like a link while maintaining button behavior -->
-<button type="button" class="btn btn-link">Link</button>
             </footer>
         </div> <!-- /container -->        
 
