@@ -235,10 +235,10 @@ function configureEvents() {
             $(data).each(function (index, element) {
 
                 var text = "";
-                if (element.vse_label == "SENSORS_LINE") {
+                if (element.vse_label === "SENSORS_LINE") {
                     var icons = "";
                     for (i = 0; i < 4; i++) {
-                        var color = element.vse_value[i] == "1" ? "red" : "green";
+                        var color = element.vse_value[i] === "1" ? "red" : "green";
 
                         switch (i) {
                             case 0:
@@ -256,7 +256,7 @@ function configureEvents() {
 
                     }
 
-                    text = element.captured_datetime + " | SENSORS STATUS CHANGED: " + icons;
+                    text = element.created_datetime + " | SENSORS STATUS CHANGED: " + icons;
                 } else {
 
                     text = element.created_datetime + " | " + element.vse_label + ": " + element.vse_value;
@@ -264,11 +264,11 @@ function configureEvents() {
 
 
                 var alert_class = "";
-                if (element.vse_label == "ALARM_CONDITION" && element.vse_value == "PANIC") {
+                if (element.vse_label === "ALARM_CONDITION" && element.vse_value === "PANIC") {
                     alert_class = "alert-danger";
-                } else if (element.vse_label == "ALARM_CONDITION" && element.vse_value == "QUIET") {
+                } else if (element.vse_label === "ALARM_CONDITION" && element.vse_value === "QUIET") {
                     alert_class = "alert-success";
-                } else if (element.vse_label == "OPMODE") {
+                } else if (element.vse_label === "OPMODE") {
                     alert_class = "alert-warning";
                 } else {
                     alert_class = "alert-info";
@@ -278,7 +278,7 @@ function configureEvents() {
                 var htmlCode = '<div class="alert ' + alert_class + '">' + text + '</div>';
 
                 totalHTML += htmlCode;
-            })
+            });
 
             $("#panelEvents").html(totalHTML);
 
