@@ -69,6 +69,11 @@
         "title_section1":"Connect your INTEL EDISON in 3 simple steps",
         "section1_step1_title":"STEP 1: Install the pvCloud connector in LINUX",
         "sedtion1_step1_p1":"Copy the following 'wget' command with all of its parameters and execute it in your Edison's LINUX Terminal."
-        
+    },
+    "_mycloud_myapps_edit_pages":{
+        "nopages":"No pages have been defined"
+    },    
+    "_mycloud_pagesdef":{
+        "title":"Title"
     }
 }

@@ -21,7 +21,7 @@
             <!-- TITLE -->
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
-                <label for="txtTitulo">Título</label>
+                <label for="txtTitulo">{{PageLabels.title}}</label>
                 <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título de la página." data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
             </div>
 

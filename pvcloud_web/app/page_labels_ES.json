@@ -70,5 +70,11 @@
         "section1_step1_title":"PASO 1: Instale el Conector de pvCloud en Linux",
         "sedtion1_step1_p1":"Copie el siguiente comando 'wget' con todos sus parámetros y ejecútelo en la terminal LINUX de su INTEL EDISON."
         
+    },
+    "_mycloud_myapps_edit_pages":{
+        "nopages":"No hay páginas definidas"
+    },
+    "_mycloud_pagesdef":{
+        "title":"Título"
     }
 }
