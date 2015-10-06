@@ -66,9 +66,10 @@
         "intro_p1": "In this document you'll find (custom) information for your IoT App.",
         "intro_p2": "The following three sections describe how to utilize pvCloud for uploading and consuming data through your IoT Application.",
         "intro_p3": "Click on the title of the section you'd like to explore, to expand it and read its content.",
-        "title_section1":"Connect your INTEL EDISON in 3 simple steps",
-        "section1_step1_title":"STEP 1: Install the pvCloud connector in LINUX",
-        "sedtion1_step1_p1":"Copy the following 'wget' command with all of its parameters and execute it in your Edison's LINUX Terminal."
+        "section1_title":"Connect Intel Edison in 3 steps",
+        "section1_desc_p1":"This section describes 3  basic steps to implement pvCloud in your IoT App for Intel Edison, Intel Galileo or similar Linux/NodeJS compatible devices.",
+        "section1_step1_title":"STEP 1: pvCloud Driver",
+        "section1_step1_p1":"Run the following 'wget' command in your Edison's LINUX terminal."
     },
     "_mycloud_myapps_edit_pages":{
         "nopages":"No pages have been defined"
