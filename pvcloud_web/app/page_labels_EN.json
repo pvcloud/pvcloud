@@ -43,12 +43,22 @@
         "toAccess": "to access your account."
     },
     "_mycloud_myapps_edit": {
-        "app_name": "Nombre",
-        "app_description": "Descripción",
+        "app_name": "Name",
+        "app_description": "Description",
         "basics_tab": "Basic Info",
         "docs_n_drivers_tab": "Docs & Drivers",
         "pages_tab": "Pages",
-        "data_tab": "Data"
+        "data_tab": "Data",
+        "visibility":"Visibility",
+        "private":"Private",
+        "shared":"Shared",
+        "public":"Public",
+        "save":"Save",
+        "delete": "Delete",
+        "goto_apps_list": "Go to App list",
+        "cancel":"Cancel",
+        "place_holder_name":"Type here your app name.",
+        "place_holder_description":"Describe briefly your app."
     },
     "_mycloud_myaccount": {
         "change_password_title": "Change my Password",
@@ -71,9 +81,17 @@
         "sedtion1_step1_p1":"Copy the following 'wget' command with all of its parameters and execute it in your Edison's LINUX Terminal."
     },
     "_mycloud_myapps_edit_pages":{
-        "nopages":"No pages have been defined"
+        "nopages":"No pages have been defined",
+        "name_description":"Name and Description",
+        "new_page":"New Page",
+        "place_holder":"Type one or more words to filter the list"
     },    
     "_mycloud_pagesdef":{
         "title":"Title"
+    },
+    "_mycloud_myapps_data_pages":{
+        "title":"Data Tools",
+        "description":"In this section tools will be provided to surf and analize application data.",
+        "download":"Download CSV"
     }
 }

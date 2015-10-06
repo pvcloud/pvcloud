@@ -48,7 +48,23 @@
         "basics_tab":"Definición",
         "docs_n_drivers_tab":"Instrucciones",
         "pages_tab":"Páginas",
-        "data_tab":"Datos"
+        "data_tab":"Datos",
+        "name":"Nombre",
+        "description":"Descripción",
+        "visibility":"Visibilidad",
+        "private":"Privado",
+        "shared":"Compartido",
+        "public":"Público",
+        "save":"Guardar",
+        "delete": "Eliminar",
+        "goto_apps_list": "Ir a la lista de Apps",
+        "cancel":"Cancelar",
+        "place_holder_name":"Digite aquí el nombre de su app.",
+        "place_holder_description":"Describa brevemente su app."
+        
+        
+        
+        
     },
     "_mycloud_myaccount":{
         "change_password_title":"Cambiar mi Contraseña",
@@ -72,9 +88,19 @@
         
     },
     "_mycloud_myapps_edit_pages":{
-        "nopages":"No hay páginas definidas"
+        "nopages":"No hay páginas definidas",
+        "name_description":"Nombre y Descripción",
+        "new_page":"Nueva Página",
+        "place_holder":"Digite una o más palabras para filtrar la lista"
+
+        
     },
     "_mycloud_pagesdef":{
         "title":"Título"
+    },
+    "_mycloud_myapps_data_pages":{
+        "title":"Herramientas de Datos",
+        "description":"En esta sección se suministran herramientas para navegar y analizar los datos de la aplicación.",
+        "download":"Descargar CSV"
     }
 }

@@ -22,7 +22,7 @@
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
                 <label for="txtNombre">{{PageLabels._mycloud_myapps_edit.app_name}}</label>
-                <input type="text" class="form-control" id="txtNombre" placeholder="Digite aquí el nombre de su app." data-ng-change="SetFormDirty()" data-ng-model="AppName">
+                <input type="text" class="form-control" id="txtNombre" placeholder="{{PageLabels._mycloud_myapps_edit.place_holder_description}}" data-ng-change="SetFormDirty()" data-ng-model="AppName">
             </div>
 
 
@@ -30,23 +30,23 @@
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
                 <label for="txtDescripcion">{{PageLabels._mycloud_myapps_edit.app_description}}</label>
-                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4" data-ng-model="AppDescription"></textarea>
+                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="{{PageLabels._mycloud_myapps_edit.place_holder_description}}" rows="4" data-ng-model="AppDescription"></textarea>
             </div>
             <div class="form-group">
-                <label for="selVisibility">Visibilidad</label>
+                <label for="selVisibility">{{PageLabels._mycloud_myapps_edit.visibility}}</label>
                 <select data-ng-change="SetFormDirty()" class="form-control" id="selVisbility" data-ng-model="AppVisibility">
-                    <option selected value="1">Privado</option>
-                    <option value="2">Compartido</option>
-                    <option value="3">Público</option>
+                    <option selected value="1">{{PageLabels._mycloud_myapps_edit.private}}</option>
+                    <option value="2">{{PageLabels._mycloud_myapps_edit.shared}}</option>
+                    <option value="3">{{PageLabels._mycloud_myapps_edit.public}}</option> 
                 </select>
             </div>               
 
 
 
 
-            <button class="btn btn-success" data-ng-click="SaveApp()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
-            <button class="btn btn-danger" data-ng-if="ApplicationID" data-ng-click="DeleteApp()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
-            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Ir a Lista de Apps':'Cancelar'}}</button>
+            <button class="btn btn-success" data-ng-click="SaveApp()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;{{PageLabels._mycloud_myapps_edit.save}}</button>
+            <button class="btn btn-danger" data-ng-if="ApplicationID" data-ng-click="DeleteApp()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;{{PageLabels._mycloud_myapps_edit.delete}}</button>
+            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?PageLabels._mycloud_myapps_edit.goto_apps_list:PageLabels._mycloud_myapps_edit.cancel}}</button>
 
             <hr data-ng-show="ApplicationID">
 
@@ -69,11 +69,8 @@
     <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Pages" data-ng-include="'views/_mycloud_myapps_edit_pages.html'"> Pages </div>
 
     <!--PVCLOUD-->
-    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Data">
-        <h2>Herramientas de Datos</h2>
-        <p>En esta sección se suministran herramientas para navegar y analizar los datos de la aplicación</p>
-        <a href="{{URLBegin}}backend/vse_get_csv.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}&value_label=&count_limit="
-           class="btn btn-lg btn-success"><i class="glyphicon glyphicon-download"></i> Descargar CSV</a>
+    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Data" data-ng-include="'views/_mycloud_myapps_data_pages.html'">
+      
     </div>
 
 
