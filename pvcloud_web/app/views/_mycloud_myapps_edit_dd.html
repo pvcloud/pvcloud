@@ -17,44 +17,51 @@
         <h3>{{PageLabels._mycloud_myapps_edit_dd.section1_title}}</h3>
         <div>
             <p>{{PageLabels._mycloud_myapps_edit_dd.section1_desc_p1}}</p>
+            <hr>
             <h4>{{PageLabels._mycloud_myapps_edit_dd.section1_step1_title}}</h4>
-            <p>PageLabels._mycloud_myapps_edit_dd.section1_step1_p1</p>
-            <p>pvCloud ofrece un programa personalizado para su app que puede descargar usando los siguientes comandos de LINUX.</p>
-            <p>Primero, descargue el programa personalizado para su app usando el comando de LINUX wget:</p>
+            <p>{{PageLabels._mycloud_myapps_edit_dd.section1_step1_p1}}</p>
             <code style="text-align: left; display: inline-block; word-break: break-all">
                 wget -O ~/pvcloud_api.js "{{URLBegin}}backend/<strong>vse_api_generate.php</strong>?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}"
-            </code><br><br>                
-            <a class="pull-right" href="{{URLBegin}}backend/vse_api_generate.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" title="También puede descargarlo en su PC para realizar pruebas">Descargar en su computador</a>
-            <br>
+            </code><br><br>
+            <a class="pull-right" href="{{URLBegin}}backend/vse_api_generate.php?account_id={{AccountID}}&app_id={{Application.app_id}}&api_key={{Application.api_key}}" title="{{PageLabels._mycloud_myapps_edit_dd.section1_step1_a1_title}}">{{PageLabels._mycloud_myapps_edit_dd.section1_step1_a1}}</a><br>
             <hr>
-            <h4>Paso 2 de 3: Instale el módulo "request" de nodejs</h4>     
+            <h4>{{PageLabels._mycloud_myapps_edit_dd.section1_step2_title}}</h4>    
+            <p>{{PageLabels._mycloud_myapps_edit_dd.section1_step2_p1}}</p>
             <code style="text-align: left; display: inline-block; word-break: break-all">
                 cd ~ <br><br>
                 npm install request
             </code><br>                
             <hr>
-            <h4>Paso 3 de 3: Cómo ejecutar comandos de pvCloud desde ARDUINO IDE:</h4>
-            <p>Una vez descargado el programa de NodeJS para pvCloud usted puede ejecutar comandos de pvCloud para su app simplemente haciendo alguna de las siguientes llamadas de sistema en ARDUINO IDE:</p>
-
-            <h5>ej1 - Subir un valor a pvCloud:</h5>
+            <h4>{{PageLabels._mycloud_myapps_edit_dd.section1_step3_title}}</h4>
+            <p>{{PageLabels._mycloud_myapps_edit_dd.section1_step3_p1}}</p>
+            <h5>{{PageLabels._mycloud_myapps_edit_dd.section1_step3_ej1}}</h5>
             <code style="text-align: left; display: inline-block; word-break: break-all">
-                system ( "node ~/pvcloud_api.js action='add_value' value='123ABC' value_type='ANY_TYPE_IS_FINE' value_label='ANY LABEL WORKS' captured_datetime='2000-01-01+10:23'");
+                node ~/pvcloud_api.js action='write' label='TEST' value='123ABC' 
             </code>
 
-            <h5>ej2 - Descargar lista de valores registrados desde pvCloud:</h5>
+            <h5>{{PageLabels._mycloud_myapps_edit_dd.section1_step3_ej2}}</h5>
             <code style="text-align: left; display: inline-block; word-break: break-all">
-                system ( "node ~/pvcloud_api.js action='get_values' value_label='ANY LABEL WORKS'");
+                node ~/pvcloud_api.js action='read' label='TEST' 
             </code>     
 
-            <h5>ej3 - Descargar último valor desde pvCloud</h5>
+            <h5>{{PageLabels._mycloud_myapps_edit_dd.section1_step3_ej3}}</h5>
             <code style="text-align: left; display: inline-block; word-break: break-all">
-                system ( "node ~/pvcloud_api.js action='get_last_value' value_label='ANY LABEL WORKS'");
+                node ~/pvcloud_api.js action='readlist' label='TEST' 
             </code>
 
-            <h5>ej4 - Eliminar valores de pvCloud</h5>
+            <h5>{{PageLabels._mycloud_myapps_edit_dd.section1_step3_ej4}}</h5>
             <code style="text-align: left; display: inline-block; word-break: break-all">
-                system ("node ~/pvcloud_api.js action='clear_values' value_label='ANY LABEL WORKS'");
-            </code>                    
+                node ~/pvcloud_api.js action='delete' label='TEST'
+            </code>  
+            
+            <h5>{{PageLabels._mycloud_myapps_edit_dd.section1_step3_ej5}}</h5>
+            <code style="text-align: left; display: inline-block; word-break: break-all">
+                node ~/pvcloud_api.js action='write' label='TEST' value='123ABC' async=true <hr>
+                
+                node ~/pvcloud_api.js action='read' <hr>
+                
+                node ~/pvcloud_api.js action='readlist' limit=30 
+            </code>                 
 
         </div>
         <h3>Detalles técnicos</h3>
