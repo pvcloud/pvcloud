@@ -6,10 +6,6 @@
  */
 
 #include "pvcloud_lib.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <malloc.h>
 
 String asyncFilePath = "/home/root";
 String errorFile = "/home/root/err_pvcloud.txt";
@@ -34,6 +30,23 @@ void PVCloud::WriteAsync(String label, String value) {
     command += " &";
 
     system(command.buffer);
+}
+
+void PVCloud::WriteAsync(String label, int value) {
+    String strVal = String(value);
+    WriteAsync(label, strVal);
+}
+
+void PVCloud::WriteAsync(String label, float value) {
+    char strValue[200];
+    sprintf(strValue, "%.2f", value);
+    WriteAsync(label, strValue);
+}
+
+void PVCloud::WriteAsync(String label, double value) {
+    char strValue[200];
+    sprintf(strValue, "%.2f", value);
+    WriteAsync(label, strValue);
 }
 
 void PVCloud::ReadAsync(String label) {
