@@ -13,6 +13,13 @@
 class PVCloud {
 public:
 
+    /*SIMPLIFIED SYNCHRONOUS INTERFACE*/
+    void Write(String label, String value);
+    void Write(String, int);
+    void Write(String, float);
+    void Write(String, double);
+    void Read(String);
+    
     /*SIMPLIFIED LIBRARTY ASYNC INTERFACE*/
     void WriteAsync(String label, String value);
     void WriteAsync(String, int);

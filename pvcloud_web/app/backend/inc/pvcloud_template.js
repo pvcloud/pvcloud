@@ -293,6 +293,12 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
             case "read":
                 pvCloudAPI.Read(parameters.label);
                 break;
+            case "read_list":
+                //TODO: IMPLEMENT READ LIST
+                break;    
+            case "delete":
+                pvCloud_ClearValues(parameters.label);
+                break;            
             case "check":
                 pvCloudAPI.Check(parameters.label);
                 break;

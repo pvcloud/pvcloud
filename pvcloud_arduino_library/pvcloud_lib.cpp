@@ -86,6 +86,50 @@ String PVCloud::Check(String label) {
     return value;
 }
 
+/*SIMPLIFIED SYNCHRONOUS INTERFACE*/
+void PVCloud::Write(String label, String value) {
+    String command = "node /home/root/pvcloud_api.js action='write' ";
+    command += " label='" + label + "' ";
+    command += " value='" + value + "' ";
+    command += " error_log_file='" + errorFile + "'";
+
+
+    command += " async=true";
+    command += " async_path='" + asyncFilePath + "'";
+
+    system(command.buffer);
+}
+
+void PVCloud::Write(String label, int value) {
+    String strVal = String(value);
+    Write(label, strVal);
+}
+
+void PVCloud::Write(String label, float value) {
+    char strValue[200];
+    sprintf(strValue, "%.2f", value);
+    Write(label, strValue);
+}
+
+void PVCloud::Write(String label, double value) {
+    char strValue[200];
+    sprintf(strValue, "%.2f", value);
+    Write(label, strValue);
+}
+
+void PVCloud::Read(String label) {
+    fileCleanup(label);
+
+    String command = "node /home/root/pvcloud_api.js action='read' ";
+    command += " label='" + label + "' ";
+    command += " error_log_file='" + errorFile + "'";
+
+    command += " async=true";
+    command += " async_path='" + asyncFilePath + "'";
+
+    system(command.buffer);
+}
+
 /*LEGACY LOG INTERFACE*/
 void PVCloud::LogEntry(String message) {
     String command = "echo \"";
