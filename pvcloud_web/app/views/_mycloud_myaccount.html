@@ -1,0 +1,30 @@
+<!-- ACCORDION WITH ACCOUNT OPTIONS -->
+<div id="account_accordion" data-ng-controller="_mycloud_myaccount">
+    <h3>{{PageLabels._mycloud_myaccount.change_password_title}}</h3>
+    <div>
+        <div class="row">
+            <div class="col-md-6">{{PageLabels._mycloud_myaccount.type_your_current_password}}</div>
+            <div class="col-md-6"><input class="pull-right col-sm-12" type="password" data-ng-model="OldPassword"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{PageLabels._mycloud_myaccount.type_your_new_password}}</div>
+            <div class="col-md-6"><input class="pull-right col-sm-12" type="password" data-ng-model="NewPassword1"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{PageLabels._mycloud_myaccount.type_your_new_password_2}}</div>
+            <div class="col-md-6"><input class="pull-right col-sm-12" type="password" data-ng-model="NewPassword2"></div>
+        </div>   
+        <div class="alert alert-danger" data-ng-show="NewPassword1 !== NewPassword2">{{NewPassword1 !== NewPassword2?"La confirmación de su nueva clave no coincide con su nueva clave.":"All Good!"}}</div>
+        <div class="row">
+            <div class="col-md-12"><button data-ng-disabled="(!OldPassword || !NewPassword1 || NewPassword1 !== NewPassword2)" class="btn btn-primary pull-right" data-ng-click="ChangePassword()">{{PageLabels._mycloud_myaccount.btn_save}}</button></div>
+        </div>
+
+    </div>
+</div>   
+
+<script>
+    $("#account_accordion").accordion({
+        heightStyle: "content",
+        collapsible: true
+    });
+</script>

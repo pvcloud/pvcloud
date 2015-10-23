@@ -1,0 +1,34 @@
+<!-- CONTAINER FLUID -->
+<div data-ng-controller="_mycloud_contentdef" class="container-fluid">
+
+    <!-- BREADCRUMB -->
+    <!--ol class="breadcrumb">
+        <li><a href="#/apps">My Apps</a></li>
+        <li><a href="#/apps/{{ArticleID}}/tab_pages">{{AppName}}(ID: {{AppID}})</a></li>
+        <li>Pages: {{PageTitle}} ({{PageID}})</li>
+    </ol-->
+
+    <!-- BASIC DATA-->
+    <div class="container-fluid">
+        <br>
+        <form>
+            <!-- TITLE -->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Title}}</span>
+                <label for="txtTitulo">Título</label>
+                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título de la página." data-ng-change="SetFormDirty()" data-ng-model="title">
+            </div>
+
+            <!-- Content Text -->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Content}}</span>
+                <div text-angular data-ng-change="SetFormDirty()" data-ng-model="content" ></div>
+            </div>           
+
+            <button class="btn btn-success" data-ng-click="SaveContent()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
+            <button class="btn btn-danger" data-ng-if="PageID" data-ng-click="DeleteContent()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
+            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Regresar':'Cancelar'}}</button>          
+        </form>  
+    </div>
+</div>
+

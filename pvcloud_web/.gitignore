@@ -1,0 +1,18 @@
+node_modules
+dist
+.tmp
+.sass-cache
+bower_components
+/nbproject/private/
+/nbproject/
+/pvcloud.zip
+/pvcloud_backend/
+/jn-dev-workspace/
+da_conf.php
+#################
+## WebStorm
+#################
+
+.idea/
+/dist.zip
+/app/backend/DA/da_conf.php

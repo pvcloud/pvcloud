@@ -1,0 +1,117 @@
+{
+    "main": {
+        "slogan": "El poder de lo simple en la Internet de las Cosas",
+        "email_palceholder": "Digite su email aquí",
+        "password_placeholder": "Digite su contraseña aquí",
+        "login_button": "Ingresar",
+        "how_to_get_account_link": "¿Cómo obtener una cuenta?",
+        "how_to_get_account_title": "Cómo Abrir una Cuenta",
+        "how_to_get_account_p1": "¡Muchas gracias por su interés en la plataforma pvCloud!.",
+        "how_to_get_account_p2": "pvCloud se encuentra en modo \"BETA\"; esto significa que estamos validando el producto antes de lanzarlo al público directamente.",
+        "how_to_get_account_p3": "Actualemten las cuentas de pvCloud se están creando mediante un proceso de invitación de parte de usuarios activos actuales.",
+        "how_to_get_account_p4": "Si alguno de tus amigos tiene una cuenta, ¡pídele que te invite! :-)",
+        "forgot_my_password_link": "Olvidé mi clave",
+        "forgot_my_password_button": "Recuperar Contraseña",
+        "forgot_my_password_cancel": "Cancelar",
+        "wrong_credentials_message": "Credenciales Equivocadas",
+        "invalid_parameters_message": "Parámetros Inválidos"
+    },
+    "mycloud": {
+        "menu_my_apps": "MIS APPS",
+        "menu_my_network": "MI RED",
+        "menu_my_account": "MI CUENTA",
+        "menu_about": "¿QUIENES SOMOS?",
+        "myapps_search_placeholder": "Digite una o más palabras para filtrar la lista",
+        "myapps_id": "ID",
+        "myapps_name_and_description": "Nombre y Descripción",
+        "myapps_new_app": "Nueva App",
+        "quick_links_new_app": "Agregar Nueva App",
+        "quick_links_invite_a_friend": "Invitar a un Amigo",
+        "quick_links_logout": "Salir",
+        "footer_brought_by": "pvCloud llega a tí gracias a"
+    },
+    "passwordRecovery": {
+        "title": "Recuperación de Contraseña",
+        "email": "Digite su cuenta de correo electrónico",
+        "newPassword": "Digite su nueva contraseña",
+        "newPasswordAgain": "Digite su nueva contraseña por segunda vez"
+    },
+    "passwordRecoverySuccess": {
+        "success": "Su clave fue cambiada satisfactoriamente.",
+        "click": "Haga click ",
+        "here": "aqui ",
+        "toAccess": "para accesar su cuenta."
+    },
+    "_mycloud_myapps_edit": {
+        "app_name": "Nombre",
+        "app_description": "Descripción",
+        "basics_tab": "Definición",
+        "docs_n_drivers_tab": "Instrucciones",
+        "pages_tab": "Páginas",
+        "data_tab": "Datos",
+        "name": "Nombre",
+        "description": "Descripción",
+        "visibility": "Visibilidad",
+        "private": "Privado",
+        "shared": "Compartido",
+        "public": "Público",
+        "save": "Guardar",
+        "delete": "Eliminar",
+        "goto_apps_list": "Ir a la lista de Apps",
+        "cancel": "Cancelar",
+        "place_holder_name": "Digite aquí el nombre de su app.",
+        "place_holder_description": "Describa brevemente su app."
+
+
+
+
+    },
+    "_mycloud_myaccount": {
+        "change_password_title": "Cambiar mi Contraseña",
+        "type_your_current_password": "Digite aquí su clave actual:",
+        "type_your_new_password": "Digite aquí su nueva contraseña:",
+        "type_your_new_password_2": "Repita aquí su nueva contraseña:",
+        "btn_save": "Cambiar Contraseña"
+    },
+    "_mycloud_myapps_edit_dd": {
+        "title": "Cómo usar pvCloud en su app y dispositivos",
+        "lbl_app_id": "AppID:",
+        "lbl_app_name": "Nombre de App:",
+        "lbl_app_description": "Descripción:",
+        "title_introduction": "Introducción",
+        "intro_p1": "En este documento encontrará información (personalizada) para su App IoT.",
+        "intro_p2": "En las siguientes tres secciones se describe cómo utilizar pvCloud para subir y consumir datos usando su app IoT.",
+        "intro_p3": "Haga clic en el título de la sección que desee explorar para ver su contenido.",
+        "section1_title": "Conecte su Intel Edison 3 pasos",
+        "section1_desc_p1": "Esta sección describe los pasos para implementar pvCloud en su app IoT compatible con Intel Edison o Galileo y dispositivos similares compatibles con Linux y NodeJS.",
+        "section1_step1_title": "PASO 1: Controlador pvCloud",
+        "section1_step1_p1": "Ejecute el siguiente comando 'wget' en la terminal LINUX de su dispositivo Edison. Esto descargará el programa 'pvcloud_api.js' el cual está programado para comunicarse con esta aplicación en particular.",
+        "section1_step1_a1_title": "También puede descargarlo en su PC",
+        "section1_step1_a1": "Descargar en esta PC",
+        "section1_step2_title": "PASO 2: Módulo request.js (Opcional)",
+        "section1_step2_p1": "Si no lo ha hecho todavía, ejecute los siguientes comandos de Linux para instalar el módulo 'request.js' en su Edison.",
+        "section1_step3_title": "PASO 3: Comandos de pvCloud",
+        "section1_step3_p1": "Seguidamente se presentan los comandos disponibles en el controlador de pvCloud para realizar las diferentes operaciones (write, read, readlist, delete).",
+        "section1_step3_ej1": "Example #1 - comando write (escribir)",
+        "section1_step3_ej2": "Example #2 - comando read (leer)",
+        "section1_step3_ej3": "Example #3 - comando readlist (leer lista)",
+        "section1_step3_ej4": "Example #4 - comando delete (borrar)",
+        "section1_step3_ej5": "Example #5 - parámetros opcionales"
+    },
+    "_mycloud_myapps_edit_pages": {
+        "nopages": "No hay páginas definidas",
+        "name_description": "Nombre y Descripción",
+        "new_page": "Nueva Página",
+        "place_holder": "Digite una o más palabras para filtrar la lista"
+
+
+    },
+    "_mycloud_pagesdef": {
+        "title": "Título"
+    },
+    "_mycloud_myapps_data_pages": {
+        "title": "Herramientas de Datos",
+        "description": "En esta sección se suministran herramientas para navegar y analizar los datos de la aplicación.",
+        "download": "Descargar CSV"
+    }
+}

@@ -1,0 +1,36 @@
+<!-- CONTAINER FLUID -->
+<div data-ng-controller="_mycloud_myapps_edit_pages" class="container-fluid">
+    <!--HEADING - REGISTRAR NUEVA PAGE-->
+    <div class="row">
+        <div class="col-sm-12">
+            <br>
+            <div class="input-group" style="width:100%">
+                <label for="txtSearchPages" class="input-group-addon"><i class="glyphicon glyphicon-search"></i></label>
+                <input id="txtSearchPages" data-ng-model="txtSearchPages" data-ng-keypress="EnterKeyBehavior($event)" data-ng-model="PagesSearchPhrase" type="search" class="form-control inputtext"  placeholder="{{PageLabels._mycloud_myapps_edit_pages.place_holder}}" required>
+            </div>
+        </div>
+    </div>
+    <br>
+    <!--PAGES LIST-->
+    <table class="table table-striped table-hover" data-ng-if="Pages && Pages.length > 0 && SelectedApp === undefined">
+        <tr>
+            <th>ID</th>
+            <th>{{PageLabels._mycloud_myapps_edit_pages.name_description}}
+                <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> {{PageLabels._mycloud_myapps_edit_pages.new_page}}</a>
+            </th>
+            <th></th>
+        </tr>
+        <tr id="tr_page_{{page.page_id}}" data-ng-repeat="page in Pages | filter: txtSearchPages">
+            <td class="td-app-info" style="vertical-align: middle">{{page.page_id}}</td>
+            <td class="td-app-info">
+                <a data-ng-click="GoToEditPage(page.page_id)">{{page.title}}</a>&nbsp;&nbsp;
+                <br>
+                <small class="col-sm-12 text-muted" style="color:gray; margin:0; padding:0">{{page.description}}</small>
+            </td>
+            <td>
+                <a href="#page/{{page.page_id}}" target="_blank" title="Open Page in a new Tab"><i class="glyphicon glyphicon-eye-open"></i></a>
+            </td>
+        </tr>
+    </table>
+    <div data-ng-if="Loading && (!Pages || Pages.length === 0)">{{PageLabels._mycloud_myapps_edit_pages.nopages}} <a data-ng-click="GoToPageDef()" class='pull-right btn btn-xs btn-success'><i class='glyphicon glyphicon-book'></i> Nueva Página</a></div>
+</div>

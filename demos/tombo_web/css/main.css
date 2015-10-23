@@ -1,0 +1,72 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+a.btn{
+    min-width: 180px;
+    margin:0 auto;
+
+
+}
+
+.tombo-sensor-red{
+    color:red;
+}
+
+.tombo-sensor-green{
+    color:green;
+}
+
+.tombo-sensor-gray{
+    color:gray
+}
+
+#btnMode_PANIC span, #btnMode_PANIC i{
+    color:red;
+}
+.btn{
+    width:150px;
+}
+.btn-default{
+    background-color: transparent;
+}
+
+.btn-default:hover{
+    background-color: lightgrey;
+}
+.btn-default i {
+    font-size: 3em;
+    color:green;
+}
+.btn-default span{
+    color:green;
+}
+
+.btn-danger i{
+    font-size: 3em;
+}
+
+
+#btnStop {
+    display:none;
+}
+
+@media (max-width: 768px) {
+    h2{
+    }
+    .config-label{
+        display:none;
+    }
+    a.btn{
+        display:block;
+        max-width:180px        
+    }   
+
+}
+
+@media (max-width: 480px) {
+    h2,.explanation{
+    }
+}

@@ -1,0 +1,229 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8"> <!-- Tipo de caracteres -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> <!-- Utilice la ultima version de HTML, sin compartibilidad backguards -->
+        <title>TOMBO Smart Home Security</title> <!-- Titulo pagina-->
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Size de las ventanas-->
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css"> <!-- Carga la hoja de estilos de bootstrap -Framework -->
+        <style>
+            body {
+                padding-top: 0;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="css/bootswatch-themes/flatly.css"> <!-- Personalizacion del tema de bootstrap -->
+        <link rel="stylesheet" href="css/main.css"> <!-- Personalizacion de los botones y el tema -->
+
+        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script> <!-- Compatibilidad con browsers viejos que tengan versiones viejas de HTML -->
+    </head>
+    <body >
+        <!-- HAPPY BROWSER -->
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- JUMBOTRON WELCOME HEADER -->
+        <div class="jumbotron">
+            <div class="container">
+                <h1><i id="iconwelcome" class="glyphicon glyphicon-cloud" style="color:gray; font-size: 2em; position: relative; top:0.3em;"></i>&nbsp;&nbsp;Welcome to Tombo</h1>
+                <p class="explanation">This page implements a dashboard for the Tombo Smart Home Security System, powered by Intel Edison IoT devices. This system sends and receives data to a Cloud Service (pvCloud) and consumes it in the form of visual warnings and email alerts.</p>
+            </div>
+        </div>
+
+        <!--CONTENT-->
+        <div class="container-fluid">
+            <!-- UNIQUE ROW -->
+            <div class="row"> <!-- Manera de acomodar la pagina bien en caso de que se comprima -->
+                <!--VISUALIZATION COL 6 ON MAIN ROW-->
+                <div class="col-lg-6"> 
+                    <h2>Visualization</h2>
+                    <p  class="explanation">This section demonstrates how a device can send data to pvCloud and a registered system can interpret such data.</p>
+
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Smart Home Status
+                            <img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control3" style="float:right"/>
+                        </div>
+                        <div class="panel-body" style="text-align: center">
+                            <!-- VISUALIZATION / STATUS AND CONNECT-->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4" id="div_AlarmCondition">
+                                        <i id="iconHouse" class="glyphicon glyphicon-home" style="font-size: 3em"></i><br>
+                                        <span id="spn_status">STATUS - PAUSED</span>
+                                    </div>    
+                                    <div class="col-sm-8">
+                                        <div id="divSystemConnectivityMessage" class="alert alert-info">
+                                            Connection is Healthy
+                                        </div>
+
+                                    </div>    
+                                </div>
+                            </div>
+                            <hr>
+                            <!-- VISUALIZAION / 1st SET of 3 ICONS-->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4" id="div_Sensor3">
+                                        <i id="iconFrontDoor" class="glyphicon glyphicon-eye-open" style="font-size: 3em"></i><br>
+                                        <span>FRONT DOOR</span>
+                                    </div>
+
+                                    <div class="col-sm-4" id="div_Sensor0">
+                                        <i id="iconZ1" class="glyphicon glyphicon-user" style="font-size: 3em"></i><br>
+                                        <span>LIVING ROOM</span>
+                                    </div>
+
+                                    <div class="col-sm-4" id="div_Sensor2">
+                                        <i id="iconZ2" class="glyphicon glyphicon-bell" style="font-size: 3em"></i><br>
+                                        <span>BEDROOM</span>
+                                    </div>                            
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+
+                                <!-- VISUALIZAION / 2nd SET of 3 ICONS-->
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4" id="div_Sensor1">
+                                        <i id="iconPerimeter" class="glyphicon glyphicon-tree-deciduous" style="font-size: 3em"></i><br>
+                                        <span>BACKYARD</span>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <i id="iconTemp" class="glyphicon glyphicon-fire disabled" style="color:gray; font-size: 3em"></i><br>
+                                        <span>TEMPERATURE</span>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <i id="iconLight" class="glyphicon glyphicon-flash disabled" style="color:gray; font-size: 3em"></i><br>
+                                        <span>POWER</span>
+                                    </div>                            
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CONTROL  COL 6 on MAIN ROW-->
+                <div class="col-lg-6"> <!-- Momento en que pasan de estar horizontales a verticales las columnas, md=medium (size tablet) -->
+                    <h2>Control </h2>
+                    <p  class="explanation">In this section you can send control commands to your smart home system such as changing Smart Modes</p>
+                    <div class="panel panel-info control-widget">
+                        <div class="panel-heading">Operational Mode
+                            <span id="spnLoader_Control" style="display:none;float:right;" class="label label-warning">loading... <img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control"/></span>
+                            <span id="lblCurrentOPMode" style="float:right;font-size: 1em;"  class="label label-success">MODE: <span id="spnOPMODE">unknown...</span><img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control2"/></span>
+                        </div>
+                        <div id="panel-set-mode" class="panel-body" style="text-align:center">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-sm-4">
+                                        <button type="button" id="btnMode_SETUP" class="btn btn-default" style="width:150px">
+                                            <i class="glyphicon glyphicon-wrench"></i><br>
+                                            <span>Setup</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="button" id="btnMode_ACTIVE" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-user"></i><br>
+                                            <span>Active @ Home</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="button" id="btnMode_OFF" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-off"></i><br>
+                                            <span>OFF</span>
+                                        </button>
+                                    </div>    
+                                    &nbsp;<hr>
+                                </div>
+
+                            </div>
+                            <div class="row">                              
+                                <div class="col-md-12">
+                                    <div class="col-sm-4">
+                                        <button type="button" id="btnMode_ACTIVE2" class="btn btn-default">
+                                            <i class="glyphicon glyphicon-user"></i><br>
+                                            <span>Active @ Home</span>
+                                        </button>
+                                    </div>       
+                                    <div class="col-sm-4">
+                                        <button type="button" id="btnMode_NOBODY" class="btn btn-default" style="width:150px">
+                                            <i class="glyphicon glyphicon-eye-open"></i><br>
+                                            <span>Nobody @ Home</span>
+                                        </button>
+                                    </div>     
+                                    <div class="col-sm-4">
+                                        <button type="button" id="btnMode_PANIC" class="btn btn-default disabled">
+                                            <i class="glyphicon glyphicon-warning-sign"></i><br>
+                                            <span>PANIC</span>
+                                        </button>
+                                    </div>                                    
+
+                                    &nbsp;<hr>
+                                </div>
+
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-sm-4">
+                                        <div id="btnMode_SLEEP" class="btn btn-default disabled" style="width:150px">
+                                            <i class="glyphicon glyphicon-headphones"></i><br>
+                                            <span>Sleep Mode</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div id="btnMode_CHILDCARE" class="btn btn-default disabled">
+                                            <i class="glyphicon glyphicon-ban-circle" ></i><br>
+                                            <span>Child Care</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div id="btnMode_VACATIONS" class="btn btn-default disabled">
+                                            <i class="glyphicon glyphicon-briefcase"></i><br>
+                                            <span>Out on Vacations</span>
+                                        </div>
+                                    </div>   
+                                </div>
+                            </div>                                
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- LOG  COL 6 on MAIN ROW-->
+                <div class="col-lg-6"> <!-- Momento en que pasan de estar horizontales a verticales las columnas, md=medium (size tablet) -->
+                    <h2>EVENT LOG</h2>
+                    <p  class="explanation">In this section you can see the recent events at your smart home</p>
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Last 30 Events <img src="img/ajax-loader.gif" alt="..." id="imgLoader_Control4" style="float:right"/></div>
+                        <div class="panel-body" id="panelEvents">
+                            <div class="alert alert-warning">2015-09-19 15:20 | SETUP MODE: ALARM  Event at Living Room</div>
+                            <div class="alert alert-info">2015-09-19 15:20 | SETUP MODE: Detect Event at Living Room</div>
+                            <div class="alert alert-info">2015-09-19 15:20 | SETUP MODE: Detect Event at Front Door, Living Room, Garden, Bedroom</div>
+                            <div class="alert alert-info">2015-09-19 15:20 | System Started in SETUP mode.</div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+
+            <!-- FOOTER -->
+            <footer style="text-align:center">
+                <p><a href="https://costaricamakers.com" target="_blank">Project Hosted by costaricamakers.com</a></p>
+
+            </footer>
+        </div> <!-- /container -->        
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
+
+        <!--SCRIPTS-->
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.js"><\/script>');</script> <!-- Framework para faciltiar el uso de Javascript -->
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/main.js"></script> <!-- Apunta a la parte programatica -->
+    </body>
+</html>

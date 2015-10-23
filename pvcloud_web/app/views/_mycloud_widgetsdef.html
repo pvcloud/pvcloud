@@ -1,0 +1,69 @@
+<!-- CONTAINER FLUID -->
+<div data-ng-controller="_mycloud_widgetsdef" class="container-fluid">
+
+    <!-- BREADCRUMB -->
+    <ol class="breadcrumb">
+        <li>.../ <a href="#/pagesdef/{{Page.page_id}}/tab_widgets">Page: {{Page.title}}(ID: {{Page.page_id}})</a></li>
+        <li>Widget: {{Widget.title}} ({{Widget.widget_id}})</li>
+    </ol>
+
+    <!-- TABS -->
+    <ul data-ng-show="PageID!=='new'" class="nav nav-tabs" data-ng-class="{'nav-justified':PageID != undefined}">
+        <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Widget</a></li>
+        <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Configuration}"><a data-ng-click="SwitchToTab(Tabs.Configuration)">Configuración</a></li>
+    </ul>
+
+    <!-- BASIC DATA-->
+    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Basics">
+        <br>
+        <form>
+            <!-- TITLE -->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
+                <label for="txtTitulo">Título</label>
+                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título del widget." data-ng-change="SetFormDirty()" data-ng-model="Widget.title">
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
+                <label for="txtDescripcion">Descripción</label>
+                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su widget" rows="4" data-ng-model="Widget.description"></textarea>
+            </div>
+            <!-- Widget Type-->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
+                <label for="txtType">Tipo de Widget</label>
+                    <select  class="form-control"  data-ng-model="Widget.type" data-ng-change="SetFormDirty()" required>
+                      <option ng-repeat="wt in WidgetTypeList.widget_types" value="{{wt.wid}}">{{wt.wname}}</option>
+                    </select>
+            </div>
+            
+             <!-- Widget Type-->
+            <div class="form-group">
+                <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
+                <label for="txtFrequency">Frequency</label>
+                <input type="text" class="form-control" id="txtFrequency" placeholder="Digite aquí la frecuencia del widget." data-ng-change="SetFormDirty()" data-ng-model="Widget.frequency">
+            </div>
+               
+
+            <button class="btn btn-success" data-ng-click="SaveWidget()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
+            <button class="btn btn-danger" data-ng-if="Widget.widget_id > 0" data-ng-click="DeletePage()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
+            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Regresar a la Pagina':'Cancelar'}}</button>          
+        </form>        
+    </div>
+    
+    <!-- WIDGETS CONFIGURATION -->
+    <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Widgets"> 
+        TEST ON CONFIG TABS
+        <!--
+        
+        THIS DIV IS WRONG!
+        <div data-ng-include="'views/_mycloud_widgetsdef_.html' + WidgetType"></div>
+        
+        -->
+
+    </div>
+    
+</div>
+

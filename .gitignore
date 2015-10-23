@@ -1,16 +1,3 @@
-node_modules
-dist
-.tmp
-.sass-cache
-bower_components
 /nbproject/private/
-/nbproject/
-/pvcloud.zip
-
-#################
-## WebStorm
-#################
-
-.idea/
-/dist.zip
-/app/backend/DA/da_conf.php
+/pvcloud_arduino_library/nbproject/private/
+*.cpp~
