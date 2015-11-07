@@ -42,7 +42,7 @@
                 </select>
             </div>               
 
-            <button class="btn btn-success" data-ng-click="SaveContent()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
+            <button class="btn btn-success" data-ng-click="SavePage()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
             <button class="btn btn-danger" data-ng-if="content_id" data-ng-click="DeleteContent()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
             <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Regresar al App':'Cancelar'}}</button>          
         </form>        
