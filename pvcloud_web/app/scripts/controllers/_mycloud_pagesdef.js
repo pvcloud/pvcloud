@@ -92,7 +92,8 @@ angular.module('pvcloudApp').controller('_mycloud_pagesdef', function ($scope, U
                         UtilityService.ProcessServiceResponse(response,
                                 function success(response) {
                                     var page = response.data;
-                                    loadDataToForm($scope.App, page);
+                                    var newPagePath = "/pagesdef/" + page.page_id;
+                                    $location.path(newPagePath);
                                     alert("Los datos se almacenaron satisfactoriamente.");
                                 },
                                 function error(response) {
