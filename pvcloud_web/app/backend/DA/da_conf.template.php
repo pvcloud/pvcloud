@@ -12,8 +12,6 @@ class DAConf {
     public static $databaseName = ""; //i.e.: pvcloud
 }
 
-//VVVVV   REMOVE THESE LINES IF YOU ARE NOT ON Cloud9 VVV
-DAConf::$databaseURL = getenv('IP');
-DAConf::$databaseUName = getenv('C9_USER');
-
-//^^^^^^   REMOVE THESE LINES IF YOU ARE NOT ON Cloud9 ^^^
+//VVVVV   UNCOMMENT THESE LINES FOR Cloud9 ENVIRONMENT VVV
+// DAConf::$databaseURL = getenv('IP');
+// DAConf::$databaseUName = getenv('C9_USER');
