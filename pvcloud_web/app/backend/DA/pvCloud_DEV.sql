@@ -1,17 +1,19 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.12
+-- version 4.4.14
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 04, 2015 at 12:45 AM
--- Server version: 5.6.16
--- PHP Version: 5.5.11
+-- Generation Time: Nov 07, 2015 at 04:45 PM
+-- Server version: 5.6.26
+-- PHP Version: 5.6.12
 
 SET time_zone = "+00:00";
 
 --
 -- Database: `pvcloud`
 --
+CREATE DATABASE IF NOT EXISTS `pvcloud` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE pvcloud;
 
 -- --------------------------------------------------------
 
@@ -21,7 +23,7 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE IF NOT EXISTS `accounts` (
-  `account_id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) NOT NULL,
   `email` varchar(200) COLLATE utf8_bin NOT NULL,
   `nickname` varchar(50) COLLATE utf8_bin NOT NULL,
   `pwd_hash` varchar(256) COLLATE utf8_bin NOT NULL,
@@ -29,11 +31,8 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `confirmation_guid` varchar(250) COLLATE utf8_bin DEFAULT NULL,
   `created_datetime` datetime NOT NULL,
   `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_datetime` datetime DEFAULT NULL,
-  PRIMARY KEY (`account_id`),
-  UNIQUE KEY `account_id` (`account_id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='PV Cloud User Accounts' AUTO_INCREMENT=2 ;
+  `deleted_datetime` datetime DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='PV Cloud User Accounts';
 
 --
 -- Dumping data for table `accounts`
@@ -54,8 +53,7 @@ CREATE TABLE IF NOT EXISTS `accounts_association` (
   `account_id_guest` int(11) NOT NULL,
   `requested_date` datetime NOT NULL,
   `accepted_date` datetime DEFAULT NULL,
-  `rejected_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`account_id_host`,`account_id_guest`)
+  `rejected_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -66,15 +64,14 @@ CREATE TABLE IF NOT EXISTS `accounts_association` (
 
 DROP TABLE IF EXISTS `accounts_network`;
 CREATE TABLE IF NOT EXISTS `accounts_network` (
-  `account_network_id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_network_id` int(11) NOT NULL,
   `requester_account_id` int(11) NOT NULL COMMENT 'Account ID of the requester for friendship',
   `requested_account_id` int(11) NOT NULL COMMENT 'Account ID being requested to establish friendship',
   `accepted` tinyint(1) NOT NULL COMMENT 'TRUE if requested account holder accepts the friendship',
   `created_datetime` datetime NOT NULL COMMENT 'day and time created',
   `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'day and time last modified',
-  `deleted_datetime` datetime DEFAULT NULL COMMENT 'day deleted',
-  PRIMARY KEY (`account_network_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Network of associated accounts' AUTO_INCREMENT=1 ;
+  `deleted_datetime` datetime DEFAULT NULL COMMENT 'day deleted'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Network of associated accounts';
 
 -- --------------------------------------------------------
 
@@ -84,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `accounts_network` (
 
 DROP TABLE IF EXISTS `app_registry`;
 CREATE TABLE IF NOT EXISTS `app_registry` (
-  `app_id` int(11) NOT NULL AUTO_INCREMENT,
+  `app_id` int(11) NOT NULL,
   `account_id` int(11) NOT NULL,
   `app_nickname` varchar(50) COLLATE utf8_bin NOT NULL,
   `app_description` varchar(1000) COLLATE utf8_bin NOT NULL,
@@ -93,18 +90,15 @@ CREATE TABLE IF NOT EXISTS `app_registry` (
   `created_datetime` datetime NOT NULL,
   `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_datetime` datetime DEFAULT NULL,
-  `last_connected_datetime` datetime DEFAULT NULL,
-  PRIMARY KEY (`app_id`),
-  KEY `app_nickname` (`app_nickname`),
-  KEY `account_id` (`account_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
+  `last_connected_datetime` datetime DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Dumping data for table `app_registry`
 --
 
 INSERT INTO `app_registry` (`app_id`, `account_id`, `app_nickname`, `app_description`, `api_key`, `visibility_type_id`, `created_datetime`, `modified_datetime`, `deleted_datetime`, `last_connected_datetime`) VALUES
-(1, 1, 'HOME SMART SECURITY', 'Cloud based security system for homes.', '09b508f1bdc25b6ec65af3f9b9d1eb357b87776d', 1, '2014-12-06 16:04:21', '2015-03-25 23:19:50', NULL, NULL),
+(1, 1, 'HOME SMART SECURITY', 'Cloud based security system for homes.', 'b039f1ec9b6f6d6e2630597105d4cdb00e8e5e0e', 1, '2014-12-06 16:04:21', '2015-10-06 23:56:39', NULL, NULL),
 (2, 1, 'SMART HOME DOMOTICS', 'SYSTEM TO CONTROL ACTUATORS AT HOME BASED ON CLOUD COMMANDS', 'f51c3ef0344384032c0ea2dd8be208542908497f', 2, '2014-12-16 23:56:35', '2015-03-25 23:25:47', NULL, NULL),
 (3, 1, 'WATER DISPOSAL SYSTEM', 'Distribuidor de aguas jabonosas', 'b56c61555653deccc4d3d1fbadd8ae0837da9abd', 2, '2014-12-16 23:58:46', '2015-03-25 23:07:58', NULL, NULL),
 (4, 1, 'test2', '2', '39a63dc622a6df57daaf6ac1ffcfd5a0c627ac6a', 1, '2015-03-25 16:36:19', '2015-03-25 22:49:22', '2015-03-25 16:49:22', NULL),
@@ -120,7 +114,7 @@ INSERT INTO `app_registry` (`app_id`, `account_id`, `app_nickname`, `app_descrip
 (14, 1, 'test', 'test', '6f463b67437fa20079cb61b278a7430d789735cd', 1, '2015-03-25 17:27:46', '2015-03-25 23:28:57', '2015-03-25 17:28:57', NULL),
 (15, 1, 'retewart', 'tasfdsafdsa', 'e9f910fcbf9ccfa1ab1fb3199d166d372f818255', 1, '2015-03-25 17:28:09', '2015-03-25 23:29:06', '2015-03-25 17:29:06', NULL),
 (16, 1, 'test', 'fdwfdsafdsa', '0d7d4b2bf23626ea80f537b846d7f72172775942', 1, '2015-03-25 17:28:44', '2015-03-25 23:29:01', '2015-03-25 17:29:01', NULL),
-(17, 1, 'DHT 11 Experiment', 'In this app I plan to connect a DHT11 sensor to an Edison or Galileo and send the data over the cloud to display in a pvCloud Page', 'b10d47a9430c767d7cf962516a31210c373b6989', 2, '2015-03-25 20:22:54', '2015-03-26 02:22:54', NULL, NULL);
+(17, 1, 'DHT 11 Experiment', 'In this app I plan to connect a DHT11 sensor to an Edison or Galileo and send the data over the cloud to display in a pvCloud Page', 'dfb66ad192faacd8498ee391b2acc3bdb63bccfc', 2, '2015-03-25 20:22:54', '2015-10-06 23:53:23', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -130,10 +124,9 @@ INSERT INTO `app_registry` (`app_id`, `account_id`, `app_nickname`, `app_descrip
 
 DROP TABLE IF EXISTS `app_visibility_type`;
 CREATE TABLE IF NOT EXISTS `app_visibility_type` (
-  `visibility_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `visibility_type_name` varchar(20) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`visibility_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of Visibility' AUTO_INCREMENT=4 ;
+  `visibility_type_id` int(11) NOT NULL,
+  `visibility_type_name` varchar(20) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of Visibility';
 
 --
 -- Dumping data for table `app_visibility_type`
@@ -142,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `app_visibility_type` (
 INSERT INTO `app_visibility_type` (`visibility_type_id`, `visibility_type_name`) VALUES
 (1, 'Privado'),
 (2, 'Compartido'),
-(3, 'Público');
+(3, 'PÃºblico');
 
 -- --------------------------------------------------------
 
@@ -152,14 +145,13 @@ INSERT INTO `app_visibility_type` (`visibility_type_id`, `visibility_type_name`)
 
 DROP TABLE IF EXISTS `invitations`;
 CREATE TABLE IF NOT EXISTS `invitations` (
-  `invitation_id` int(11) NOT NULL AUTO_INCREMENT,
+  `invitation_id` int(11) NOT NULL,
   `host_email` varchar(200) COLLATE utf8_bin NOT NULL,
   `guest_email` varchar(200) COLLATE utf8_bin NOT NULL,
   `created_datetime` datetime NOT NULL,
   `expired_datetime` datetime DEFAULT NULL,
-  `token` varchar(200) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`invitation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+  `token` varchar(200) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -169,17 +161,15 @@ CREATE TABLE IF NOT EXISTS `invitations` (
 
 DROP TABLE IF EXISTS `pages`;
 CREATE TABLE IF NOT EXISTS `pages` (
-  `page_id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_id` int(11) NOT NULL,
   `app_id` int(11) NOT NULL,
   `title` varchar(100) COLLATE utf8_bin NOT NULL,
   `description` varchar(1000) COLLATE utf8_bin NOT NULL,
   `visibility_type_id` int(11) NOT NULL,
   `created_datetime` datetime NOT NULL,
   `modified_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_datetime` datetime DEFAULT NULL,
-  PRIMARY KEY (`page_id`),
-  KEY `app_id` (`app_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=27 ;
+  `deleted_datetime` datetime DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Dumping data for table `pages`
@@ -187,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
 
 INSERT INTO `pages` (`page_id`, `app_id`, `title`, `description`, `visibility_type_id`, `created_datetime`, `modified_datetime`, `deleted_datetime`) VALUES
 (1, 17, 'DHT11 Dashboard', 'Dashboard to display latest DH11 H and T readings.', 3, '2015-03-25 20:20:33', '2015-04-17 02:58:12', NULL),
-(2, 17, 'DHT11 PROJECT CONFIG TOOL', 'PÃ¡gina para configurar el sistema..', 1, '2015-03-25 20:23:44', '2015-03-28 02:16:54', NULL),
+(2, 17, 'DHT11 PROJECT CONFIG TOOL', 'PÃƒÂ¡gina para configurar el sistema..', 1, '2015-03-25 20:23:44', '2015-03-28 02:16:54', NULL),
 (3, 0, 'NewTitle', 'newDescription', 3, '2015-03-27 21:18:13', '2015-03-28 03:18:13', NULL),
 (4, 0, 'NewTitle', 'newDescription', 3, '2015-03-27 21:18:25', '2015-03-28 03:18:25', NULL),
 (5, 0, 'NewTitle', 'newDescription', 3, '2015-03-27 21:18:48', '2015-03-28 03:18:48', NULL),
@@ -211,7 +201,10 @@ INSERT INTO `pages` (`page_id`, `app_id`, `title`, `description`, `visibility_ty
 (23, 17, 'PRUEBA DE DOMINGO', 'Es solo una prueba', 1, '2015-03-27 22:12:08', '2015-03-28 05:49:50', '2015-03-27 23:49:50'),
 (24, 17, 'PRUEBA DE DOMINGO', 'Es solo una prueba', 1, '2015-03-27 22:12:16', '2015-03-28 05:43:21', '2015-03-27 23:43:21'),
 (25, 17, 'PRUEBA DE DOMINGO', 'Es solo una prueba', 1, '2015-03-27 22:13:00', '2015-03-28 05:49:42', '2015-03-27 23:49:42'),
-(26, 1, 'POWER METER DASHBOARD', 'tetdsagdsatgfea', 1, '2015-06-16 16:39:36', '2015-06-16 22:39:36', NULL);
+(26, 1, 'POWER METER DASHBOARD', 'tetdsagdsatgfea', 1, '2015-06-16 16:39:36', '2015-06-16 22:39:36', NULL),
+(27, 1, 'Pagina 2', 'test', 1, '2015-11-06 12:33:01', '2015-11-06 20:33:01', NULL),
+(28, 1, 'TEST 1233', '1233', 1, '2015-11-06 12:33:29', '2015-11-06 20:33:29', NULL),
+(29, 1, 'TRS', 'TET', 1, '2015-11-07 07:37:40', '2015-11-07 15:37:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -221,16 +214,13 @@ INSERT INTO `pages` (`page_id`, `app_id`, `title`, `description`, `visibility_ty
 
 DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
-  `session_id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` int(11) NOT NULL,
   `account_id` int(11) NOT NULL,
   `token` varchar(200) COLLATE utf8_bin NOT NULL,
   `expiration_datetime` datetime NOT NULL,
   `created_datetime` datetime NOT NULL,
-  `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`session_id`),
-  UNIQUE KEY `token` (`token`),
-  KEY `account_id` (`account_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Client Sessions' AUTO_INCREMENT=139 ;
+  `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Client Sessions';
 
 --
 -- Dumping data for table `sessions`
@@ -361,7 +351,15 @@ INSERT INTO `sessions` (`session_id`, `account_id`, `token`, `expiration_datetim
 (135, 1, 'd0c1515ebad6ab0fd1f78e224b8ab2913079a3b0', '2015-07-02 18:51:57', '2015-07-02 17:39:11', '2015-07-02 23:51:57'),
 (136, 1, '91a377f5fdb4b8494c0cc265304cdbf6498767e0', '2015-07-03 10:59:57', '2015-07-03 09:59:57', '2015-07-03 15:59:57'),
 (137, 1, '2bf8f266c967299c894242ca40db6c4515859e68', '2015-07-03 10:01:33', '2015-07-03 10:01:13', '2015-07-03 16:01:33'),
-(138, 1, 'f36b5541b45d474c60d7b44d7d4725224df6f33b', '2015-07-03 10:01:58', '2015-07-03 10:01:56', '2015-07-03 16:01:58');
+(138, 1, 'f36b5541b45d474c60d7b44d7d4725224df6f33b', '2015-07-03 10:01:58', '2015-07-03 10:01:56', '2015-07-03 16:01:58'),
+(139, 1, '996d34570e2d7299fdb233dd725d46ac4ca4dcd5', '2015-09-09 20:02:15', '2015-09-09 19:02:12', '2015-09-10 02:02:15'),
+(140, 1, '8df7e9085895bbd78da026d59cacd4d642694c37', '2015-10-06 17:35:54', '2015-10-06 16:35:42', '2015-10-06 23:35:54'),
+(141, 1, '3644a199e6a2c1cf7ea7ecc258e2786405315f94', '2015-10-06 17:56:39', '2015-10-06 16:36:48', '2015-10-06 23:56:39'),
+(142, 1, '17dbd8c9becdd754f876d4639bfd303ae21d48f1', '2015-10-06 17:39:30', '2015-10-06 16:39:27', '2015-10-06 23:39:30'),
+(143, 1, '91a0ae57f25ed71fcda16d0ae83e352c61d826c3', '2015-10-06 23:15:10', '2015-10-06 20:43:31', '2015-10-07 05:15:10'),
+(144, 1, '9cbf8c9e13b6d858f9f93ca0e6555a8ac537c96a', '2015-11-06 13:33:57', '2015-11-06 12:14:52', '2015-11-06 20:33:57'),
+(145, 1, '52db7ea263b383c8200283f96da7472dfd0c47eb', '2015-11-06 13:33:29', '2015-11-06 12:32:39', '2015-11-06 20:33:29'),
+(146, 1, '52891072deb8e6441cdb04e5e19ea6c8c91710fe', '2015-11-07 08:42:16', '2015-11-07 07:37:24', '2015-11-07 15:42:16');
 
 -- --------------------------------------------------------
 
@@ -371,24 +369,22 @@ INSERT INTO `sessions` (`session_id`, `account_id`, `token`, `expiration_datetim
 
 DROP TABLE IF EXISTS `vse_data`;
 CREATE TABLE IF NOT EXISTS `vse_data` (
-  `entry_id` int(11) NOT NULL AUTO_INCREMENT,
+  `entry_id` int(11) NOT NULL,
   `app_id` int(11) NOT NULL,
   `vse_label` varchar(50) COLLATE utf8_bin NOT NULL,
   `vse_value` varchar(200) COLLATE utf8_bin NOT NULL,
   `vse_type` varchar(50) COLLATE utf8_bin NOT NULL,
   `vse_annotations` text COLLATE utf8_bin,
   `captured_datetime` datetime NOT NULL,
-  `created_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`entry_id`),
-  KEY `app_id` (`app_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=81 ;
+  `created_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Dumping data for table `vse_data`
 --
 
 INSERT INTO `vse_data` (`entry_id`, `app_id`, `vse_label`, `vse_value`, `vse_type`, `vse_annotations`, `captured_datetime`, `created_datetime`) VALUES
-(2, 1, 'DIRECT pvCloud TEST', '12345', 'NUNMERICO', NULL, '2015-03-18 17:19:47', '2015-03-18 19:42:09'),
+(2, 1, 'DIRECT pvCloud TEST', '{val1:12345,val2:54321}', 'NUNMERICO', NULL, '2015-03-18 17:19:47', '2015-03-18 19:42:09'),
 (3, 1, 'DIRECT pvCloud TEST', '12345', 'NUNMERICO', NULL, '2015-03-18 17:19:47', '2015-03-18 19:42:10'),
 (4, 1, 'DIRECT pvCloud TEST', '12345', 'NUNMERICO', NULL, '2015-03-18 17:19:47', '2015-03-18 19:42:10'),
 (5, 1, 'DIRECT pvCloud TEST', '12345', 'NUNMERICO', NULL, '2015-03-18 17:19:47', '2015-03-18 19:42:11'),
@@ -476,7 +472,7 @@ INSERT INTO `vse_data` (`entry_id`, `app_id`, `vse_label`, `vse_value`, `vse_typ
 
 DROP TABLE IF EXISTS `widgets`;
 CREATE TABLE IF NOT EXISTS `widgets` (
-  `widget_id` int(11) NOT NULL AUTO_INCREMENT,
+  `widget_id` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
   `widget_type_id` int(11) NOT NULL,
   `title` varchar(100) COLLATE utf8_bin NOT NULL,
@@ -485,12 +481,8 @@ CREATE TABLE IF NOT EXISTS `widgets` (
   `order` int(11) NOT NULL,
   `created_datetime` datetime NOT NULL,
   `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `deleted_datetime` datetime DEFAULT NULL,
-  PRIMARY KEY (`widget_id`),
-  KEY `page_id` (`page_id`),
-  KEY `order` (`order`),
-  KEY `widget_type_id` (`widget_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=48 ;
+  `deleted_datetime` datetime DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Dumping data for table `widgets`
@@ -543,7 +535,11 @@ INSERT INTO `widgets` (`widget_id`, `page_id`, `widget_type_id`, `title`, `descr
 (44, 1, 1, 'generic title', 'generic description', 10, 12, '2015-04-16 20:04:10', '2015-04-16 20:04:10', NULL),
 (45, 1, 1, 'generic title', 'generic description', 10, 10, '2015-04-16 20:04:11', '2015-04-16 20:04:11', NULL),
 (46, 1, 1, 'generic title', 'monitor 02', 10, 9, '2015-04-16 20:04:31', '2015-04-16 20:04:31', NULL),
-(47, 16, 1, 'generic title', 'generic description', 10, 1, '2015-04-16 20:12:25', '2015-04-16 20:12:25', NULL);
+(47, 16, 1, 'generic title', 'generic description', 10, 1, '2015-04-16 20:12:25', '2015-04-16 20:12:25', NULL),
+(48, 26, 2, 'TEST', 'WIDGET', 5, 2, '2015-11-06 12:23:38', '2015-11-06 20:23:38', NULL),
+(49, 26, 2, '2ND TEST WIDGET', 'TEST', 5, 1, '2015-11-06 12:26:41', '2015-11-06 20:26:41', NULL),
+(50, 29, 2, 'New Widget', 'Pagina is OK', 5, 2, '2015-11-07 07:40:12', '2015-11-07 15:40:12', NULL),
+(51, 29, 2, 'second widget', 'ok2', 5, 1, '2015-11-07 07:41:59', '2015-11-07 15:41:59', NULL);
 
 -- --------------------------------------------------------
 
@@ -553,7 +549,7 @@ INSERT INTO `widgets` (`widget_id`, `page_id`, `widget_type_id`, `title`, `descr
 
 DROP TABLE IF EXISTS `widget_config`;
 CREATE TABLE IF NOT EXISTS `widget_config` (
-  `widget_config_id` int(11) NOT NULL AUTO_INCREMENT,
+  `widget_config_id` int(11) NOT NULL,
   `widget_id` int(11) NOT NULL,
   `vse_label` varchar(50) COLLATE utf8_bin NOT NULL,
   `simple_object_property` varchar(100) COLLATE utf8_bin NOT NULL,
@@ -561,9 +557,8 @@ CREATE TABLE IF NOT EXISTS `widget_config` (
   `options_json` varchar(500) COLLATE utf8_bin NOT NULL,
   `created_datetime` datetime NOT NULL,
   `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_datetime` datetime DEFAULT NULL,
-  PRIMARY KEY (`widget_config_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=166 ;
+  `deleted_datetime` datetime DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=166 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Dumping data for table `widget_config`
@@ -750,16 +745,15 @@ CREATE TABLE IF NOT EXISTS `widget_config_ispec` (
   `icon_class` varchar(40) COLLATE utf8_bin NOT NULL,
   `color` varchar(10) COLLATE utf8_bin NOT NULL,
   `widget_config_id` int(11) NOT NULL,
-  `ispec_id` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`ispec_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Interpretation Spec' AUTO_INCREMENT=8 ;
+  `ispec_id` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Interpretation Spec';
 
 --
 -- Dumping data for table `widget_config_ispec`
 --
 
 INSERT INTO `widget_config_ispec` (`comparison_operator_cd`, `comparison_value`, `text`, `icon_class`, `color`, `widget_config_id`, `ispec_id`) VALUES
-('=', '30', 'NORMAL', 'gyphicon-ok', '#00FF00', 3, 1),
+('=', '30', 'NORMAL', 'glyphicon-ok', '#00FF00', 3, 1),
 ('<', '30', 'COLD', 'glyphicon-ice-lolly', '#0000FF', 3, 2),
 ('>', '30', 'HOT', 'glyphicon-fire', '#FF0000', 3, 3),
 ('=', 'S', 'STABLE', 'glyphicon-ok', 'GREEN', 2, 4),
@@ -781,8 +775,7 @@ CREATE TABLE IF NOT EXISTS `widget_types` (
   `created_datetime` datetime NOT NULL,
   `modified_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_datetime` datetime DEFAULT NULL,
-  `interpretation_properties` varchar(1000) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`widget_type_id`)
+  `interpretation_properties` varchar(1000) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
@@ -793,3 +786,156 @@ INSERT INTO `widget_types` (`widget_type_id`, `widget_type_name`, `description`,
 (1, 'Display Last Values (Simple Value)', 'Displays last value for given set of value_label''s', '2015-04-07 16:28:44', '2015-04-09 16:33:01', NULL, ''),
 (2, 'Display Last Values (Simple Object)', 'Displays last values out JSON Simple Object for a given set of value label''s', '2015-04-07 16:28:44', '2015-04-09 16:33:28', NULL, ''),
 (3, 'Basic Control Knobs', 'Provides ways for end users to interact and send values to pvCloud that could be consumed by devices or apps as well', '2015-04-08 10:36:56', '2015-04-09 16:34:00', NULL, '');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `accounts`
+--
+ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`account_id`),
+  ADD UNIQUE KEY `account_id` (`account_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `accounts_association`
+--
+ALTER TABLE `accounts_association`
+  ADD PRIMARY KEY (`account_id_host`,`account_id_guest`);
+
+--
+-- Indexes for table `accounts_network`
+--
+ALTER TABLE `accounts_network`
+  ADD PRIMARY KEY (`account_network_id`);
+
+--
+-- Indexes for table `app_registry`
+--
+ALTER TABLE `app_registry`
+  ADD PRIMARY KEY (`app_id`),
+  ADD KEY `app_nickname` (`app_nickname`),
+  ADD KEY `account_id` (`account_id`);
+
+--
+-- Indexes for table `app_visibility_type`
+--
+ALTER TABLE `app_visibility_type`
+  ADD PRIMARY KEY (`visibility_type_id`);
+
+--
+-- Indexes for table `invitations`
+--
+ALTER TABLE `invitations`
+  ADD PRIMARY KEY (`invitation_id`);
+
+--
+-- Indexes for table `pages`
+--
+ALTER TABLE `pages`
+  ADD PRIMARY KEY (`page_id`),
+  ADD KEY `app_id` (`app_id`);
+
+--
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`session_id`),
+  ADD UNIQUE KEY `token` (`token`),
+  ADD KEY `account_id` (`account_id`);
+
+--
+-- Indexes for table `vse_data`
+--
+ALTER TABLE `vse_data`
+  ADD PRIMARY KEY (`entry_id`),
+  ADD KEY `app_id` (`app_id`);
+
+--
+-- Indexes for table `widgets`
+--
+ALTER TABLE `widgets`
+  ADD PRIMARY KEY (`widget_id`),
+  ADD KEY `page_id` (`page_id`),
+  ADD KEY `order` (`order`),
+  ADD KEY `widget_type_id` (`widget_type_id`);
+
+--
+-- Indexes for table `widget_config`
+--
+ALTER TABLE `widget_config`
+  ADD PRIMARY KEY (`widget_config_id`);
+
+--
+-- Indexes for table `widget_config_ispec`
+--
+ALTER TABLE `widget_config_ispec`
+  ADD PRIMARY KEY (`ispec_id`);
+
+--
+-- Indexes for table `widget_types`
+--
+ALTER TABLE `widget_types`
+  ADD PRIMARY KEY (`widget_type_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `accounts`
+--
+ALTER TABLE `accounts`
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `accounts_network`
+--
+ALTER TABLE `accounts_network`
+  MODIFY `account_network_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `app_registry`
+--
+ALTER TABLE `app_registry`
+  MODIFY `app_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
+--
+-- AUTO_INCREMENT for table `app_visibility_type`
+--
+ALTER TABLE `app_visibility_type`
+  MODIFY `visibility_type_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `invitations`
+--
+ALTER TABLE `invitations`
+  MODIFY `invitation_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `pages`
+--
+ALTER TABLE `pages`
+  MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=30;
+--
+-- AUTO_INCREMENT for table `sessions`
+--
+ALTER TABLE `sessions`
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=147;
+--
+-- AUTO_INCREMENT for table `vse_data`
+--
+ALTER TABLE `vse_data`
+  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=81;
+--
+-- AUTO_INCREMENT for table `widgets`
+--
+ALTER TABLE `widgets`
+  MODIFY `widget_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=52;
+--
+-- AUTO_INCREMENT for table `widget_config`
+--
+ALTER TABLE `widget_config`
+  MODIFY `widget_config_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=166;
+--
+-- AUTO_INCREMENT for table `widget_config_ispec`
+--
+ALTER TABLE `widget_config_ispec`
+  MODIFY `ispec_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
