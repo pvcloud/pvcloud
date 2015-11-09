@@ -1,18 +1,13 @@
 angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope, UtilityService, PageService, WidgetService, sessionService, $routeParams, $location) {
     console.log("This is _mycloud_pagesdef controller being invoked");
-
+    $scope.WidgetTypes = [];
     $scope.SetFormDirty = function () {
         $scope.FormIsClean = false;
     };
     
-//TODO to call service
-    $scope.WidgetTypeList ={
-        "widget_types":[
-        {"wname":"Simple Object", "wid":"1"}, 
-        {"wname":"Simple Value", "wid":"2"},
-        {"wname":"KNOB", "wid":"3"}]};
+
     
-  
+
 
 
     $scope.Cancelar = function () {
@@ -166,7 +161,25 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         $scope.AccountID = sessionService.GetCurrentAccountID();
         getDataFromServer();
         $scope.CurrentTab = $scope.Tabs.Basics;
+        getListOfWidgetTypes();
 
+    }
+    
+    
+      function getListOfWidgetTypes() {
+
+        var wsParameters = {
+            account_id: sessionService.GetCurrentAccountID(),
+            token: sessionService.GetCurrentToken(),
+
+        };
+          
+        WidgetService.GetWidgetTypes(wsParameters.account_id, wsParameters.token).$promise.then(function (response) {
+                    $scope.WidgetTypes = response.data;
+                    console.log($scope.WidgetTypes);
+        });
+
+      
 
     }
 

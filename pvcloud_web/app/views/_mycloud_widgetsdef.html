@@ -34,9 +34,9 @@
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
                 <label for="txtType">Tipo de Widget</label>
-                    <select  class="form-control"  data-ng-model="Widget.type" data-ng-change="SetFormDirty()" required>
-                      <option ng-repeat="wt in WidgetTypeList.widget_types" value="{{wt.wid}}">{{wt.wname}}</option>
-                    </select>
+                <select class="form-control"  data-ng-model="Widget.type" data-ng-change="SetFormDirty()" required  ng-options="wt.widget_type_id as wt.widget_type_name for wt in WidgetTypes">
+                    <option value="">Select Widget Type</option>
+                </select>
             </div>
             
              <!-- Widget Type-->
