@@ -24,9 +24,9 @@ angular.module('pvcloudApp').factory('WidgetService', function ($resource, $http
                 title: Widget.title, 
                 description: Widget.description, 
                 page_id: Widget.page_id, 
-                widget_type_id:2, 
+                widget_type_id:Widget.widget_type_id, 
                 order:1, 
-                refresh_frequency_sec:5 
+                refresh_frequency_sec:Widget.frequency
             });
     }
     

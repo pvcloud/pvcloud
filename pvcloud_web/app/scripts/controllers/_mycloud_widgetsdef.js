@@ -2,6 +2,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
     console.log("This is _mycloud_pagesdef controller being invoked");
     $scope.WidgetTypes = [];
     $scope.SetFormDirty = function () {
+        console.log($scope.Widget.widget_type_id);
         $scope.FormIsClean = false;
     };
     
@@ -76,6 +77,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         if ( widgetToSave.page_id > 0) {
             if (widgetToSave.title !== undefined && widgetToSave.title !== "") {
                 if (widgetToSave.description !== undefined && widgetToSave.description !== "") {
+                    console.log("$scope.Widget:", $scope.Widget);
 
                     var account_id = sessionService.GetCurrentAccountID();
                     var token = sessionService.GetCurrentToken();
@@ -176,7 +178,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
           
         WidgetService.GetWidgetTypes(wsParameters.account_id, wsParameters.token).$promise.then(function (response) {
                     $scope.WidgetTypes = response.data;
-                    console.log($scope.WidgetTypes);
+                    //console.log($scope.WidgetTypes);
         });
 
       
