@@ -15,6 +15,15 @@ class be_widget {
 
 }
 
+class be_widgettype {
+
+    public $widget_type_id = 0;
+    public $widget_type_name = "";
+    public $description = "";
+
+
+}
+
 class da_widgets {
 
     /**
@@ -137,7 +146,7 @@ class da_widgets {
 
         $stmt->close();
         
-        da_widgets::reorderWidgets($widget->page_id);
+       // da_widgets::reorderWidgets($widget->page_id);
 
         $insertedWidgetID = $mysqli->insert_id;
         
@@ -232,6 +241,56 @@ class da_widgets {
 
         $retrievedWidget = da_widgets::GetWidget($widget_id);
         return $retrievedWidget;
+    }
+    
+    
+        /**
+     * 
+     * 
+     * @return \be_widgettype
+     */
+    public static function GetWidgetsTypes() {
+        $sqlCommand = "SELECT widget_type_id, widget_type_name, description"
+                . " FROM widget_types "
+                . " WHERE deleted_datetime is null ";
+     
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+      
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+        
+        $widgetTypeEntry = new be_widgettype();
+
+        $stmt->bind_result(
+                $widgetTypeEntry->widget_type_id, $widgetTypeEntry->widget_type_name, $widgetTypeEntry->description);
+
+        $arrayResult = [];
+        while ($stmt->fetch()) {
+            $arrayResult[] = json_decode(json_encode($widgetTypeEntry));
+        }
+
+
+
+
+       
+
+        $stmt->close();
+
+        return $arrayResult;
     }
 
 }
