@@ -118,5 +118,31 @@
         "title": "Data Tools",
         "description": "In this section tools will be provided to surf and analize application data.",
         "download": "Download CSV"
+    },
+    "_mycloud_pagesdef_widgets":{
+        "filter":"Type one ore more words to filter",
+        "name_description": "Name and Description",
+        "add_widget":"Add Widget",
+        "no_widget":"No widgets defined"
+        
+    
+    
+    },
+    "_mycloud_widgetsdef":{
+        "title":"Title",
+        "description": "Description",
+        "widget_type":"Widget Type",
+        "frequency":"Frequency",
+        "save":"Save",
+        "backtopage":"Go back to the Page",
+        "phtitle":"Type here the title of your widget",
+        "phdes":"Describe briefly your widget",
+        "phwidgettype":"Select your widget type",
+        "phfrequency":"Type here the widget's frequency",
+        "cancel":"Cancel",
+        "delete":"Delete"
+        
+    
+    
     }
 }
