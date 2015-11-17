@@ -107,7 +107,20 @@
 
     },
     "_mycloud_pagesdef": {
-        "title": "Título"
+        "title": "Título",
+        "description":"Descripción",
+        "visibility": "Visibilidad",
+        "private": "privado",
+        "public": "Público",
+        "shared": "Compartido",
+        "save": "Guardar",
+        "delete" : "Eliminar",
+        "pagedef":"Definición de Página",
+        "backtoapp": "Regresar al App",
+        "cancel": "cancelar",
+        "phtitle": "Digite aquí el título de la página",
+        "phdescription" : "Describa brevemente su app"
+        
     },
     "_mycloud_myapps_data_pages": {
         "title": "Herramientas de Datos",

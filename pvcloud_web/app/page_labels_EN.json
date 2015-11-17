@@ -100,7 +100,19 @@
         "place_holder": "Type one or more words to filter the list"
     },
     "_mycloud_pagesdef": {
-        "title": "Title"
+        "title": "Title",
+        "description":"Description",
+        "visibility": "Visibility",
+        "private": "Private",
+        "public": "Public",
+        "shared": "Shared",
+        "save": "Save",
+        "delete" : "Delete",
+        "pagedef":"Page Definition" ,
+        "backtoapp": "Back to App",
+        "cancel": "Cancel",
+        "phtitle": "Type here your page title",
+        "phdescription" : "Describe briefly your app"
     },
     "_mycloud_myapps_data_pages": {
         "title": "Data Tools",
