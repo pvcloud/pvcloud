@@ -1,5 +1,10 @@
+/**
+ * node pvcloud_api.js action=add_value value="abc 123" label="pvCloud_TEST" type="ALPHA OR WATEVER"
+ */
+
 var request = require('request');
 var fs = require('fs');
+
 var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
     var DEBUG = false;
     var pvCloudAPI = function () {
@@ -552,3 +557,5 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         GetValues: pvCloud_GetValues
     };
 };
+exports.API = pvCloudModule(47, '5607f89df41ac017a699e28cd84a9ee354406d59', 26, 'https://costaricamakers.com/pvcloud_pre/backend/');
+
