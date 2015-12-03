@@ -320,7 +320,9 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 pvCloudAPI.Write(parameters.label, parameters.value, parameters.type, parameters.captured_datetime);
                 break;
             case "post_file":
-                pvCloudAPI.PostFile(parameters.label, parameters.file_path, parameters.captured_datetime);
+                console.log("PARAMETERS");
+                console.log(parameters);
+                pvCloudAPI.PostFile(parameters.label, parameters.filepath, parameters.captured_datetime);
                 break;
             case "read":
                 pvCloudAPI.Read(parameters.label);
@@ -561,7 +563,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
 
 
 
-    function requestWrapperPost(url, successCallback, errorCallback, finallyCallback, value, path, captured_datetime) {
+    function requestWrapperPost(url, successCallback, errorCallback, finallyCallback, label, path, captured_datetime) {
         log("requestWrapper()");
         log("URL: ");
         log(url);
@@ -569,11 +571,10 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         if (parameters.async) {
             resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
         }
-
         var formData = {
-            vse_label: value,
+            vse_label: label,
             captured_datetime: captured_datetime,
-            my_buffer: fs.createReadStream(path)
+            fileToUpload: fs.createReadStream(path)
         };
 
 
