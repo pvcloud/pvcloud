@@ -4,8 +4,7 @@ dist
 .sass-cache
 bower_components
 /bower_components/
-/nbproject/private/
-/nbproject/
+nbproject
 /pvcloud.zip
 /pvcloud_backend/
 /jn-dev-workspace/
