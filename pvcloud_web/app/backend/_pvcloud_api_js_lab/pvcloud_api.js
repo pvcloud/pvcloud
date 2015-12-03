@@ -48,17 +48,17 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
              */
             PostFile: function (label, file_path, captured_datetime, successCallback, errorCallback, finallyCallback) {
                 log("consoleAPI.PostFile('" + label + "','" + file_path + "','" + captured_datetime + "')");
-                
-                var wsURL = baseURL +="vse_add_file.php";
+
+                var wsURL = baseURL += "vse_add_file.php";
                 log(wsURL);
 
                 log("CALLING REQUEST WRAPPER POST--------------------------------------------");
                 requestWrapperPost(wsURL, successCallback, errorCallback, finallyCallback, label, file_path, captured_datetime);
-                
-                
-                
-                
-                
+
+
+
+
+
             },
             /**
              * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
@@ -202,7 +202,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 log("VALIDATE PARAMS: write");
 
                 if (parameters.label === undefined) {
-                    return("PVCLOUD_ERR: MISSING LABEL");
+                    return ("PVCLOUD_ERR: MISSING LABEL");
                 }
 
                 if (parameters.value === undefined) {
@@ -356,7 +356,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         console.log(result);
     }
 
-    function    resultToFile(tag, result) {
+    function resultToFile(tag, result) {
         if (!tag)
             tag = "any";
 
@@ -558,10 +558,10 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 finallyCallback(response, body, error);
         });
     }
-    
-    
-    
-      function requestWrapperPost(url, successCallback, errorCallback, finallyCallback, value, path, captured_datetime) {
+
+
+
+    function requestWrapperPost(url, successCallback, errorCallback, finallyCallback, value, path, captured_datetime) {
         log("requestWrapper()");
         log("URL: ");
         log(url);
@@ -569,15 +569,15 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         if (parameters.async) {
             resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
         }
-          
+
         var formData = {
-          vse_label: value,
-          captured_datetime : captured_datetime,
-          my_buffer: fs.createReadStream(path)
+            vse_label: value,
+            captured_datetime: captured_datetime,
+            my_buffer: fs.createReadStream(path)
         };
-          
-          
-        request.post({url:url, formData: formData}, function (error, response, body) {
+
+
+        request.post({ url: url, formData: formData }, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
                 if (successCallback)
@@ -650,4 +650,3 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
     };
 };
 exports.API = pvCloudModule(47, '5607f89df41ac017a699e28cd84a9ee354406d59', 26, 'https://costaricamakers.com/pvcloud_pre/backend/');
-
