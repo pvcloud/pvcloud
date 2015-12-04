@@ -40,7 +40,7 @@
             <div class="panel-quicklinks">
                 <button data-ng-click="GoToNewApp()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; "><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_new_app}}</button>
                 <br>
-                <button data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_invite_a_friend}}</button>
+                <button data-ng-disabled="InviteAFriendDisabled" data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_invite_a_friend}}</button>
                 <br>
                 <button data-ng-click="Logout()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_logout}}</button>
             </div>
