@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title></title>
-    </head>
-    <body>
-        <?php
-        phpinfo();
-        ?>
-    </body>
-</html>
+<?php
+require 'vendor/autoload.php';
+
+$app = new \Slim\Slim();
+
+
+$app->get('/hello/:name', function ($name) {
+    echo "Hello, $name";
+});
+
+
+$app->run();

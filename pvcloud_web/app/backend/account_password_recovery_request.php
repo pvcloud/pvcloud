@@ -63,7 +63,6 @@ class WebServiceClass {
         $headers = "From: donotreply@costaricamakers.com $enter";
         $headers .= "MIME-Version: 1.0 $enter";
         $headers .= "Content-type: text/plain; charset=utf-8 $enter";
-
         $result = mail($to, $subject, $message, $headers);
     }
 

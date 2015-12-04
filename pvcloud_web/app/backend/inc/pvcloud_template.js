@@ -1,7 +1,3 @@
-/**
- * node pvcloud_api.js action=add_value value="abc 123" label="pvCloud_TEST" type="ALPHA OR WATEVER"
- */
-
 var request = require('request');
 var fs = require('fs');
 var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
@@ -34,6 +30,19 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
 
                 log("CALLING REQUEST WRAPPER--------------------------------------------");
                 requestWrapper(wsURL, successCallback, errorCallback, finallyCallback);
+            },
+            /**
+             * Post File Mechanism
+             * @param {type} label
+             * @param {type} file_path
+             * @param {type} captured_datetime
+             * @param {type} successCallback
+             * @param {type} errorCallback
+             * @param {type} finallyCallback
+             * @returns {undefined}
+             */
+            PostFile: function (label, file_path, captured_datetime, successCallback, errorCallback, finallyCallback) {
+                log("consoleAPI.PostFile('" + label + "','" + file_path + "','" + captured_datetime + "')");
             },
             /**
              * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
@@ -171,6 +180,8 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
     function validateParameters() {
         var action = parameters.action;
         switch (action) {
+            case "post_file":
+                break;
             case "write":
                 log("VALIDATE PARAMS: write");
 
@@ -274,14 +285,16 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         var errorLogFilePath = parameters.error_log_file || "/error_pvcloud.log";
         log(errorLogFilePath);
 
-        fs.appendFile(errorLogFilePath, message, function (err) {
-            if (err) {
-                console.log(err);
-                console.log("ERROR @ errorLog()");
-                console.log("Try adding an error_log_file parameter");
-                console.log(err);
-            }
-        });
+        /**
+         fs.appendFile(errorLogFilePath, message, function (err) {
+         if (err) {
+         console.log(err);
+         console.log("ERROR @ errorLog()");
+         console.log("Try adding an error_log_file parameter");
+         console.log(err);
+         }
+         });
+         */
 
     }
 
@@ -290,15 +303,12 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
             case "write":
                 pvCloudAPI.Write(parameters.label, parameters.value, parameters.type, parameters.captured_datetime);
                 break;
+            case "post_file":
+                pvCloudAPI.PostFile(parameters.label, parameters.file_path, parameters.captured_datetime);
+                break;
             case "read":
                 pvCloudAPI.Read(parameters.label);
                 break;
-            case "read_list":
-                //TODO: IMPLEMENT READ LIST
-                break;    
-            case "delete":
-                pvCloud_ClearValues(parameters.label);
-                break;            
             case "check":
                 pvCloudAPI.Check(parameters.label);
                 break;
@@ -339,19 +349,21 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         log("WRITING TO FILE...");
 
         try {
-            var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
-            log(resultFile);
-            var stream = fs.createWriteStream(resultFile);
-            stream.once('open', function (fd) {
-                try {
-                    stream.write(result);
-                    stream.end();
-                    stream.close();
-                    log("FS END REACHED!");
-                } catch (ex) {
-                    errorLog(ex);
-                }
-            });
+            /*
+             var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
+             log(resultFile);
+             var stream = fs.createWriteStream(resultFile);
+             stream.once('open', function (fd) {
+             try {
+             stream.write(result);
+             stream.end();
+             stream.close();
+             log("FS END REACHED!");
+             } catch (ex) {
+             errorLog(ex);
+             }
+             });
+             */
             log("END OF resultToFile()");
         } catch (ex) {
             errorLog(ex);

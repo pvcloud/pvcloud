@@ -10,7 +10,7 @@
 
     <!-- TABS -->
     <ul data-ng-show="PageID!=='new'" class="nav nav-tabs" data-ng-class="{'nav-justified':PageID != undefined}">
-        <li role="presentation" data-ng-show="PageID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Página</a></li>
+        <li role="presentation" data-ng-show="PageID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">{{PageLabels._mycloud_pagesdef.title}}</a></li>
         <li role="presentation" data-ng-show="PageID" data-ng-class="{active:CurrentTab == Tabs.Widgets}"><a data-ng-click="SwitchToTab(Tabs.Widgets)">Widgets</a></li>
     </ul>
 
@@ -21,30 +21,30 @@
             <!-- TITLE -->
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Name"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Name}}</span>
-                <label for="txtTitulo">{{PageLabels.title}}</label>
-                <input type="text" class="form-control" id="txtTitulo" placeholder="Digite aquí el título de la página." data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
+                <label for="txtTitulo">{{PageLabels._mycloud_pagesdef.title}}</label>
+                <input type="text" class="form-control" id="txtTitulo" placeholder="{{PageLabels._mycloud_pagesdef.phtitle}}" data-ng-change="SetFormDirty()" data-ng-model="PageTitle">
             </div>
 
             <!-- DESCRIPTION -->
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
-                <label for="txtDescripcion">Descripción</label>
-                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="Describa brevemente su app" rows="4" data-ng-model="PageDescription"></textarea>
+                <label for="txtDescripcion">{{PageLabels._mycloud_pagesdef.description}}</label>
+                <textarea data-ng-change="SetFormDirty()" class="form-control" id="txtDescripcion" placeholder="{{PageLabels._mycloud_pagesdef.phtitle}}" rows="4" data-ng-model="PageDescription"></textarea>
             </div>
             
             <!-- VISIBILITY -->
             <div class="form-group">
-                <label for="selVisibility">Visibilidad</label>
+                <label for="selVisibility">{{PageLabels._mycloud_pagesdef.visibility}}</label>
                 <select data-ng-change="SetFormDirty()" class="form-control" id="selVisbility" data-ng-model="PageVisibility">
-                    <option selected value="1">Privado</option>
-                    <option value="2">Compartido</option>
-                    <option value="3">Público</option>
+                    <option selected value="1">{{PageLabels._mycloud_pagesdef.private}}</option>
+                    <option value="2">{{PageLabels._mycloud_pagesdef.shared}}</option>
+                    <option value="3">{{PageLabels._mycloud_pagesdef.public}}</option>
                 </select>
             </div>               
 
-            <button class="btn btn-success" data-ng-click="SaveContent()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;Guardar</button>
-            <button class="btn btn-danger" data-ng-if="content_id" data-ng-click="DeleteContent()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;Eliminar</button>
-            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?'Regresar al App':'Cancelar'}}</button>          
+            <button class="btn btn-success" data-ng-click="SavePage()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;{{PageLabels._mycloud_pagesdef.save}}</button>
+            <button class="btn btn-danger" data-ng-if="content_id" data-ng-click="DeleteContent()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;{{PageLabels._mycloud_pagesdef.delete}}</button>
+            <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?PageLabels._mycloud_pagesdef.backtoapp:PageLabels._mycloud_pagesdef.cancel}}</button>          
         </form>        
     </div>
     
