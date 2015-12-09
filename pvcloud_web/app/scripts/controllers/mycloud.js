@@ -9,7 +9,7 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
     $scope.Logout = logout;
     $scope.GoToNewApp = gotoNewApp;
     $scope.GoToInviteAFriend = goToInviteAFriend;
-    $scope.InviteAFriendDisabled = true;
+    $scope.InviteAFriendDisabled = false;
 
     LabelsService.GetLabels(function (labels) {
         $rootScope.PageLabels = labels;
@@ -63,7 +63,7 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
             case "about":
                 $scope.SectionURL = "views/about.html";
                 break;
-                
+
             case "inviteafriend":
                 $scope.SectionURL = "views/_mycloud_inviteafriend.html";
                 break;
