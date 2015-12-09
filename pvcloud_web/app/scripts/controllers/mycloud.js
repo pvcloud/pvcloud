@@ -9,6 +9,7 @@ angular.module('pvcloudApp').controller('MyCloudCtrl', function ($scope, LabelsS
     $scope.Logout = logout;
     $scope.GoToNewApp = gotoNewApp;
     $scope.GoToInviteAFriend = goToInviteAFriend;
+    $scope.InviteAFriendDisabled = true;
 
     LabelsService.GetLabels(function (labels) {
         $rootScope.PageLabels = labels;
