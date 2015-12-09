@@ -1,29 +1,29 @@
 {
-    "name": "pvcloud_cli",
-    "version": "1.0.17",
-    "description": "pvCloud Utility. This provides all services needed to connect to a pvcloud service and interact with it.",
-    "main": "index.js",
-    "scripts": {
-        "test": "pvcloud --version"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/janunezc/pvcloud.git"
-    },
-    "keywords": [
-        "pvcloud",
-        "iot"
-    ],
-    "author": "Jose Nunez <jose.nunez@intel.com>",
-    "license": "MIT",
-    "bin": {
-        "pvcloud": "index.js"
-    },
-    "bugs": {
-        "url": "https://github.com/janunezc/pvcloud/issues"
-    },
-    "homepage": "https://github.com/janunezc/pvcloud#readme",
-    "dependencies": {
-        "request": "^2.67.0"
-    }
+  "name": "pvcloud_cli",
+  "version": "1.0.22",
+  "description": "pvCloud Utility. This provides all services needed to connect to a pvcloud service and interact with it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "pvcloud --version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janunezc/pvcloud.git"
+  },
+  "keywords": [
+    "pvcloud",
+    "iot"
+  ],
+  "author": "Jose Nunez <jose.nunez@intel.com>",
+  "license": "MIT",
+  "bin": {
+    "pvcloud": "index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/janunezc/pvcloud/issues"
+  },
+  "homepage": "https://github.com/janunezc/pvcloud#readme",
+  "dependencies": {
+    "request": "^2.67.0"
+  }
 }
