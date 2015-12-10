@@ -47,12 +47,11 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
              * @returns {undefined}
              */
             PostFile: function (label, file_path, captured_datetime, successCallback, errorCallback, finallyCallback) {
-                log("consoleAPI.PostFile('" + label + "','" + file_path + "','" + captured_datetime + "')");
-
                 var wsURL = baseURL += "vse_add_file.php";
                 log(wsURL);
 
                 log("CALLING REQUEST WRAPPER POST--------------------------------------------");
+                
                 requestWrapperPost(wsURL, successCallback, errorCallback, finallyCallback, label, file_path, captured_datetime);
 
 
@@ -320,9 +319,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 pvCloudAPI.Write(parameters.label, parameters.value, parameters.type, parameters.captured_datetime);
                 break;
             case "post_file":
-                console.log("PARAMETERS");
-                console.log(parameters);
-                pvCloudAPI.PostFile(parameters.label, parameters.filepath, parameters.captured_datetime);
+                pvCloudAPI.PostFile(parameters.label, parameters.file_path, parameters.captured_datetime);
                 break;
             case "read":
                 pvCloudAPI.Read(parameters.label);
@@ -561,8 +558,6 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         });
     }
 
-
-
     function requestWrapperPost(url, successCallback, errorCallback, finallyCallback, label, path, captured_datetime) {
         log("requestWrapper()");
         log("URL: ");
@@ -571,12 +566,18 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         if (parameters.async) {
             resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
         }
+        
+        var fileRead = fs.createReadStream(path);
+        
         var formData = {
             vse_label: label,
             captured_datetime: captured_datetime,
-            fileToUpload: fs.createReadStream(path)
+            app_id: app_id,
+            account_id: account_id,
+            api_key: api_key,
+            fileToUpload: fileRead
+           
         };
-
 
         request.post({ url: url, formData: formData }, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
