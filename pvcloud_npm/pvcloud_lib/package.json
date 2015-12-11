@@ -23,5 +23,8 @@
   "homepage": "https://github.com/janunezc/pvcloud#readme",
   "dependencies": {
     "request": "^2.67.0"
+  },
+  "devDependencies": {
+    "karma": "^0.13.15"
   }
 }
