@@ -1,5 +1,10 @@
+/**
+ * node pvcloud_api.js action=add_value value="abc 123" label="pvCloud_TEST" type="ALPHA OR WATEVER"
+ */
+
 var request = require('request');
 var fs = require('fs');
+
 var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
     var DEBUG = false;
     var pvCloudAPI = function () {
@@ -42,7 +47,17 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
              * @returns {undefined}
              */
             PostFile: function (label, file_path, captured_datetime, successCallback, errorCallback, finallyCallback) {
-                log("consoleAPI.PostFile('" + label + "','" + file_path + "','" + captured_datetime + "')");
+                var wsURL = baseURL += "vse_add_file.php";
+                log(wsURL);
+
+                log("CALLING REQUEST WRAPPER POST--------------------------------------------");
+
+                requestWrapperPost(wsURL, successCallback, errorCallback, finallyCallback, label, file_path, captured_datetime);
+
+
+
+
+
             },
             /**
              * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
@@ -181,12 +196,32 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         var action = parameters.action;
         switch (action) {
             case "post_file":
+                log("VALIDATE PARAMS: post_file");
+
+                if (parameters.label === undefined) {
+                    return ("PVCLOUD_ERR: MISSING LABEL");
+                }
+
+                if (parameters.file_path === undefined) {
+                    return ("PVCLOUD_ERR: MISSING FILE PATH (file_path)");
+                }
+
+                if (parameters.captured_datetime === undefined) {
+                    parameters.captured_datetime = getFormattedDateTime();
+                } else {
+                    var pattern01 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2})/;
+                    var pattern02 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2}):(\d)/;
+                    if (!parameters.captured_datetime.match(pattern01) && !parameters.captured_datetime.match(pattern02)) {
+                        return "PVCLOUD_ERR: WRONG PATTERN IN CAPTURED DATETIME";
+                    }
+                }
+
                 break;
             case "write":
                 log("VALIDATE PARAMS: write");
 
                 if (parameters.label === undefined) {
-                    return("PVCLOUD_ERR: MISSING LABEL");
+                    return ("PVCLOUD_ERR: MISSING LABEL");
                 }
 
                 if (parameters.value === undefined) {
@@ -340,7 +375,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         console.log(result);
     }
 
-    function    resultToFile(tag, result) {
+    function resultToFile(tag, result) {
         if (!tag)
             tag = "any";
 
@@ -481,6 +516,90 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
             resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
         }
         request(url, function (error, response, body) {
+            if (!error && response && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
+                if (successCallback)
+                    successCallback(response, body, error);
+                else {
+                    if (parameters.async) {
+                        try {
+                            var bodyObject = JSON.parse(body);
+                            var value = bodyObject.vse_value;
+                            OutputResult(value);
+                        } catch (ex) {
+                            errorLog("ASYNC CALL COULD NOT PARSE RESULT");
+                            errorLog(ex);
+                            OutputResult("PVCLOUD_ERROR");
+                        }
+                    } else {
+                        OutputResult(body);
+                    }
+                }
+
+            } else if (response && response.statusCode) {
+                log("WRONG STATUS CODE:---------------------------------------------");
+                log(response.statusCode);
+                log("RESPONSE!!!----------------------------------------------");
+                log(response);
+
+                errorLog("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
+
+                if (errorCallback) {
+                    errorCallback(response, body, error);
+                } else {
+                    OutputResult("PVCLOUD_ERROR");
+                }
+
+            } else if (error) {
+                log("ERROR:------------------------------------------------");
+                log(error);
+                log("PVCLOUD ERROR PROCESSING:-----------------------------");
+                errorLog(error);
+
+                if (errorCallback)
+                    errorCallback(response, body, error);
+                else {
+                    OutputResult("PVCLOUD_ERROR");
+
+                }
+            } else {
+                log("UNKNOWN FAILURE:---------------------------------------");
+                log(error);
+                errorLog(response);
+
+                if (errorCallback)
+                    errorCallback(response, body, error);
+                else
+                    OutputResult("PVCLOUD_FAILURE");
+            }
+
+            if (finallyCallback)
+                finallyCallback(response, body, error);
+        });
+    }
+
+    function requestWrapperPost(url, successCallback, errorCallback, finallyCallback, label, path, captured_datetime) {
+        log("requestWrapper()");
+        log("URL: ");
+        log(url);
+
+        if (parameters.async) {
+            resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
+        }
+
+        var fileRead = fs.createReadStream(path);
+
+        var formData = {
+            vse_label: label,
+            captured_datetime: captured_datetime,
+            app_id: app_id,
+            account_id: account_id,
+            api_key: api_key,
+            fileToUpload: fileRead
+
+        };
+
+        request.post({url: url, formData: formData}, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
                 if (successCallback)

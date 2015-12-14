@@ -51,7 +51,7 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
                 log(wsURL);
 
                 log("CALLING REQUEST WRAPPER POST--------------------------------------------");
-                
+
                 requestWrapperPost(wsURL, successCallback, errorCallback, finallyCallback, label, file_path, captured_datetime);
 
 
@@ -196,6 +196,26 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         var action = parameters.action;
         switch (action) {
             case "post_file":
+                log("VALIDATE PARAMS: post_file");
+
+                if (parameters.label === undefined) {
+                    return ("PVCLOUD_ERR: MISSING LABEL");
+                }
+
+                if (parameters.file_path === undefined) {
+                    return ("PVCLOUD_ERR: MISSING FILE PATH (file_path)");
+                }
+
+                if (parameters.captured_datetime === undefined) {
+                    parameters.captured_datetime = getFormattedDateTime();
+                } else {
+                    var pattern01 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2})/;
+                    var pattern02 = /(\d{4})-(\d{2})-(\d{2})\+(\d{2}):(\d{2}):(\d)/;
+                    if (!parameters.captured_datetime.match(pattern01) && !parameters.captured_datetime.match(pattern02)) {
+                        return "PVCLOUD_ERR: WRONG PATTERN IN CAPTURED DATETIME";
+                    }
+                }
+
                 break;
             case "write":
                 log("VALIDATE PARAMS: write");
@@ -566,9 +586,9 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         if (parameters.async) {
             resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
         }
-        
+
         var fileRead = fs.createReadStream(path);
-        
+
         var formData = {
             vse_label: label,
             captured_datetime: captured_datetime,
@@ -576,10 +596,10 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
             account_id: account_id,
             api_key: api_key,
             fileToUpload: fileRead
-           
+
         };
 
-        request.post({ url: url, formData: formData }, function (error, response, body) {
+        request.post({url: url, formData: formData}, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
                 if (successCallback)
