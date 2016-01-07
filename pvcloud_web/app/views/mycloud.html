@@ -40,9 +40,11 @@
             <div class="panel-quicklinks">
                 <button data-ng-click="GoToNewApp()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; "><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_new_app}}</button>
                 <br>
-                <button data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_invite_a_friend}}</button>
+                <button data-ng-click="GoToInviteAFriend()" class="btn btn-lg btn-transparent" data-toggle="modal" data-target="#myModal" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_invite_a_friend}}</button>
                 <br>
-                <button data-ng-click="Logout()" class="btn btn-lg btn-transparent" style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_logout}}</button>
+                <button data-ng-click="Logout()" class="btn btn-lg btn-transparent"  style="display:block;margin: 0 auto; width: 200px"><i class="glyphicon glyphicon-log-out"></i>&nbsp;&nbsp;{{PageLabels.mycloud.quick_links_logout}}</button>
+                <!-- Large modal -->
+
             </div>
         </div>
 
@@ -60,5 +62,35 @@
     </div>
 </div>
 
+<!--BEGIN MODAL-->
+<div data-ng-controller="_mycloud_inviteafriend" >
+    <form class="form-inline">
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Would you like to invite a friend?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-5">													
+                                <div class="form-group">
+                                    <label for="EmailInput">Enter the email:</label>
+                                    <input type="email" class="form-control invite-a-friend-email" id="EmailInput" placeholder="email@example.com" data-ng-model="guest_email" required>
+                                </div>		
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                        <button type="button" data-ng-click="SendInvitation()" class="btn btn-success">Send invitation</button>	
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--END MODAL-->
 <!-- FOOTER -->
 <div class="footer">Brought to you by <a href="http://costaricamakers.com">costaricamakers.com</a></div>

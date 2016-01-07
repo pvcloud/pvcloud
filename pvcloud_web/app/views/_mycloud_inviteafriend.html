@@ -5,8 +5,8 @@
     <form class="form-inline">
         <div class="form-group">
             <label for="EmailInput">Email</label>
-            <input type="email" class="form-control invite-a-friend-email" id="EmailInput" placeholder="email@example.com" required>
+            <input type="email" class="form-control invite-a-friend-email" id="EmailInput" placeholder="email@example.com" required data-ng-model="guest_email">
         </div>
-        <button type="submit" class="btn btn-success">Send invitation</button>
+        <button type="submit" data-ng-click="SendInvitation()" class="btn btn-success">Send invitation</button>
     </form>
 </div>

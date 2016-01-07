@@ -72,6 +72,7 @@ class AddInvitationWebService {
         $decodedPOSTParams = json_decode($rawPOSTContent);
 
         $parameters = new stdClass();
+        $parameters->account_id = $decodedPOSTParams->account_id;
         $parameters->host_email = $decodedPOSTParams->invitation->host_email;
         $parameters->guest_email = $decodedPOSTParams->invitation->guest_email;
 
@@ -88,12 +89,16 @@ class AddInvitationWebService {
         if (!is_string($parameters->guest_email) || $parameters->guest_email == "") {
             $errorsFound[] = "Correo electrónico del invitado es inválido.";
         }
+        if ($parameters->host_email == $parameters->guest_email) {
+            $errorsFound[] = "No se pueden enviar invitaciones al mismo correo del usuario.";
+        }
+        
 
         return $errorsFound;
     }
 
     private static function saveInvitation($parameters) {
-        return da_invitation::AddNewInvitation($parameters->host_email, $parameters->guest_email);
+        return da_invitation::AddNewInvitation($parameters->account_id,$parameters->host_email, $parameters->guest_email);
     }
 
 }
