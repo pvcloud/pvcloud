@@ -1,3 +1,15 @@
 /nbproject/private/
 /pvcloud_arduino_library/nbproject/private/
 *.cpp~
+/bower_components/
+node_modules
+/app
+
+
+
+
+
+vse_files
+/pvcloud_web/app/backend/nbproject/private/
+nbproject
+/pvcloud/node_modules/

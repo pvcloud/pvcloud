@@ -3,8 +3,8 @@ dist
 .tmp
 .sass-cache
 bower_components
-/nbproject/private/
-/nbproject/
+/bower_components/
+nbproject
 /pvcloud.zip
 /pvcloud_backend/
 /jn-dev-workspace/

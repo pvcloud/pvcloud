@@ -107,11 +107,50 @@
 
     },
     "_mycloud_pagesdef": {
-        "title": "Título"
+        "title": "Título",
+        "description":"Descripción",
+        "visibility": "Visibilidad",
+        "private": "privado",
+        "public": "Público",
+        "shared": "Compartido",
+        "save": "Guardar",
+        "delete" : "Eliminar",
+        "pagedef":"Definición de Página",
+        "backtoapp": "Regresar al App",
+        "cancel": "cancelar",
+        "phtitle": "Digite aquí el título de la página",
+        "phdescription" : "Describa brevemente su app"
+        
     },
     "_mycloud_myapps_data_pages": {
         "title": "Herramientas de Datos",
         "description": "En esta sección se suministran herramientas para navegar y analizar los datos de la aplicación.",
         "download": "Descargar CSV"
+    },
+    "_mycloud_pagesdef_widgets":{
+        "filter":"Digite una o más palabras para filtrar la lista",
+        "name_description": "Nombre y Descripción",
+        "add_widget":"Agregar Widget",
+        "no_widget":"No hay widgets definidos"
+        
+    
+    
+    },
+    "_mycloud_widgetsdef":{
+        "title":"Título",
+        "description": "Descripción",
+        "widget_type":"Tipo de Widget",
+        "frequency":"Frecuencia",
+        "save":"Guardar",
+        "backtopage":"Regresar a la pagina",
+        "phtitle":"Digite aquí el título del widget",
+        "phdes":"Describa brevemente su widget",
+        "phwidgettype":"Seleccione el tipo de widget",
+        "phfrequency":"Digite aquí la frecuencia del widget",
+        "cancel":"Cancel",
+        "delete":"Borrar"
+        
+    
+    
     }
 }

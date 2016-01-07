@@ -7,9 +7,9 @@
  */
 class DAConf {
     public static $databaseURL = "localhost";
-    public static $databaseUName = "root"; ///i.e.: root .. WAIT! do not use root!
+    public static $databaseUName = ""; ///i.e.: root .. WAIT! do not use root!
     public static $databasePWord = ""; //i.e.: 1234
-    public static $databaseName = "pvcloud"; //i.e.: pvcloud
+    public static $databaseName = ""; //i.e.: pvcloud
 }
 
 //VVVVV   UNCOMMENT THESE LINES FOR Cloud9 ENVIRONMENT VVV
