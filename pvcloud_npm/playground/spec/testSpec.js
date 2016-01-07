@@ -5,6 +5,6 @@ index.iLib.hello();
 
 describe("iLib Library", function () {
     it("can say hello", function () {
-        expect(1).toBe(0);
+        expect(1).toBe(1+0);
     });
 });
