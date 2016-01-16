@@ -23,11 +23,12 @@ describe("pvCloud API Object", function () {
     });
 });
 
-describe("pvCloud Library Async WRITE Call", function () {
+describe("pvCloud Library Async WRITE Call.", function () {
     info("");
     info("WRITE CALL TEST");
     var callResponse;
-    beforeEach(function (done) {
+    it("should be able to make WRITE Async Call and pass through FINALLY callback", function (done) {
+
         var baseURL = "https://costaricamakers.com/pvcloud_pre/backend/";
         var account_id = 5;
         var app_id = 9;
@@ -53,7 +54,7 @@ describe("pvCloud Library Async WRITE Call", function () {
         pvcloud.Write(baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, debugOption);
     });
 
-    it("should be able to get a defined response", function (done) {
+    it("returns proper data", function () {
         expect(callResponse).not.toBe(undefined);
         expect(callResponse.body).not.toBe(undefined);
 
@@ -64,10 +65,8 @@ describe("pvCloud Library Async WRITE Call", function () {
         info(data);
         expect(data.entry_id).toBeGreaterThan(1);
 
-        done();
     });
 });
-
 
 function info(value) {
     console.log(value);
