@@ -1,44 +1,119 @@
 (function () {
     var request = require("request");
     var fs = require('fs');
-    var parameters = {
-        async: false
+
+    var options = {
+        DEBUG: true,
+        ERROR_LOG_FILE: "error_pvcloud.log",
+        NO_WAIT_STATUS_BASE_FILE: "status_pvcloud_", /*to be completed with label_operation*/
+        NO_WAIT_RESULT_BASE_FILE: "result_pvcloud_" /*to be completed with label_operation*/
     };
 
-    var DEBUG = false;
+    var pvCloudAPI = {
+        test: function () {
+            return "SIMPLE SMOKE TEST";
+        },
+        /**
+         * Sends a value "asynchronously" using the file-based mechanism. 
+         * @param {string} baseURL 
+         * @param {int} account_id
+         * @param {int} app_id
+         * @param {int} api_key
+         * @param {string} label
+         * @param {string, integer, long, json simple object} value
+         * @param {string} type
+         * @param {datetime} captured_datetime
+         * @param {function} successCallback
+         * @param {function} errorCallback
+         * @param {function} finallyCallback
+         * @param {boolean} no_wait
+         * @param {boolean} debug
+         * @returns {undefined}
+         */
+        Write: function (baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, no_wait, debug) {
+            options.DEBUG = debug;
+
+            var wsURL = baseURL;
+            wsURL += "vse_add_value.php";
+            wsURL += '?app_id=' + app_id;
+            wsURL += '&api_key=' + api_key;
+            wsURL += '&account_id=' + account_id;
+            wsURL += '&label=' + label;
+            wsURL += '&value=' + value;
+            wsURL += '&type=' + type;
+            wsURL += '&captured_datetime=' + captured_datetime;
+            
+            
+            var opData = {
+                label: label, 
+                operation: "WRITE"
+            };
+
+            requestWrapper(wsURL, successCallback, errorCallback, finallyCallback, no_wait, opData);
+        },
+        /**
+         * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
+         * @param {string} label
+         * @param {function} successCallback
+         * @param {function} errorCallback
+         * @param {function} finallyCallback
+         * @returns {undefined}
+         */
+        Read: function (label, successCallback, errorCallback, finallyCallback) {
+
+        }
+
+    };
+
+
+
+    function OutputResult(result) {
+        log("OutputResult---------------------------");
+        log(result);
+
+        console.log(result);
+    }
+
     /**
      * Wraps the inner call of an HTTP Request
      * @param {type} url URL to call
      * @param {type} successCallback Function to call when HTTP Request is successful (Status code 200). Receives parameters response, body, error
      * @param {type} errorCallback Function to call when HTTP Request is NOT successful (Status code not 200). Receives parameters response, body, error
      * @param {type} finallyCallback Function to call at the end of the process, passing parameters response, body, error
+     * @param {type} no_wait option to execute in async/no_wait mode where results of a call are stored in a file.
      * @returns {undefined}
      */
-    function requestWrapper(url, successCallback, errorCallback, finallyCallback) {
-        if (parameters.async) {
-            resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
+    function requestWrapper(url, successCallback, errorCallback, finallyCallback, no_wait, operationData) {
+        log("requestWrapper()");
+        log("URL: " + url);
+        if (no_wait) {
+            statusToFile(operationData.label, operationData.operation, "WAITING FOR RESPONSE");
+            resultToFile(operationData.label, operationData.operation, "");
         }
 
         request(url, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
+
+                if (no_wait) {
+                    try {
+                        var bodyObject = JSON.parse(body);
+                        var value = bodyObject.vse_value;
+                        console.log("WRITING SUCCESS!");
+                        console.log(operationData);
+                        statusToFile(operationData.label, operationData.operation, "SUCCESS");
+                    } catch (ex) {
+                        logError("NO_WAIT CALL COULD NOT PARSE RESULT");
+                        logError(ex);
+                        //statusToFile(operationData.label, operationData.operation, "ERROR: UNABLE TO PARSE RESULT");
+                    }
+                } else {
+                    OutputResult(body);
+                }
+
                 if (successCallback)
                     successCallback(response, body, error);
-                else {
-                    if (parameters.async) {
-                        try {
-                            var bodyObject = JSON.parse(body);
-                            var value = bodyObject.vse_value;
-                            OutputResult(value);
-                        } catch (ex) {
-                            errorLog("ASYNC CALL COULD NOT PARSE RESULT");
-                            errorLog(ex);
-                            OutputResult("PVCLOUD_ERROR");
-                        }
-                    } else {
-                        OutputResult(body);
-                    }
-                }
+
 
             } else if (response && response.statusCode) {
                 log("WRONG STATUS CODE:---------------------------------------------");
@@ -46,19 +121,23 @@
                 log("RESPONSE!!!----------------------------------------------");
                 log(response);
 
-                errorLog("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
+                logError("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
+
+                if (no_wait) {
+                    //statusToFile(operationData.label, operationData.operation, "ERROR: WRONG STATUS CODE (" + response.statusCode + ")");
+                }
 
                 if (errorCallback) {
                     errorCallback(response, body, error);
-                } else {
-                    OutputResult("PVCLOUD_ERROR");
                 }
+
+                //TODO: STOPPED HERE LOGIC FOR NO_WAIT
 
             } else if (error) {
                 log("ERROR:------------------------------------------------");
                 log(error);
                 log("PVCLOUD ERROR PROCESSING:-----------------------------");
-                errorLog(error);
+                logError(error);
 
                 if (errorCallback)
                     errorCallback(response, body, error);
@@ -69,7 +148,7 @@
             } else {
                 log("UNKNOWN FAILURE:---------------------------------------");
                 log(error);
-                errorLog(response);
+                logError(response);
 
                 if (errorCallback)
                     errorCallback(response, body, error);
@@ -82,103 +161,13 @@
         });
     }
 
-    function requestWrapperPost(url, successCallback, errorCallback, finallyCallback, label, path, captured_datetime) {
-        log("requestWrapper()");
-        log("URL: ");
-        log(url);
 
-        if (parameters.async) {
-            resultToFile(parameters.label, "PVCLOUD_WAITING_FOR_RESPONSE");
-        }
-
-        var fileRead = fs.createReadStream(path);
-
-        var formData = {
-            vse_label: label,
-            captured_datetime: captured_datetime,
-            app_id: app_id,
-            account_id: account_id,
-            api_key: api_key,
-            fileToUpload: fileRead
-
-        };
-
-        request.post({url: url, formData: formData}, function (error, response, body) {
-            if (!error && response && response.statusCode === 200) {
-                log("SUCCESS!!!--------------------------------------------");
-                if (successCallback)
-                    successCallback(response, body, error);
-                else {
-                    if (parameters.async) {
-                        try {
-                            var bodyObject = JSON.parse(body);
-                            var value = bodyObject.vse_value;
-                            OutputResult(value);
-                        } catch (ex) {
-                            errorLog("ASYNC CALL COULD NOT PARSE RESULT");
-                            errorLog(ex);
-                            OutputResult("PVCLOUD_ERROR");
-                        }
-                    } else {
-                        OutputResult(body);
-                    }
-                }
-
-            } else if (response && response.statusCode) {
-                log("WRONG STATUS CODE:---------------------------------------------");
-                log(response.statusCode);
-                log("RESPONSE!!!----------------------------------------------");
-                log(response);
-
-                errorLog("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
-
-                if (errorCallback) {
-                    errorCallback(response, body, error);
-                } else {
-                    OutputResult("PVCLOUD_ERROR");
-                }
-
-            } else if (error) {
-                log("ERROR:------------------------------------------------");
-                log(error);
-                log("PVCLOUD ERROR PROCESSING:-----------------------------");
-                errorLog(error);
-
-                if (errorCallback)
-                    errorCallback(response, body, error);
-                else {
-                    OutputResult("PVCLOUD_ERROR");
-
-                }
-            } else {
-                log("UNKNOWN FAILURE:---------------------------------------");
-                log(error);
-                errorLog(response);
-
-                if (errorCallback)
-                    errorCallback(response, body, error);
-                else
-                    OutputResult("PVCLOUD_FAILURE");
-            }
-
-            if (finallyCallback)
-                finallyCallback(response, body, error);
-        });
-    }
-
-    function OutputResult(result) {
-        log("OutputResult---------------------------");
-        log(result);
-        if (parameters.async) { //OUTPUT RESULT IN BASIC LANGUAGE TO FILE
-            resultToFile(parameters.label, result);
-        }
-    }
 
     function resultToFile(tag, result) {
         if (!tag)
             tag = "any";
 
-        var filePath = parameters.async_path || "";
+        //var filePath = parameters.async_path || "";
 
         log("WRITING TO FILE...");
 
@@ -200,24 +189,54 @@
              */
             log("END OF resultToFile()");
         } catch (ex) {
-            errorLog(ex);
+            logError(ex);
         }
     }
 
-    /**
-     * Reads content of a result file.
-     * @param {string} tag
-     * @param {function receives (err, data) parameters} callback
-     * @returns {undefined}
-     */
-    function readResultFromFile(tag, callback) {
-        var filePath = parameters.async_path || "";
-        var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
-        log("READING FROM FILE...");
-        log(resultFile);
+    function statusToFile(label, operation, status) {
+        if (!label)
+            label = "ALL";
 
-        fs.readFile(resultFile, callback);
+        var filePath = options.NO_WAIT_STATUS_BASE_FILE;
+        filePath = filePath + label + "_" + operation;
+
+        log("WRITING TO STATUS FILE...");
+        console.log("WRITING TO STATUS FILE!");
+        try {
+            log(filePath);
+
+            var stream = fs.createWriteStream(filePath);
+            console.log("OPENING STREAM");
+            stream.once('open', function (fd) {
+                try {
+                    console.log("STREAM WRITE");
+                    console.log("STATUS");
+                    console.log(status);
+                    stream.write(status);
+                    stream.end();
+                    stream.close();
+                    log("FS END REACHED!");
+                    console.log("FS END REACHED!");
+                } catch (ex) {
+                    console.log("EXCEPTION!");
+                    console.log(ex);
+                    logError(ex);
+                }
+            });
+            
+            console.log("END OF STATUS TO FILE");
+
+            log("END OF resultToFile()");
+        } catch (ex) {
+            console.log("EXCEPTION ON BIG TRY");
+            console.log (ex);
+            logError(ex);
+        }
     }
+
+
+
+
 
     /**
      * Logs debug data to console if DEBUG is set to true.
@@ -225,103 +244,39 @@
      * @returns {undefined}
      */
     function log(message) {
-        if (DEBUG) {
+        if (options.DEBUG) {
             console.log(message);
         }
     }
 
-    function errorLog(message) {
-        message = getFormattedDateTime() + " - " + message;
-        message += "\n";
-        log("errorLog()");
+    function logError(message) {
+        message = getFormattedDateTime() + " - " + message + "\n";
 
-        var errorLogFilePath = parameters.error_log_file || "/error_pvcloud.log";
+        var errorLogFilePath = options.ERROR_LOG_FILE;
         log(errorLogFilePath);
     }
 
-    var pvCloudAPI = {
-        test: function () {
-            return "SIMPLE SMOKE TEST";
-        },
-        /**
-         * Sends a value "asynchronously" using the file-based mechanism. 
-         * @param {string} label
-         * @param {string, integer, long, json simple object} value
-         * @param {string} type
-         * @param {datetime} captured_datetime
-         * @param {function} successCallback
-         * @param {function} errorCallback
-         * @param {function} finallyCallback
-         * @returns {undefined}
-         */
-        Write: function (baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, debugOption) {
-            var wsURL = baseURL;
-            wsURL += "vse_add_value.php";
-            wsURL += '?app_id=' + app_id;
-            wsURL += '&api_key=' + api_key;
-            wsURL += '&account_id=' + account_id;
-            wsURL += '&label=' + label;
-            wsURL += '&value=' + value;
-            wsURL += '&type=' + type;
-            wsURL += '&captured_datetime=' + captured_datetime;
+    function getFormattedDateTime() {
+        var rawDate = new Date();
+        var year = rawDate.getFullYear();
+        var month = rawDate.getMonth() + 1;
+        var day = rawDate.getDate();
+        var hour = rawDate.getHours();
+        var minute = rawDate.getMinutes();
+        var second = rawDate.getSeconds();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        if (hour < 10)
+            hour = "0" + hour;
+        if (minute < 10)
+            minute = "0" + minute;
+        if (second < 10)
+            second = "0" + second;
+        return year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
+    }
 
-            requestWrapper(wsURL, successCallback, errorCallback, finallyCallback);
-        },
-        /**
-         * Post File Mechanism
-         * @param {type} label
-         * @param {type} file_path
-         * @param {type} captured_datetime
-         * @param {type} successCallback
-         * @param {type} errorCallback
-         * @param {type} finallyCallback
-         * @returns {undefined}
-         */
-        PostFile: function (label, file_path, captured_datetime, successCallback, errorCallback, finallyCallback) {
-            var wsURL = baseURL += "vse_add_file.php";
-            log(wsURL);
-
-            log("CALLING REQUEST WRAPPER POST--------------------------------------------");
-
-            requestWrapperPost(wsURL, successCallback, errorCallback, finallyCallback, label, file_path, captured_datetime);
-
-        },
-        /**
-         * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
-         * @param {string} label
-         * @param {function} successCallback
-         * @param {function} errorCallback
-         * @param {function} finallyCallback
-         * @returns {undefined}
-         */
-        Read: function (label, successCallback, errorCallback, finallyCallback) {
-            log("consoleAPI.Read('" + label + "')");
-            var wsURL = baseURL;
-            wsURL += "vse_get_value_last.php";
-            wsURL += '?app_id=' + app_id;
-            wsURL += '&api_key=' + api_key;
-            wsURL += '&account_id=' + account_id;
-            wsURL += '&optional_label=' + label;
-            requestWrapper(wsURL, successCallback, errorCallback, finallyCallback);
-        },
-        /**
-         * Reads the results of an request operation (file determined by tag/label) and prints its value to the console.
-         * @param {string} label the tag for determining the file name.
-         * @returns {undefined}
-         */
-        Check: function (label) {
-            log("consoleAPI.Check('" + label + "')");
-            readResultFromFile(label, function (err, data) {
-                if (err) {
-                    errorLog(err);
-                    console.log("PVCLOUD_ERROR");
-                } else {
-                    console.log(data);
-                }
-            });
-        }
-    };
 
     exports.pvcloudAPI = pvCloudAPI;
-
 })();
