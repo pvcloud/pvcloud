@@ -74,8 +74,8 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
     info("WRITE CALL TEST");
     var callResponse;
     it("should be able to make WRITE ASYNC Call and pass through FINALLY callback", function (done) {
-        console.log("JASMINE DEFAULT TIMEOUT");
-        console.log(jasmine.DEFAULT_TIMEOUT_INTERVAL);
+        info("JASMINE DEFAULT TIMEOUT");
+        info(jasmine.DEFAULT_TIMEOUT_INTERVAL);
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
         var baseURL = "https://costaricamakers.com/pvcloud_pre/backend/";
         var account_id = 5;
@@ -96,10 +96,13 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
         };
         var finallyCallback = function (response) {
             info("Finally Callback Reached!");
-            setTimeout(function(){
+
+            info("Waiting 1 Second for File Operation Flushout...");
+            setTimeout(function () {
+                info("DONE!");
                 done();
-            }, 2000);
-            
+            }, 1000);
+
         };
 
         pvcloud.Write(baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, true /*NO_WAIT*/);
@@ -119,7 +122,34 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
     });
 });
 
-function info(value) {
-    console.log(value);
-    console.log("----------------------------------");
+function info(message) {
+    console.log("-------------------------------------------");
+    var dt = getFormattedDateTime();
+    if (typeof message == "object") {
+        console.log("INFO (" + dt + ") : -------------------");
+        console.log(message);
+    } else {
+        console.log("INFO (" + dt + ") :" + message);
+    }
+}
+
+function getFormattedDateTime() {
+    var rawDate = new Date();
+    var year = rawDate.getFullYear();
+    var month = rawDate.getMonth() + 1;
+    var day = rawDate.getDate();
+    var hour = rawDate.getHours();
+    var minute = rawDate.getMinutes();
+    var second = rawDate.getSeconds();
+    if (month < 10)
+        month = "0" + month;
+    if (day < 10)
+        day = "0" + day;
+    if (hour < 10)
+        hour = "0" + hour;
+    if (minute < 10)
+        minute = "0" + minute;
+    if (second < 10)
+        second = "0" + second;
+    return year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
 }

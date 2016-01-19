@@ -3,10 +3,11 @@
     var fs = require('fs');
 
     var options = {
-        DEBUG: true,
+        DEBUG: false,
         ERROR_LOG_FILE: "error_pvcloud.log",
         NO_WAIT_STATUS_BASE_FILE: "status_pvcloud_", /*to be completed with label_operation*/
-        NO_WAIT_RESULT_BASE_FILE: "result_pvcloud_" /*to be completed with label_operation*/
+        NO_WAIT_RESULT_BASE_FILE: "result_pvcloud_", /*to be completed with label_operation*/
+        DEBUG_COUNT: 0
     };
 
     var pvCloudAPI = {
@@ -27,12 +28,10 @@
          * @param {function} errorCallback
          * @param {function} finallyCallback
          * @param {boolean} no_wait
-         * @param {boolean} debug
          * @returns {undefined}
          */
-        Write: function (baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, no_wait, debug) {
-            options.DEBUG = debug;
-
+        Write: function (baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, no_wait) {
+            log("pvCloud.Write() - BEGIN");
             var wsURL = baseURL;
             wsURL += "vse_add_value.php";
             wsURL += '?app_id=' + app_id;
@@ -42,14 +41,16 @@
             wsURL += '&value=' + value;
             wsURL += '&type=' + type;
             wsURL += '&captured_datetime=' + captured_datetime;
-            
-            
+
+
             var opData = {
-                label: label, 
+                label: label,
                 operation: "WRITE"
             };
 
+            log("pvCloud.Write() - Calling requestWrapper");
             requestWrapper(wsURL, successCallback, errorCallback, finallyCallback, no_wait, opData);
+            log("pvCloud.Write() - END");
         },
         /**
          * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
@@ -71,6 +72,7 @@
         log("OutputResult---------------------------");
         log(result);
 
+        //THIS CONSOLE LOG IS VERY IMPORTANT!!! DONT REMOVE!
         console.log(result);
     }
 
@@ -84,13 +86,14 @@
      * @returns {undefined}
      */
     function requestWrapper(url, successCallback, errorCallback, finallyCallback, no_wait, operationData) {
-        log("requestWrapper()");
+        log("requestWrapper() - BEGIN");
         log("URL: " + url);
         if (no_wait) {
             statusToFile(operationData.label, operationData.operation, "WAITING FOR RESPONSE");
             resultToFile(operationData.label, operationData.operation, "");
         }
 
+        log("requestWrapper() - Calling request()");
         request(url, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
@@ -99,13 +102,13 @@
                     try {
                         var bodyObject = JSON.parse(body);
                         var value = bodyObject.vse_value;
-                        console.log("WRITING SUCCESS!");
-                        console.log(operationData);
+                        log("WRITING SUCCESS!");
+                        log(operationData);
                         statusToFile(operationData.label, operationData.operation, "SUCCESS");
                     } catch (ex) {
                         logError("NO_WAIT CALL COULD NOT PARSE RESULT");
                         logError(ex);
-                        //statusToFile(operationData.label, operationData.operation, "ERROR: UNABLE TO PARSE RESULT");
+                        statusToFile(operationData.label, operationData.operation, "ERROR: UNABLE TO PARSE RESULT");
                     }
                 } else {
                     OutputResult(body);
@@ -159,17 +162,19 @@
             if (finallyCallback)
                 finallyCallback(response, body, error);
         });
+        log("requestWrapper() - END");
     }
 
 
 
     function resultToFile(tag, result) {
+        log("resultToFile() - BEGIN");
         if (!tag)
             tag = "any";
 
         //var filePath = parameters.async_path || "";
 
-        log("WRITING TO FILE...");
+        log("resultToFile() - Write to file is disabled...");
 
         try {
             /*
@@ -187,55 +192,51 @@
              }
              });
              */
-            log("END OF resultToFile()");
+            log("resultToFile() - END NOEX");
         } catch (ex) {
+            log("resultToFile() - EXCEPTION");
+            log(ex);
             logError(ex);
         }
+        log("resultToFile() - END");
     }
 
     function statusToFile(label, operation, status) {
+        log("statusToFile() - BEGIN");
         if (!label)
             label = "ALL";
 
         var filePath = options.NO_WAIT_STATUS_BASE_FILE;
         filePath = filePath + label + "_" + operation;
 
-        log("WRITING TO STATUS FILE...");
-        console.log("WRITING TO STATUS FILE!");
+        log("statusToFile() - FILE PATH: " + filePath);
         try {
             log(filePath);
 
             var stream = fs.createWriteStream(filePath);
-            console.log("OPENING STREAM");
+            log("statusToFile() - Setting up stream...");
             stream.once('open', function (fd) {
+                log("statusToFile() - stream function()");
                 try {
-                    console.log("STREAM WRITE");
-                    console.log("STATUS");
-                    console.log(status);
+                    log("statusToFile() - WRITING STATUS: " + status);
                     stream.write(status);
                     stream.end();
                     stream.close();
-                    log("FS END REACHED!");
-                    console.log("FS END REACHED!");
+                    log("statusToFile() - END OF stram function() NOEX");
                 } catch (ex) {
-                    console.log("EXCEPTION!");
-                    console.log(ex);
+                    log("statusToFile() - EXCEPTION!");
+                    log(ex);
                     logError(ex);
                 }
             });
-            
-            console.log("END OF STATUS TO FILE");
 
-            log("END OF resultToFile()");
+            log("statusToFile() - END OF FIRST TRY (NO EX)");
         } catch (ex) {
-            console.log("EXCEPTION ON BIG TRY");
-            console.log (ex);
+            log("statusToFile() - EXCEPTION @ FIRST TRY");
+            log(ex);
             logError(ex);
         }
     }
-
-
-
 
 
     /**
@@ -244,8 +245,15 @@
      * @returns {undefined}
      */
     function log(message) {
-        if (options.DEBUG) {
-            console.log(message);
+        options.DEBUG_COUNT++;
+        if (options.DEBUG === true) {
+            var dt = getFormattedDateTime();
+            if (typeof message === "object") {
+                console.log("#" + options.DEBUG_COUNT + " - " + dt + " : -------------------");
+                console.log(message);
+            } else {
+                console.log("#" + options.DEBUG_COUNT + " - " + dt + " : " + message);
+            }
         }
     }
 
