@@ -18,6 +18,7 @@
             switch (action) {
                 case "test":
                     console.log(pvCloudAPI.test());
+                    console.log(pvCloudAPI);
                     break;
                 case "write":
                     pvCloudAPI.Write(parameters.label, parameters.value, parameters.type, parameters.captured_datetime);
