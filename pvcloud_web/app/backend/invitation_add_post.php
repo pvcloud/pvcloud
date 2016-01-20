@@ -99,7 +99,7 @@ class AddInvitationWebService {
 
     private static function saveInvitation($parameters) {
         $newInvitation = da_invitation::AddNewInvitation($parameters->account_id,$parameters->host_email, $parameters->guest_email);
-        sendEmailInvitation($parameters->guest_email);
+        AddInvitationWebService::sendEmailInvitation($parameters->guest_email);
         return $newInvitation;
     }
         /**
