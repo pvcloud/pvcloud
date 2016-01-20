@@ -14,6 +14,17 @@
         test: function () {
             return "SIMPLE SMOKE TEST";
         },
+        
+        
+        
+         Login: function (baseURL, username, password, successCallback, errorCallback, finallyCallback) {
+          
+             var result =  {"status":"ERROR","message":"Credenciales equivocadas"};
+             return result;
+
+        },
+        
+        
         /**
          * Sends a value "asynchronously" using the file-based mechanism. 
          * @param {string} baseURL 
