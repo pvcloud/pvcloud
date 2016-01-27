@@ -99,21 +99,22 @@ class AddInvitationWebService {
 
     private static function saveInvitation($parameters) {
         $newInvitation = da_invitation::AddNewInvitation($parameters->account_id,$parameters->host_email, $parameters->guest_email);
-        AddInvitationWebService::sendEmailInvitation($parameters->guest_email);
+        AddInvitationWebService::sendEmailInvitation($parameters->host_email,$parameters->guest_email,$newInvitation->token);
         return $newInvitation;
     }
         /**
      * 
      * @param be_account $account
      */
-    private static function sendEmailInvitation($guest_email) {
+    private static function sendEmailInvitation($host_email,$guest_email,$token) {
 
-      //  $recoveryURL = getBaseURL("pvcloud") . "#/passwordrecovery/$account->account_id/$account->confirmation_guid";
-
-        $message = "Has sido invitado a PvCloud  :) \n\n";
+        $newAccountURL = getBaseURL("pvcloud") . "#/new_account/$token";    
+        $message = "You have been invited by $host_email to join pvCloud. \n";
+        $message.= "Please follow this link to accept this invitation and create a pvCloud account: \n";
+        $message.= $newAccountURL;
         $to = $guest_email;
-        $subject = "pvCloud - Invitacion a Unirse";
-
+        $subject = "pvCloud - Invitation to Join";
+        
         $enter = "\r\n";
         $headers = "From: donotreply@costaricamakers.com $enter";
         $headers .= "MIME-Version: 1.0 $enter";
