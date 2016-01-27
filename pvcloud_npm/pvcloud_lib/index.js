@@ -3,7 +3,7 @@
     var fs = require('fs');
 
     var options = {
-        DEBUG: false,
+        DEBUG: true,
         ERROR_LOG_FILE: "error_pvcloud.log",
         NO_WAIT_STATUS_BASE_FILE: "status_pvcloud_", /*to be completed with label_operation*/
         NO_WAIT_RESULT_BASE_FILE: "result_pvcloud_", /*to be completed with label_operation*/
