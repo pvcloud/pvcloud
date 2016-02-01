@@ -2,7 +2,7 @@ var request = require("request");
 var pvcloud = require("../index.js");
 pvcloud = pvcloud.pvcloudAPI;
 var baseURL = "https://costaricamakers.com/pvcloud_pre/backend/";
-
+var token;
 describe("pvCloud API Object", function () {
     info("API OBJECT TEST");
 
@@ -29,12 +29,10 @@ describe("pvCloud Login", function () {
         var wrong_username = "test@costaricamakers.com";
         var wrong_password = "-----";
         var successCallback = function (response) {
-            info("Success Callback Reached!");
-            callResponse = response;
+            info("Success Callback Reached!")         
         };
         var errorCallback = function (response) {
-            info("Error Callback Reached!");
-            callResponse = response;
+            info("Error Callback Reached!");            
         };
         var finallyCallback = function (response) {
             info("Finally Callback Reached");
@@ -55,11 +53,11 @@ describe("pvCloud Login", function () {
         var password = "abcd";
         var successCallback = function (response) {
             info("Success Callback Reached!");
-            callResponse = response;
+           
         };
         var errorCallback = function (response) {
             info("Error Callback Reached!");
-            callResponse = response;
+            
         };
         var finallyCallback = function (response) {
             info("Finally Callback Reached");
@@ -67,6 +65,7 @@ describe("pvCloud Login", function () {
             info(response.body);
              var body = JSON.parse(response.body);
             expect(body.status).toBe("OK");
+            token = body.token;
             done();
         };
 
