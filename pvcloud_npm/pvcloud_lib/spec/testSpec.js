@@ -2,7 +2,7 @@ var request = require("request");
 var pvcloud = require("../index.js");
 pvcloud = pvcloud.pvcloudAPI;
 var baseURL = "https://costaricamakers.com/pvcloud_pre/backend/";
-var token;
+
 describe("pvCloud API Object", function () {
     info("API OBJECT TEST");
 
@@ -24,7 +24,7 @@ describe("pvCloud API Object", function () {
 
 
 describe("pvCloud Login", function () {
-
+    var token;
     it("Must reject invalid credentials", function (done) {
         var wrong_username = "test@costaricamakers.com";
         var wrong_password = "-----";
@@ -70,8 +70,18 @@ describe("pvCloud Login", function () {
         };
 
         pvcloud.Login(baseURL, username, password, successCallback, errorCallback, finallyCallback);
+        info("TOKEN VALIDOOOOO");
 
-    });    
+    });  
+    
+    
+    describe("Token", function(){
+         var token="raro";
+        it("must be ready", function(){
+            info("entre!");
+            expect(token).not.toBe(undefined);
+        });
+    });
 });
 
 describe("pvCloud Library WAIT WRITE Call.", function () {
