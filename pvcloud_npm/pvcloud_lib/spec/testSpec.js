@@ -38,8 +38,10 @@ describe("pvCloud Login", function () {
         };
         var finallyCallback = function (response) {
             info("Finally Callback Reached");
-            info(response);
-            expect(response.status).toBe("ERROR");
+            info(response.body);
+            
+            var body = JSON.parse(response.body);
+            expect(body.status).toBe("ERROR");
             done();
         };
 
@@ -48,9 +50,9 @@ describe("pvCloud Login", function () {
     });
     
     
-    it("Must reject invalid credentials", function (done) {
-        var wrong_username = "test@costaricamakers.com";
-        var wrong_password = "abcd";
+    it("Must accept valid credentials", function (done) {
+        var username = "test@costaricamakers.com";
+        var password = "abcd";
         var successCallback = function (response) {
             info("Success Callback Reached!");
             callResponse = response;
@@ -61,12 +63,14 @@ describe("pvCloud Login", function () {
         };
         var finallyCallback = function (response) {
             info("Finally Callback Reached");
-            info(response);
-            expect(response.status).toBe("OK");
+            info("correct")
+            info(response.body);
+             var body = JSON.parse(response.body);
+            expect(body.status).toBe("OK");
             done();
         };
 
-        pvcloud.Login(baseURL, wrong_username, wrong_password, successCallback, errorCallback, finallyCallback);
+        pvcloud.Login(baseURL, username, password, successCallback, errorCallback, finallyCallback);
 
     });    
 });

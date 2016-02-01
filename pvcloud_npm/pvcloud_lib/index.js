@@ -14,14 +14,12 @@
         },
         Login: function (baseURL, userName, password, successCallback, errorCallback, finallyCallback) {
             var result;
-            var loginURL = baseURL + "session_login.php?email=:email&pwd=:pwd";
-            if (userName == "test@costaricamakers.com" && password == "abcd") {
-                result = {"status": "OK", "message": "Access Granted"};
-            } else {
-                result = {"status": "ERROR", "message": "Credenciales equivocadas"};
-            }
-            successCallback(result);
-            finallyCallback(result);
+            var loginURL = baseURL + "session_login.php?email="+userName+"&pwd="+password;
+            var PostData = {email:userName, pwd:password};
+            postWrapper(loginURL, PostData, successCallback, errorCallback, finallyCallback)
+            
+           
+            
         },
         /**
          * Sends a value "asynchronously" using the file-based mechanism. 
