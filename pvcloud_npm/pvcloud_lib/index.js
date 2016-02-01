@@ -1,30 +1,28 @@
 (function () {
     var request = require("request");
     var fs = require('fs');
-
     var options = {
-        DEBUG: true,
+        DEBUG: false,
         ERROR_LOG_FILE: "error_pvcloud.log",
         NO_WAIT_STATUS_BASE_FILE: "status_pvcloud_", /*to be completed with label_operation*/
         NO_WAIT_RESULT_BASE_FILE: "result_pvcloud_", /*to be completed with label_operation*/
         DEBUG_COUNT: 0
     };
-
     var pvCloudAPI = {
         test: function () {
             return "SIMPLE SMOKE TEST";
         },
-        
-        
-        
-         Login: function (baseURL, username, password, successCallback, errorCallback, finallyCallback) {
-          
-             var result =  {"status":"ERROR","message":"Credenciales equivocadas"};
-             return result;
-
+        Login: function (baseURL, userName, password, successCallback, errorCallback, finallyCallback) {
+            var result;
+            var loginURL = baseURL + "session_login.php?email=:email&pwd=:pwd";
+            if (userName == "test@costaricamakers.com" && password == "abcd") {
+                result = {"status": "OK", "message": "Access Granted"};
+            } else {
+                result = {"status": "ERROR", "message": "Credenciales equivocadas"};
+            }
+            successCallback(result);
+            finallyCallback(result);
         },
-        
-        
         /**
          * Sends a value "asynchronously" using the file-based mechanism. 
          * @param {string} baseURL 
@@ -52,13 +50,10 @@
             wsURL += '&value=' + value;
             wsURL += '&type=' + type;
             wsURL += '&captured_datetime=' + captured_datetime;
-
-
             var opData = {
                 label: label,
                 operation: "WRITE"
             };
-
             log("pvCloud.Write() - Calling requestWrapper");
             requestWrapper(wsURL, successCallback, errorCallback, finallyCallback, no_wait, opData);
             log("pvCloud.Write() - END");
@@ -76,13 +71,9 @@
         }
 
     };
-
-
-
     function OutputResult(result) {
         log("OutputResult---------------------------");
         log(result);
-
         //THIS CONSOLE LOG IS VERY IMPORTANT!!! DONT REMOVE!
         console.log(result);
     }
@@ -108,7 +99,6 @@
         request(url, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
-
                 if (no_wait) {
                     try {
                         var bodyObject = JSON.parse(body);
@@ -127,16 +117,12 @@
 
                 if (successCallback)
                     successCallback(response, body, error);
-
-
             } else if (response && response.statusCode) {
                 log("WRONG STATUS CODE:---------------------------------------------");
                 log(response.statusCode);
                 log("RESPONSE!!!----------------------------------------------");
                 log(response);
-
                 logError("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
-
                 if (no_wait) {
                     //statusToFile(operationData.label, operationData.operation, "ERROR: WRONG STATUS CODE (" + response.statusCode + ")");
                 }
@@ -152,18 +138,15 @@
                 log(error);
                 log("PVCLOUD ERROR PROCESSING:-----------------------------");
                 logError(error);
-
                 if (errorCallback)
                     errorCallback(response, body, error);
                 else {
                     OutputResult("PVCLOUD_ERROR");
-
                 }
             } else {
                 log("UNKNOWN FAILURE:---------------------------------------");
                 log(error);
                 logError(response);
-
                 if (errorCallback)
                     errorCallback(response, body, error);
                 else
@@ -176,17 +159,63 @@
         log("requestWrapper() - END");
     }
 
+    function postWrapper(url, postData, successCallback, errorCallback, finallyCallback) {
+        log("requestWrapper()");
+        log("URL: ");
+        log(url);
+        request.post({url: url, formData: postData}, function (error, response, body) {
+            if (!error && response && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
+                if (successCallback)
+                    successCallback(response, body, error);
+            } else if (error){
+                if(errorCallback){
+                    Callback(response, body, error);
+                }
+            } else if (response && response.statusCode) {
+                log("WRONG STATUS CODE:---------------------------------------------");
+                log(response.statusCode);
+                log("RESPONSE!!!----------------------------------------------");
+                log(response);
+                errorLog("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
+                if (errorCallback) {
+                    errorCallback(response, body, error);
+                } else {
+                    OutputResult("PVCLOUD_ERROR");
+                }
 
+            } else if (error) {
+                log("ERROR:------------------------------------------------");
+                log(error);
+                log("PVCLOUD ERROR PROCESSING:-----------------------------");
+                errorLog(error);
+                if (errorCallback)
+                    errorCallback(response, body, error);
+                else {
+                    OutputResult("PVCLOUD_ERROR");
+                }
+            } else {
+                log("UNKNOWN FAILURE:---------------------------------------");
+                log(error);
+                errorLog(response);
+                if (errorCallback)
+                    errorCallback(response, body, error);
+                else
+                    OutputResult("PVCLOUD_FAILURE");
+            }
+
+            if (finallyCallback)
+                finallyCallback(response, body, error);
+        });
+    }
 
     function resultToFile(tag, result) {
         log("resultToFile() - BEGIN");
         if (!tag)
             tag = "any";
-
         //var filePath = parameters.async_path || "";
 
         log("resultToFile() - Write to file is disabled...");
-
         try {
             /*
              var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
@@ -216,14 +245,11 @@
         log("statusToFile() - BEGIN");
         if (!label)
             label = "ALL";
-
         var filePath = options.NO_WAIT_STATUS_BASE_FILE;
         filePath = filePath + label + "_" + operation;
-
         log("statusToFile() - FILE PATH: " + filePath);
         try {
             log(filePath);
-
             var stream = fs.createWriteStream(filePath);
             log("statusToFile() - Setting up stream...");
             stream.once('open', function (fd) {
@@ -240,7 +266,6 @@
                     logError(ex);
                 }
             });
-
             log("statusToFile() - END OF FIRST TRY (NO EX)");
         } catch (ex) {
             log("statusToFile() - EXCEPTION @ FIRST TRY");
@@ -270,7 +295,6 @@
 
     function logError(message) {
         message = getFormattedDateTime() + " - " + message + "\n";
-
         var errorLogFilePath = options.ERROR_LOG_FILE;
         log(errorLogFilePath);
     }

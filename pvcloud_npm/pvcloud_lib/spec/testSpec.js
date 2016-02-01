@@ -24,35 +24,51 @@ describe("pvCloud API Object", function () {
 
 
 describe("pvCloud Login", function () {
-   
-    var username = "test@costaricamakers.com";
-    var password = "abcd";
-    
+
     it("Must reject invalid credentials", function (done) {
-          var wrong_username = "test@costaricamakers.com";
-          var wrong_password = "abcd";
-          var successCallback = function (response) {
-           info("Success Callback Reached!");
-           callResponse = response;
-       };
-       var errorCallback = function (response) {
-           info("Error Callback Reached!");
-           callResponse = response;
-       };
-       var finallyCallback = function (response) {
-           info("Finally Callback Reached!");
-           done();
-       };
-    
-    var result = pvcloud.Login(baseURL, wrong_username, wrong_password, successCallback, errorCallback, finallyCallback);
-    info(result);
-        expect(result.status).toBe("ERROR");
+        var wrong_username = "test@costaricamakers.com";
+        var wrong_password = "-----";
+        var successCallback = function (response) {
+            info("Success Callback Reached!");
+            callResponse = response;
+        };
+        var errorCallback = function (response) {
+            info("Error Callback Reached!");
+            callResponse = response;
+        };
+        var finallyCallback = function (response) {
+            info("Finally Callback Reached");
+            info(response);
+            expect(response.status).toBe("ERROR");
+            done();
+        };
+
+        pvcloud.Login(baseURL, wrong_username, wrong_password, successCallback, errorCallback, finallyCallback);
+
     });
     
     
+    it("Must reject invalid credentials", function (done) {
+        var wrong_username = "test@costaricamakers.com";
+        var wrong_password = "abcd";
+        var successCallback = function (response) {
+            info("Success Callback Reached!");
+            callResponse = response;
+        };
+        var errorCallback = function (response) {
+            info("Error Callback Reached!");
+            callResponse = response;
+        };
+        var finallyCallback = function (response) {
+            info("Finally Callback Reached");
+            info(response);
+            expect(response.status).toBe("OK");
+            done();
+        };
 
-   
-  
+        pvcloud.Login(baseURL, wrong_username, wrong_password, successCallback, errorCallback, finallyCallback);
+
+    });    
 });
 
 describe("pvCloud Library WAIT WRITE Call.", function () {
@@ -104,7 +120,7 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
     it("should be able to make WRITE ASYNC Call and pass through FINALLY callback", function (done) {
         info("JASMINE DEFAULT TIMEOUT");
         info(jasmine.DEFAULT_TIMEOUT_INTERVAL);
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
         var account_id = 5;
         var app_id = 9;
         var api_key = '8f5fb6fae58b9f597b2a3ccb8019966914661867';
