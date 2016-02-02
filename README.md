@@ -18,8 +18,8 @@ Additionally we are working on some demos that use pvCloud on specific invention
 
 ## Development Environment and Design
 
-You can find information about development design decisions here:
-https://docs.google.com/presentation/d/1eHB2fyl1IvfC2S5gruYiLurjTzhedpxlufUTa_RU1nU/edit?usp=sharing
+You can find information about architecture design decisions here:
+https://docs.google.com/presentation/d/1ehksrg4Y7YFZivyQiQeqMVH8MvVYgleThohkcjZoPVo/edit?usp=sharing
 
 Also, these slides contain information about how to setup the development environment:
 https://docs.google.com/presentation/d/1eHB2fyl1IvfC2S5gruYiLurjTzhedpxlufUTa_RU1nU/edit#slide=id.g7b18c22b1_017
