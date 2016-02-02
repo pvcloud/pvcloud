@@ -4,13 +4,16 @@ pvcloud = pvcloud.pvcloudAPI;
 var baseURL = "https://costaricamakers.com/pvcloud_pre/backend/";
 var token;
 var infoStep = 0;
+
 describe("pvCloud API Object", function () {
     info("API OBJECT TEST");
 
     it("Must not empty", function () {
+        info("API NOT EMPTY");
         expect(pvcloud).not.toBe(undefined);
     });
     it("Must have the minimal API functions declared", function () {
+        info("API MINIMAL FUNCTIONS");
         expect(pvcloud.Login).not.toBe(undefined);
         expect(pvcloud.Read).not.toBe(undefined);
         expect(pvcloud.Write).not.toBe(undefined);
@@ -18,55 +21,53 @@ describe("pvCloud API Object", function () {
         //expect(pvcloud.Check).not.toBe(undefined);
     });
     it("Must run Test Point Properly", function () {
+        info("SMOKE TEST");
         var smoketestResult = pvcloud.test();
         expect(smoketestResult).toBe("SIMPLE SMOKE TEST");
     });
 });
 
 
-describe("pvCloud Login", function () {
+describe("pvCloud User Context", function () {
 
-    beforeEach(function (done) {
-        if (!token) {
-            var username = "test@costaricamakers.com";
-            var password = "abcd";
-            var successCallback = function (response) {
-                info("Success Callback Reached!");
+    it("Should be able to LOGIN with proper credentials", function (done) {
+        var testHint = "LOGIN PROPER CREDENTIALS";
 
-            };
-            var errorCallback = function (response) {
-                info("Error Callback Reached!");
+        var username = "test@costaricamakers.com";
+        var password = "abcd";
+        var successCallback = function (response) {
+            info(testHint + ": Success Callback Reached!");
 
-            };
-            var finallyCallback = function (response) {
-                info("Finally Callback Reached");
-                info(response.body);
-                var body = JSON.parse(response.body);
-                expect(body.status).toBe("OK");
-                token = body.data.token;
-                info("TOKEN CAPTURED!");
-                done();
-            };
+        };
+        var errorCallback = function (response) {
+            info(testHint + ": Error Callback Reached!");
 
-            pvcloud.Login(baseURL, username, password, successCallback, errorCallback, finallyCallback);
-        } else {
+        };
+        var finallyCallback = function (response) {
+            info(testHint + ": Finally Callback Reached");
+            var body = JSON.parse(response.body);
+            expect(body.status).toBe("OK");
+            token = body.data.token;
+            info(testHint + ": TOKEN CAPTURED!");
             done();
-        }
+        };
+
+        pvcloud.Login(baseURL, username, password, successCallback, errorCallback, finallyCallback);
+
     });
 
     it("Must reject invalid credentials", function (done) {
+        var testHint = "LOGIN WRONG CREDENTIALS";
         var wrong_username = "test@costaricamakers.com";
         var wrong_password = "-----";
         var successCallback = function (response) {
-            info("Success Callback Reached!");
+            info(testHint + ": Success Callback Reached!");
         };
         var errorCallback = function (response) {
-            info("Error Callback Reached!");
+            info(testHint + ": Error Callback Reached!");
         };
         var finallyCallback = function (response) {
-            info("Finally Callback Reached");
-            info(response.body);
-
+            info(testHint + ": Finally Callback Reached");
             var body = JSON.parse(response.body);
             expect(body.status).toBe("ERROR");
             done();
@@ -76,9 +77,14 @@ describe("pvCloud Login", function () {
 
     });
 
-    it("TOKEN IS ALWAYS AVAILABLE", function () {
-        expect(token).not.toBe(undefined);
+    describe("User Login Context Token", function () {
+        it("TOKEN NOT EMPTY", function () {
+            info("TOKEN NOT EMPTY");
+            expect(token).not.toBe(undefined);
+        });
     });
+
+
 });
 
 
@@ -86,7 +92,7 @@ describe("pvCloud Library WAIT WRITE Call.", function () {
     info("WRITE CALL TEST (WAIT)");
     var callResponse;
     it("should be able to make WRITE SYNCHRONOUS Call and pass through FINALLY callback", function (done) {
-
+        var testHint = "WRITE CALL WAIT";
         var account_id = 5;
         var app_id = 9;
         var api_key = '8f5fb6fae58b9f597b2a3ccb8019966914661867';
@@ -96,15 +102,15 @@ describe("pvCloud Library WAIT WRITE Call.", function () {
         var captured_datetime = "2016-01-01";
 
         var successCallback = function (response) {
-            info("Success Callback Reached!");
+            info(testHint + ": Success Callback Reached!");
             callResponse = response;
         };
         var errorCallback = function (response) {
-            info("Error Callback Reached!");
+            info(testHint + ": Error Callback Reached!");
             callResponse = response;
         };
         var finallyCallback = function (response) {
-            info("Finally Callback Reached!");
+            info(testHint + ": Finally Callback Reached!");
             done();
         };
 
@@ -112,14 +118,13 @@ describe("pvCloud Library WAIT WRITE Call.", function () {
     });
 
     it("returns proper data", function () {
+        var testHint = "PROPER DATA";
         expect(callResponse).not.toBe(undefined);
         expect(callResponse.body).not.toBe(undefined);
 
-        info("EXTRACTING DATA FROM RESPONSE...");
+        info(testHint + ": EXTRACTING DATA FROM RESPONSE...");
         data = JSON.parse(callResponse.body);
         expect(data).not.toBe(undefined);
-
-        info(data);
         expect(data.entry_id).toBeGreaterThan(1);
 
     });
@@ -129,6 +134,7 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
     info("WRITE CALL TEST (NO_WAIT)");
     var callResponse;
     it("should be able to make WRITE ASYNC Call and pass through FINALLY callback", function (done) {
+        var testHint = "WRITE NOWAIT";
         info("JASMINE DEFAULT TIMEOUT");
         info(jasmine.DEFAULT_TIMEOUT_INTERVAL);
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -141,19 +147,19 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
         var captured_datetime = "2016-01-01";
 
         var successCallback = function (response) {
-            info("Success Callback Reached!");
+            info(testHint + ": Success Callback Reached!");
             callResponse = response;
         };
         var errorCallback = function (response) {
-            info("Error Callback Reached!");
+            info(testHint + ": Error Callback Reached!");
             callResponse = response;
         };
         var finallyCallback = function (response) {
-            info("Finally Callback Reached!");
+            info(testHint + ": Finally Callback Reached!");
 
-            info("Waiting 1 Second for File Operation Flushout...");
+            info(testHint + ": Waiting 1 Second for File Operation Flushout...");
             setTimeout(function () {
-                info("DONE!");
+                info(testHint + ": DONE!");
                 done();
             }, 1000);
 
@@ -163,14 +169,13 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
     });
 
     it("returns proper data", function () {
+        var testHint = "RETURNS PROPER DATA"
         expect(callResponse).not.toBe(undefined);
         expect(callResponse.body).not.toBe(undefined);
 
-        info("EXTRACTING DATA FROM RESPONSE...");
+        info(testHint + ": EXTRACTING DATA FROM RESPONSE...");
         data = JSON.parse(callResponse.body);
         expect(data).not.toBe(undefined);
-
-        info(data);
         expect(data.entry_id).toBeGreaterThan(1);
 
     });
