@@ -21,14 +21,14 @@ class be_invitation{
 class da_invitation {
 
 
-    public static function AddNewInvitation($host_email, $guest_email){
+    public static function AddNewInvitation($account_id,$host_email, $guest_email){
         
         $token = sha1(uniqid() . $guest_email);
         
-         $sqlCommand = "INSERT INTO invitations (host_email,guest_email,token,created_datetime, expired_datetime)"
-                . "VALUES (?,?,?,NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY))";
+         $sqlCommand = "INSERT INTO invitations (account_id,host_email,guest_email,token,created_datetime, expired_datetime)"
+                . "VALUES (?,?,?,?,NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY))";
          
-         $paramTypeSpec = "sss";
+         $paramTypeSpec = "isss";
          
          $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
@@ -41,7 +41,7 @@ class da_invitation {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec, $host_email, $guest_email, $token)) {
+        if (!$stmt->bind_param($paramTypeSpec, $account_id, $host_email, $guest_email, $token)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -61,7 +61,7 @@ class da_invitation {
     
     public static function GetInvitation($guest_email, $token) {
          
-        $sqlCommand = "SELECT invitation_id,host_email,guest_email,token, created_datetime, expired_datetime"
+        $sqlCommand = "SELECT invitation_id,account_id,host_email,guest_email,token, created_datetime, expired_datetime"
                 . " FROM invitations "
                 . " WHERE guest_email = ? AND token =?";
         
@@ -89,7 +89,7 @@ class da_invitation {
         }
 
         $result = new be_invitation();
-        $stmt->bind_result($result->invitation_id, $result->host_email, $result->guest_email, $result->token, $result->created_datetime, $result->expired_datetime);
+        $stmt->bind_result($result->invitation_id,$result->account_id, $result->host_email, $result->guest_email, $result->token, $result->created_datetime, $result->expired_datetime);
 
         if (!$stmt->fetch()) {
             $result = NULL;
@@ -102,7 +102,7 @@ class da_invitation {
     
     public static function GetInvitationByID($invitation_id) {
          
-        $sqlCommand = "SELECT invitation_id,host_email,guest_email,token, created_datetime, expired_datetime"
+        $sqlCommand = "SELECT invitation_id,account_id,host_email,guest_email,token, created_datetime, expired_datetime"
                 . " FROM invitations "
                 . " WHERE invitation_id=?";
         
@@ -130,7 +130,7 @@ class da_invitation {
         }
 
         $result = new be_invitation();
-        $stmt->bind_result($result->invitation_id, $result->host_email, $result->guest_email, $result->token, $result->created_datetime, $result->expired_datetime);
+        $stmt->bind_result($result->invitation_id, $result->account_id, $result->host_email, $result->guest_email, $result->token, $result->created_datetime, $result->expired_datetime);
 
         if (!$stmt->fetch()) {
             $result = NULL;

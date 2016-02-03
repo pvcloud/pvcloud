@@ -1,10 +1,10 @@
 {
   "name": "pvcloud_lib",
-  "version": "0.0.3",
-  "description": "pvcloud library that actually implements all necessary calls for interaction with a pvcloud environment",
+  "version": "1.0.6",
+  "description": "Library to communicate to a pvCloud environment",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js read"
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -12,7 +12,6 @@
   },
   "keywords": [
     "pvcloud",
-    "library",
     "iot"
   ],
   "author": "Jose Nunez <jose.nunez@intel.com>",
@@ -21,10 +20,10 @@
     "url": "https://github.com/janunezc/pvcloud/issues"
   },
   "homepage": "https://github.com/janunezc/pvcloud#readme",
+  "devDependencies": {
+    "jasmine": "^2.4.1"
+  },
   "dependencies": {
     "request": "^2.67.0"
-  },
-  "devDependencies": {
-    "karma": "^0.13.15"
   }
 }

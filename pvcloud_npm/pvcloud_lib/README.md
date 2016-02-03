@@ -1,3 +1,4 @@
-PVCLOUD LIBRARY
+pvCloud Library
 
-Soon we will have more information here.
+Copyright Intel Corporation (c) 2015-2016
+Authored by Jose Nunez <jose.nunez@intel.com>

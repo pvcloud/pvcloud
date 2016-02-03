@@ -72,6 +72,7 @@ class AddInvitationWebService {
         $decodedPOSTParams = json_decode($rawPOSTContent);
 
         $parameters = new stdClass();
+        $parameters->account_id = $decodedPOSTParams->account_id;
         $parameters->host_email = $decodedPOSTParams->invitation->host_email;
         $parameters->guest_email = $decodedPOSTParams->invitation->guest_email;
 
@@ -88,12 +89,38 @@ class AddInvitationWebService {
         if (!is_string($parameters->guest_email) || $parameters->guest_email == "") {
             $errorsFound[] = "Correo electrónico del invitado es inválido.";
         }
+        if ($parameters->host_email == $parameters->guest_email) {
+            $errorsFound[] = "No se pueden enviar invitaciones al mismo correo del usuario.";
+        }
+        
 
         return $errorsFound;
     }
 
     private static function saveInvitation($parameters) {
-        return da_invitation::AddNewInvitation($parameters->host_email, $parameters->guest_email);
+        $newInvitation = da_invitation::AddNewInvitation($parameters->account_id,$parameters->host_email, $parameters->guest_email);
+        AddInvitationWebService::sendEmailInvitation($parameters->host_email,$parameters->guest_email,$newInvitation->token);
+        return $newInvitation;
+    }
+        /**
+     * 
+     * @param be_account $account
+     */
+    private static function sendEmailInvitation($host_email,$guest_email,$token) {
+
+        $newAccountURL = getBaseURL("pvcloud") . "#/new_account/$token";    
+        $message = "You have been invited by $host_email to join pvCloud. \n";
+        $message.= "Please follow this link to accept this invitation and create a pvCloud account: \n";
+        $message.= $newAccountURL;
+        $to = $guest_email;
+        $subject = "pvCloud - Invitation to Join";
+        
+        $enter = "\r\n";
+        $headers = "From: donotreply@costaricamakers.com $enter";
+        $headers .= "MIME-Version: 1.0 $enter";
+        $headers .= "Content-type: text/plain; charset=utf-8 $enter";
+
+        $result = mail($to, $subject, $message, $headers);
     }
 
 }

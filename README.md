@@ -18,11 +18,11 @@ Additionally we are working on some demos that use pvCloud on specific invention
 
 ## Development Environment and Design
 
-You can find information about development design decisions here:
-https://docs.google.com/presentation/d/1eHB2fyl1IvfC2S5gruYiLurjTzhedpxlufUTa_RU1nU/edit?usp=sharing
+You can find information about architecture design decisions here:
+https://docs.google.com/presentation/d/1ehksrg4Y7YFZivyQiQeqMVH8MvVYgleThohkcjZoPVo/edit?usp=sharing
 
 Also, these slides contain information about how to setup the development environment:
-https://docs.google.com/presentation/d/1eHB2fyl1IvfC2S5gruYiLurjTzhedpxlufUTa_RU1nU/edit#slide=id.g7b18c22b1_017
+https://github.com/janunezc/pvcloud/wiki/Development-Environment-Setup
 
 Finally this document explains how to install GIT/YEOMAN/ANGULAR environment for development and how to set proxies if needed.
 https://docs.google.com/document/d/1UkCnmIk79wvz8NKpM1YVuDrUKy2k-BFrJUX4LkfvW-A/edit?usp=sharing
