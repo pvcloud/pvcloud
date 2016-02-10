@@ -1,7 +1,7 @@
 var request = require("request");
 var pvcloud = require("../index.js");
 pvcloud = pvcloud.pvcloudAPI;
-var baseURL = "http://localhost:8080/pvcloud/backend/";
+var baseURL = "http://crmakers.amr.corp.intel.com/pvcloud/backend/";
 var token;
 var infoStep = 0;
 
@@ -79,7 +79,7 @@ describe("pvCloud User Context", function () {
 
     describe("User Login Context Token", function () {
         it("TOKEN NOT EMPTY", function () {
-            info("TOKEN NOT EMPTY");
+            info("TOKEN NOT EMPTY (good!)");
             expect(token).not.toBe(undefined);
         });
     });
