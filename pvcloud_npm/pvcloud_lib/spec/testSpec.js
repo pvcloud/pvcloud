@@ -1,7 +1,7 @@
 var request = require("request");
 var pvcloud = require("../index.js");
 pvcloud = pvcloud.pvcloudAPI;
-var baseURL = "https://costaricamakers.com/pvcloud_pre/backend/";
+var baseURL = "http://localhost:8080/pvcloud/backend/";
 var token;
 var infoStep = 0;
 
@@ -93,9 +93,9 @@ describe("pvCloud Library WAIT WRITE Call.", function () {
     var callResponse;
     it("should be able to make WRITE SYNCHRONOUS Call and pass through FINALLY callback", function (done) {
         var testHint = "WRITE CALL WAIT";
-        var account_id = 5;
+        var account_id = 1;
         var app_id = 9;
-        var api_key = '8f5fb6fae58b9f597b2a3ccb8019966914661867';
+        var api_key = '1ff73344d60297700b45b8368c927395ffedebec';
         var label = "test";
         var value = "VALUE";
         var type = "STRING";
@@ -123,6 +123,7 @@ describe("pvCloud Library WAIT WRITE Call.", function () {
         expect(callResponse.body).not.toBe(undefined);
 
         info(testHint + ": EXTRACTING DATA FROM RESPONSE...");
+        info(callResponse.body);
         data = JSON.parse(callResponse.body);
         expect(data).not.toBe(undefined);
         expect(data.entry_id).toBeGreaterThan(1);
@@ -138,9 +139,9 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
         info("JASMINE DEFAULT TIMEOUT");
         info(jasmine.DEFAULT_TIMEOUT_INTERVAL);
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-        var account_id = 5;
+        var account_id = 1;
         var app_id = 9;
-        var api_key = '8f5fb6fae58b9f597b2a3ccb8019966914661867';
+        var api_key = '1ff73344d60297700b45b8368c927395ffedebec';
         var label = "test";
         var value = "VALUE";
         var type = "STRING";
