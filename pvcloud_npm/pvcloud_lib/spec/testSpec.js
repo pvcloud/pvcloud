@@ -35,12 +35,23 @@ describe("pvCloud User Context", function () {
 
         var username = "test@costaricamakers.com";
         var password = "abcd";
+        
+        var successReached = false;
+        var errorReached = false;
+        
         var successCallback = function (error, response, body) {
+            successReached = true;
             info(testHint + ": Success Callback Reached!");
+            expect(error).toBeFalsy();
+            expect(response).not.toBe(undefined);
+            expect(body).not.toBe(undefined);
 
         };
         var errorCallback = function (error, response, body) {
+            errorReached = true;
             info(testHint + ": Error Callback Reached!");
+            expect(error).not.toBe(undefined);
+            expect("Executing This").not.toBe("Executing This");
 
         };
         var finallyCallback = function (error, response, body) {
@@ -49,6 +60,8 @@ describe("pvCloud User Context", function () {
             expect(body.status).toBe("OK");
             token = body.data.token;
             info(testHint + ": TOKEN CAPTURED!");
+            expect(successReached).toBe(true);
+            expect(errorReached).toBeFalsy();
             done();
         };
 
