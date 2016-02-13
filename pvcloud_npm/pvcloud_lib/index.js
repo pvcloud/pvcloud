@@ -9,18 +9,57 @@
         DEBUG_COUNT: 0
     };
     var pvCloudAPI = {
+        bearerToken: undefined,
+        connectedAppID: undefined,
+        
         test: function () {
             return "SIMPLE SMOKE TEST";
         },
+        /**
+         * Performs a LOGIN operation to a target pvCloud server defined in baseURL
+         * @param {type} baseURL target pvCloud Server
+         * @param {type} userName user account
+         * @param {type} password password
+         * @param {type} successCallback callback function for successful web service call. Receives (error, response, body) signature
+         * @param {type} errorCallback callback function for error web service call. Receives (error, response, body) signature
+         * @param {type} finallyCallback callback function to be executed whether there was an error or not. Receives (error, response, body) signature
+         * @returns {undefined}
+         */
         Login: function (baseURL, userName, password, successCallback, errorCallback, finallyCallback) {
-            var result;
             var loginURL = baseURL + "session_login.php?email="+userName+"&pwd="+password;
             var PostData = {email:userName, pwd:password};
-            postWrapper(loginURL, PostData, successCallback, errorCallback, finallyCallback)
+            var myFinallyCallback = function(error, response, body){
+                pvCloudAPI.connectedAppID = undefined;
+                finallyCallback(error, response, body);
+            };
             
-           
+            postWrapper(loginURL, PostData, successCallback, errorCallback, myFinallyCallback);
+        },
+        
+        /**
+         * Connects to a particular App (defined by AppID) belonging to a previously logged-in account.
+         * @param {int} app_id The ID of the app to connect the device to
+         * @param {type} successCallback
+         * @param {type} errorCallback
+         * @param {type} finallyCallback
+         * @returns {undefined}
+         */
+        ConnectByAppID: function(app_id, successCallback, errorCallback, finallyCallback){
             
         },
+        
+        /**
+         * Connects to a particular App (defined by AppName) belonging to a previously logged-in account.
+         * @param {int} app_id The ID of the app to connect the device to
+         * @param {type} successCallback
+         * @param {type} errorCallback
+         * @param {type} finallyCallback
+         * @returns {undefined}
+         */
+        ConnectByAppName: function(app_id, successCallback, errorCallback, finallyCallback){
+            return {};
+        },
+        
         /**
          * Sends a value "asynchronously" using the file-based mechanism. 
          * @param {string} baseURL 
@@ -79,9 +118,9 @@
     /**
      * Wraps the inner call of an HTTP Request
      * @param {type} url URL to call
-     * @param {type} successCallback Function to call when HTTP Request is successful (Status code 200). Receives parameters response, body, error
-     * @param {type} errorCallback Function to call when HTTP Request is NOT successful (Status code not 200). Receives parameters response, body, error
-     * @param {type} finallyCallback Function to call at the end of the process, passing parameters response, body, error
+     * @param {type} successCallback Function to call when HTTP Request is successful (Status code 200). Receives parameters error, response, body
+     * @param {type} errorCallback Function to call when HTTP Request is NOT successful (Status code not 200). Receives parameters error, response, body
+     * @param {type} finallyCallback Function to call at the end of the process, passing parameters error, response, body
      * @param {type} no_wait option to execute in async/no_wait mode where results of a call are stored in a file.
      * @returns {undefined}
      */
@@ -114,7 +153,7 @@
                 }
 
                 if (successCallback)
-                    successCallback(response, body, error);
+                    successCallback(error,response, body);
             } else if (response && response.statusCode) {
                 log("WRONG STATUS CODE:---------------------------------------------");
                 log(response.statusCode);
@@ -126,7 +165,7 @@
                 }
 
                 if (errorCallback) {
-                    errorCallback(response, body, error);
+                    errorCallback(error, response, body);
                 }
 
                 //TODO: STOPPED HERE LOGIC FOR NO_WAIT
@@ -137,7 +176,7 @@
                 log("PVCLOUD ERROR PROCESSING:-----------------------------");
                 logError(error);
                 if (errorCallback)
-                    errorCallback(response, body, error);
+                    errorCallback(error,response, body);
                 else {
                     OutputResult("PVCLOUD_ERROR");
                 }
@@ -146,13 +185,13 @@
                 log(error);
                 logError(response);
                 if (errorCallback)
-                    errorCallback(response, body, error);
+                    errorCallback(error, response, body);
                 else
                     OutputResult("PVCLOUD_FAILURE");
             }
 
             if (finallyCallback)
-                finallyCallback(response, body, error);
+                finallyCallback(error, response, body);
         });
         log("requestWrapper() - END");
     }
@@ -165,19 +204,19 @@
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
                 if (successCallback)
-                    successCallback(response, body, error);
+                    successCallback(error, response, body);
             } else if (error){
                 if(errorCallback){
-                    Callback(response, body, error);
+                    errorCallback(error, response, body);
                 }
             } else if (response && response.statusCode) {
                 log("WRONG STATUS CODE:---------------------------------------------");
                 log(response.statusCode);
                 log("RESPONSE!!!----------------------------------------------");
                 log(response);
-                errorLog("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
+                logError("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
                 if (errorCallback) {
-                    errorCallback(response, body, error);
+                    errorCallback(error, response, body);
                 } else {
                     OutputResult("PVCLOUD_ERROR");
                 }
@@ -186,24 +225,24 @@
                 log("ERROR:------------------------------------------------");
                 log(error);
                 log("PVCLOUD ERROR PROCESSING:-----------------------------");
-                errorLog(error);
+                logError(error);
                 if (errorCallback)
-                    errorCallback(response, body, error);
+                    errorCallback(error, response, body);
                 else {
                     OutputResult("PVCLOUD_ERROR");
                 }
             } else {
                 log("UNKNOWN FAILURE:---------------------------------------");
                 log(error);
-                errorLog(response);
+                logError(response);
                 if (errorCallback)
-                    errorCallback(response, body, error);
+                    errorCallback(error, response, body);
                 else
                     OutputResult("PVCLOUD_FAILURE");
             }
 
             if (finallyCallback)
-                finallyCallback(response, body, error);
+                finallyCallback(error, response, body);
         });
     }
 
@@ -317,7 +356,6 @@
             second = "0" + second;
         return year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
     }
-
 
     exports.pvcloudAPI = pvCloudAPI;
 })();

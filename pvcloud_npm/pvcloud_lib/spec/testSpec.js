@@ -1,7 +1,7 @@
 var request = require("request");
 var pvcloud = require("../index.js");
 pvcloud = pvcloud.pvcloudAPI;
-var baseURL = "http://crmakers.amr.corp.intel.com/pvcloud_test/backend/";
+var baseURL = "http://crmakers.intel.com:8080/pvcloud_test/backend/";
 var token;
 var infoStep = 0;
 
@@ -35,15 +35,15 @@ describe("pvCloud User Context", function () {
 
         var username = "test@costaricamakers.com";
         var password = "abcd";
-        var successCallback = function (response) {
+        var successCallback = function (error, response, body) {
             info(testHint + ": Success Callback Reached!");
 
         };
-        var errorCallback = function (response) {
+        var errorCallback = function (error, response, body) {
             info(testHint + ": Error Callback Reached!");
 
         };
-        var finallyCallback = function (response) {
+        var finallyCallback = function (error, response, body) {
             info(testHint + ": Finally Callback Reached");
             var body = JSON.parse(response.body);
             expect(body.status).toBe("OK");
@@ -60,13 +60,13 @@ describe("pvCloud User Context", function () {
         var testHint = "LOGIN WRONG CREDENTIALS";
         var wrong_username = "test@costaricamakers.com";
         var wrong_password = "-----";
-        var successCallback = function (response) {
+        var successCallback = function (error, response, body) {
             info(testHint + ": Success Callback Reached!");
         };
-        var errorCallback = function (response) {
+        var errorCallback = function (error, response, body) {
             info(testHint + ": Error Callback Reached!");
         };
-        var finallyCallback = function (response) {
+        var finallyCallback = function (error, response, body) {
             info(testHint + ": Finally Callback Reached");
             var body = JSON.parse(response.body);
             expect(body.status).toBe("ERROR");
@@ -101,15 +101,15 @@ describe("pvCloud Library WAIT WRITE Call.", function () {
         var type = "STRING";
         var captured_datetime = "2016-01-01";
 
-        var successCallback = function (response) {
+        var successCallback = function (error, response, body) {
             info(testHint + ": Success Callback Reached!");
             callResponse = response;
         };
-        var errorCallback = function (response) {
+        var errorCallback = function (error, response, body) {
             info(testHint + ": Error Callback Reached!");
             callResponse = response;
         };
-        var finallyCallback = function (response) {
+        var finallyCallback = function (error, response, body) {
             info(testHint + ": Finally Callback Reached!");
             done();
         };
@@ -147,15 +147,15 @@ describe("pvCloud Library NO_WAIT WRITE Call.", function () {
         var type = "STRING";
         var captured_datetime = "2016-01-01";
 
-        var successCallback = function (response) {
+        var successCallback = function (error, response, body) {
             info(testHint + ": Success Callback Reached!");
             callResponse = response;
         };
-        var errorCallback = function (response) {
+        var errorCallback = function (error, response, body) {
             info(testHint + ": Error Callback Reached!");
             callResponse = response;
         };
-        var finallyCallback = function (response) {
+        var finallyCallback = function (error, response, body) {
             info(testHint + ": Finally Callback Reached!");
 
             info(testHint + ": Waiting 1 Second for File Operation Flushout...");
