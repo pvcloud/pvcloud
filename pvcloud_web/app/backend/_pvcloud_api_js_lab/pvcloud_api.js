@@ -320,16 +320,16 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         var errorLogFilePath = parameters.error_log_file || "/error_pvcloud.log";
         log(errorLogFilePath);
 
-        /**
-         fs.appendFile(errorLogFilePath, message, function (err) {
-         if (err) {
-         console.log(err);
-         console.log("ERROR @ errorLog()");
-         console.log("Try adding an error_log_file parameter");
-         console.log(err);
-         }
-         });
-         */
+
+        fs.appendFile(errorLogFilePath, message, function (err) {
+            if (err) {
+                console.log(err);
+                console.log("ERROR @ errorLog()");
+                console.log("Try adding an error_log_file parameter");
+                console.log(err);
+            }
+        });
+
 
     }
 
@@ -379,26 +379,24 @@ var pvCloudModule = function (app_id, api_key, account_id, baseURL) {
         if (!tag)
             tag = "any";
 
-        var filePath = parameters.async_path || "";
+        var filePath = parameters.async_path || "/home/root";
 
         log("WRITING TO FILE...");
 
         try {
-            /*
-             var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
-             log(resultFile);
-             var stream = fs.createWriteStream(resultFile);
-             stream.once('open', function (fd) {
-             try {
-             stream.write(result);
-             stream.end();
-             stream.close();
-             log("FS END REACHED!");
-             } catch (ex) {
-             errorLog(ex);
-             }
-             });
-             */
+            var resultFile = filePath + "/out_pvcloud_" + tag + ".txt";
+            log(resultFile);
+            var stream = fs.createWriteStream(resultFile);
+            stream.once('open', function (fd) {
+                try {
+                    stream.write(result);
+                    stream.end();
+                    stream.close();
+                    log("FS END REACHED!");
+                } catch (ex) {
+                    errorLog(ex);
+                }
+            });
             log("END OF resultToFile()");
         } catch (ex) {
             errorLog(ex);

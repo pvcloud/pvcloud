@@ -8,106 +8,122 @@
         NO_WAIT_RESULT_BASE_FILE: "result_pvcloud_", /*to be completed with label_operation*/
         DEBUG_COUNT: 0
     };
-    var pvCloudAPI = {
-        bearerToken: undefined,
-        connectedAppID: undefined,
-        
-        test: function () {
-            return "SIMPLE SMOKE TEST";
-        },
-        /**
-         * Performs a LOGIN operation to a target pvCloud server defined in baseURL
-         * @param {type} baseURL target pvCloud Server
-         * @param {type} userName user account
-         * @param {type} password password
-         * @param {type} successCallback callback function for successful web service call. Receives (error, response, body) signature
-         * @param {type} errorCallback callback function for error web service call. Receives (error, response, body) signature
-         * @param {type} finallyCallback callback function to be executed whether there was an error or not. Receives (error, response, body) signature
-         * @returns {undefined}
-         */
-        Login: function (baseURL, userName, password, successCallback, errorCallback, finallyCallback) {
-            var loginURL = baseURL + "session_login.php?email="+userName+"&pwd="+password;
-            var PostData = {email:userName, pwd:password};
-            var myFinallyCallback = function(error, response, body){
-                pvCloudAPI.connectedAppID = undefined;
-                finallyCallback(error, response, body);
-            };
-            
-            postWrapper(loginURL, PostData, successCallback, errorCallback, myFinallyCallback);
-        },
-        
-        /**
-         * Connects to a particular App (defined by AppID) belonging to a previously logged-in account.
-         * @param {int} app_id The ID of the app to connect the device to
-         * @param {type} successCallback
-         * @param {type} errorCallback
-         * @param {type} finallyCallback
-         * @returns {undefined}
-         */
-        ConnectByAppID: function(app_id, successCallback, errorCallback, finallyCallback){
-            
-        },
-        
-        /**
-         * Connects to a particular App (defined by AppName) belonging to a previously logged-in account.
-         * @param {int} app_id The ID of the app to connect the device to
-         * @param {type} successCallback
-         * @param {type} errorCallback
-         * @param {type} finallyCallback
-         * @returns {undefined}
-         */
-        ConnectByAppName: function(app_id, successCallback, errorCallback, finallyCallback){
-            return {};
-        },
-        
-        /**
-         * Sends a value "asynchronously" using the file-based mechanism. 
-         * @param {string} baseURL 
-         * @param {int} account_id
-         * @param {int} app_id
-         * @param {int} api_key
-         * @param {string} label
-         * @param {string, integer, long, json simple object} value
-         * @param {string} type
-         * @param {datetime} captured_datetime
-         * @param {function} successCallback
-         * @param {function} errorCallback
-         * @param {function} finallyCallback
-         * @param {boolean} no_wait
-         * @returns {undefined}
-         */
-        Write: function (baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, no_wait) {
-            log("pvCloud.Write() - BEGIN");
-            var wsURL = baseURL;
-            wsURL += "vse_add_value.php";
-            wsURL += '?app_id=' + app_id;
-            wsURL += '&api_key=' + api_key;
-            wsURL += '&account_id=' + account_id;
-            wsURL += '&label=' + label;
-            wsURL += '&value=' + value;
-            wsURL += '&type=' + type;
-            wsURL += '&captured_datetime=' + captured_datetime;
-            var opData = {
-                label: label,
-                operation: "WRITE"
-            };
-            log("pvCloud.Write() - Calling requestWrapper");
-            requestWrapper(wsURL, successCallback, errorCallback, finallyCallback, no_wait, opData);
-            log("pvCloud.Write() - END");
-        },
-        /**
-         * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
-         * @param {string} label
-         * @param {function} successCallback
-         * @param {function} errorCallback
-         * @param {function} finallyCallback
-         * @returns {undefined}
-         */
-        Read: function (label, successCallback, errorCallback, finallyCallback) {
+    var pvCloudAPI = function () {
+        var bearerToken = undefined;
+        var connectedAppID = undefined;
 
-        }
+        return{
+            test: function () {
+                return "SIMPLE SMOKE TEST";
+            },
+            /**
+             * Performs a LOGIN operation to a target pvCloud server defined in baseURL
+             * @param {type} baseURL target pvCloud Server
+             * @param {type} userName user account
+             * @param {type} password password
+             * @param {type} successCallback callback function for successful web service call. Receives (error, response, body) signature
+             * @param {type} errorCallback callback function for error web service call. Receives (error, response, body) signature
+             * @param {type} finallyCallback callback function to be executed whether there was an error or not. Receives (error, response, body) signature
+             * @returns {undefined}
+             */
+            Login: function (baseURL, userName, password, successCallback, errorCallback, finallyCallback) {
+                var loginURL = baseURL + "session_login.php?email=" + userName + "&pwd=" + password;
+                var PostData = {email: userName, pwd: password};
+                var myFinallyCallback = function (error, response, body) {
+                    var bodyObject = JSON.parse(body);
+                    var data = bodyObject.data || {};
+                    bearerToken = data.token;
+                    console.log("<TOKEN>");
+                    console.log(bearerToken);
+                    console.log("</TOKEN");
+                    connectedAppID = undefined;
+                    finallyCallback(error, response, body);
+                };
+                postWrapper(loginURL, PostData, successCallback, errorCallback, myFinallyCallback);
+            },
+            IsLoggedIn: function () {
+                console.log("BEARER TOOOOKEN");
+                console.log(bearerToken);
+                console.log("/BEARER TOOOOKEN");
+                if(!bearerToken){
+                    return false;
+                } 
+                return true;
+            },
+            GetLoginToken: function () {
+                return bearerToken;
+            },
+            /**
+             * Connects to a particular App (defined by AppID) belonging to a previously logged-in account.
+             * @param {int} app_id The ID of the app to connect the device to
+             * @param {type} successCallback
+             * @param {type} errorCallback
+             * @param {type} finallyCallback
+             * @returns {undefined}
+             */
+            ConnectByAppID: function (app_id, successCallback, errorCallback, finallyCallback) {
 
-    };
+            },
+            /**
+             * Connects to a particular App (defined by AppName) belonging to a previously logged-in account.
+             * @param {int} app_id The ID of the app to connect the device to
+             * @param {type} successCallback
+             * @param {type} errorCallback
+             * @param {type} finallyCallback
+             * @returns {undefined}
+             */
+            ConnectByAppName: function (app_id, successCallback, errorCallback, finallyCallback) {
+                return {};
+            },
+            /**
+             * Sends a value "asynchronously" using the file-based mechanism. 
+             * @param {string} baseURL 
+             * @param {int} account_id
+             * @param {int} app_id
+             * @param {int} api_key
+             * @param {string} label
+             * @param {string, integer, long, json simple object} value
+             * @param {string} type
+             * @param {datetime} captured_datetime
+             * @param {function} successCallback
+             * @param {function} errorCallback
+             * @param {function} finallyCallback
+             * @param {boolean} no_wait
+             * @returns {undefined}
+             */
+            Write: function (baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, no_wait) {
+                log("pvCloud.Write() - BEGIN");
+                var wsURL = baseURL;
+                wsURL += "vse_add_value.php";
+                wsURL += '?app_id=' + app_id;
+                wsURL += '&api_key=' + api_key;
+                wsURL += '&account_id=' + account_id;
+                wsURL += '&label=' + label;
+                wsURL += '&value=' + value;
+                wsURL += '&type=' + type;
+                wsURL += '&captured_datetime=' + captured_datetime;
+                var opData = {
+                    label: label,
+                    operation: "WRITE"
+                };
+                log("pvCloud.Write() - Calling requestWrapper");
+                requestWrapper(wsURL, successCallback, errorCallback, finallyCallback, no_wait, opData);
+                log("pvCloud.Write() - END");
+            },
+            /**
+             * Requests a last_value from pvCloud in an asyncrhouous fashion using the file mechanism for the given label (or any label if not provided)
+             * @param {string} label
+             * @param {function} successCallback
+             * @param {function} errorCallback
+             * @param {function} finallyCallback
+             * @returns {undefined}
+             */
+            Read: function (label, successCallback, errorCallback, finallyCallback) {
+
+            }
+        };
+    }();
+
     function OutputResult(result) {
         log("OutputResult---------------------------");
         log(result);
@@ -153,7 +169,7 @@
                 }
 
                 if (successCallback)
-                    successCallback(error,response, body);
+                    successCallback(error, response, body);
             } else if (response && response.statusCode) {
                 log("WRONG STATUS CODE:---------------------------------------------");
                 log(response.statusCode);
@@ -176,7 +192,7 @@
                 log("PVCLOUD ERROR PROCESSING:-----------------------------");
                 logError(error);
                 if (errorCallback)
-                    errorCallback(error,response, body);
+                    errorCallback(error, response, body);
                 else {
                     OutputResult("PVCLOUD_ERROR");
                 }
@@ -205,8 +221,8 @@
                 log("SUCCESS!!!--------------------------------------------");
                 if (successCallback)
                     successCallback(error, response, body);
-            } else if (error){
-                if(errorCallback){
+            } else if (error) {
+                if (errorCallback) {
                     errorCallback(error, response, body);
                 }
             } else if (response && response.statusCode) {

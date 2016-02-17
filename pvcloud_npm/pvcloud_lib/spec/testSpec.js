@@ -93,7 +93,12 @@ describe("pvCloud User Context", function () {
     describe("User Login Context Token", function () {
         it("TOKEN NOT EMPTY", function () {
             info("TOKEN NOT EMPTY (good!)");
+            console.log(token);
+            console.log(pvcloud.GetLoginToken());
+            console.log(pvcloud.IsLoggedIn());
             expect(token).not.toBe(undefined);
+            expect(pvcloud.IsLoggedIn()).toBe(true);
+            info("TOKEN: " + pvcloud.GetLoginToken());
         });
     });
 

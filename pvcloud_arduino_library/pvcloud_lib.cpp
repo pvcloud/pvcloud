@@ -11,7 +11,7 @@
 String asyncFilePath = "/home/root";
 String errorFile = "/home/root/err_pvcloud.txt";
 
-void fileCleanup(String label) {
+void fileCleanup(String label) { 
     String fileCleanupCommand = "echo \"\" > ";
     fileCleanupCommand += asyncFilePath + "/out_pvcloud_" + label + ".txt";
     Serial.println("FILE CLEANUP FOR " + label + " as " + fileCleanupCommand);
@@ -75,7 +75,7 @@ String PVCloud::Check(String label) {
     fileName += ".txt";
 
     FILE *filePointer;
-    filePointer = fopen(fileName.buffer, "rb");
+    filePointer = fopen(fileName.buffer, "rb");/*rb is important for the whole thing to work!!!*/
     char fileContent[200];
 
     fgets(fileContent, 200, filePointer);
@@ -229,7 +229,7 @@ void PVCloud::SendFloatNoWait(char *label, float value) {
 String PVCloud::RetrieveStringValue(String label) {
     system("rm /pvcloud_file_interface.txt");
 
-    String pvcloudCommand = "node /home/root/pvcloud_api.js action='get_last_value_simple' value_label='";
+    String pvcloudCommand = "node /home/root/pvcloud_api.js action='read' label='";
     pvcloudCommand = pvcloudCommand + label;
     pvcloudCommand = pvcloudCommand + "' captured_datetime = '2000-01-01+00:00' > pvcloud_file_interface.txt";
     system(pvcloudCommand.buffer);
