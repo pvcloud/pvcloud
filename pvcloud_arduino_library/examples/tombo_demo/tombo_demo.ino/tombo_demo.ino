@@ -124,7 +124,7 @@ void processSensorsLineChanges(){
 
 void asyncPVCloudUpdate(){
   String returnedValue = prevReturnedValue;
-  
+  Serial.println("ASYNC PVCLOUD UPDATE");
   if(! asyncCallInProgress) {
     if(millis()-requestCompleteMillis > minMillisBeforeNextRequest) {
       pvcloud.ReadAsync("OPMODE");
