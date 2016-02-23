@@ -274,12 +274,49 @@ class da_account {
 
         return $result;
     }
+    
+    public static function GetIoTElementByID($iot_element_id) {
+        $sqlCommand = "SELECT account_id,element_key"
+                . " FROM iot_elements "
+                . " WHERE iot_element_id = ? ";
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->bind_param("i", $iot_element_id)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $result = new be_iot_element();
+        $stmt->bind_result($result->account_id, $result->element_key);
+
+        if (!$stmt->fetch()) {
+            $result = NULL;
+        }
+
+        $stmt->close();
+
+        return $result;
+    }    
 
     public static function CreateIoTElement($account_id) {
-        $element_key = uniqid();
-
+        $salt = DAConf::$salt;
         $sqlCommand = "INSERT INTO iot_elements (account_id, element_key, created_datetime)"
-                . "VALUES (?,?, NOW())";
+                . "VALUES (?,SHA1(CONCAT(UUID(),?)), NOW())";
 
         $paramTypeSpec = "is";
 
@@ -294,7 +331,7 @@ class da_account {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec, $account_id, $element_key)) {
+        if (!$stmt->bind_param($paramTypeSpec, $account_id, $salt)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -305,8 +342,8 @@ class da_account {
         }
 
         $stmt->close();
-
-        $retrievedElement = da_account::ValidateElementKey($account_id, $element_key);
+        $iot_element_id = $mysqli->insert_id;
+        $retrievedElement = da_account::GetIoTElementByID($iot_element_id);
         return $retrievedElement;
     }
 
