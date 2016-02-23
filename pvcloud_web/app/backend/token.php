@@ -3,12 +3,6 @@
 require 'vendor/autoload.php';
 require_once 'DA/da_conf.php';
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 $app = new \Slim\Slim();
 
 $app->post('/', function () {

@@ -30,6 +30,7 @@ class be_page {
     public $created_datetime = NULL;
     public $modified_datetime = NULL;
     public $deleted_datetime = NULL;
+
 }
 
 class da_apps_registry {
@@ -114,6 +115,46 @@ class da_apps_registry {
             $result = NULL;
         }
 
+        $stmt->close();
+
+        return $result;
+    }
+
+    public static function GetAppByAccountAndAppName($account_id, $app_name) {
+        $sqlCommand = ""
+                . "SELECT   app_id,account_id,app_nickname,app_description,api_key,visibility_type_id,created_datetime,modified_datetime,deleted_datetime,last_connected_datetime "
+                . " FROM app_registry "
+                . " WHERE account_id = ? AND app_nickname = ? ";
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->bind_param("is", $account_id, $app_name)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $result = new be_app();
+        $stmt->bind_result(
+                $result->app_id, $result->account_id, $result->app_nickname, $result->app_description, $result->api_key, $result->visibility_type_id, $result->created_datetime, $result->modified_datetime, $result->deleted_datetime, $result->last_connected_datetime
+        );
+
+        if (!$stmt->fetch()) {
+            $result = NULL;
+        }
         $stmt->close();
 
         return $result;
@@ -247,7 +288,7 @@ class da_apps_registry {
 
         return $result;
     }
-    
+
     /**
      * Updates a app with the provided information and returns the resulting record as saved.
      * @param be_app $page
@@ -287,8 +328,8 @@ class da_apps_registry {
 
         $retrievedPage = da_apps_registry::GetPage($page->page_id);
         return $retrievedPage;
-    } 
-    
+    }
+
     /**
      * Updates a app with the provided information and returns the resulting record as saved.
      * @param be_app $page
@@ -325,10 +366,10 @@ class da_apps_registry {
         $stmt->close();
 
         $retrievedPage = da_apps_registry::GetPage($page_id);
-        
+
         return $retrievedPage;
-    }     
-    
+    }
+
     /**
      * Registers a app and returns the resultant record as be_app
      * @param be_app $page
@@ -351,7 +392,7 @@ class da_apps_registry {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec,$page->app_id, $page->title, $page->description, $page->visibility_type_id)) {
+        if (!$stmt->bind_param($paramTypeSpec, $page->app_id, $page->title, $page->description, $page->visibility_type_id)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }

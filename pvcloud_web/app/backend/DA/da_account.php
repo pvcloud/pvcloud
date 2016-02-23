@@ -19,6 +19,13 @@ class be_account {
 
 }
 
+class be_iot_element {
+
+    public $account_id = 0;
+    public $element_key = "";
+
+}
+
 class da_account {
 
     public static function ActivateAccount($email, $guid) {
@@ -141,7 +148,7 @@ class da_account {
 
         return $result;
     }
-    
+
     /**
      * 
      * @param int $account_id
@@ -185,7 +192,7 @@ class da_account {
 
         return $result;
     }
-    
+
     /**
      * Updates the data of an account
      * @param be_account $account
@@ -214,14 +221,7 @@ class da_account {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec, 
-                $account->confirmation_guid,
-                $account->confirmed,
-                $account->deleted_datetime, 
-                $account->email,
-                $account->nickname,
-                $account->pwd_hash,
-                $account->account_id)) {
+        if (!$stmt->bind_param($paramTypeSpec, $account->confirmation_guid, $account->confirmed, $account->deleted_datetime, $account->email, $account->nickname, $account->pwd_hash, $account->account_id)) {
             $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
@@ -235,6 +235,79 @@ class da_account {
 
         $savedAccount = da_account::GetAccount($account->email);
         return $savedAccount;
-    }    
+    }
+
+    public static function ValidateElementKey($account_id, $element_key) {
+        $sqlCommand = "SELECT account_id,element_key"
+                . " FROM iot_elements "
+                . " WHERE account_id = ? && element_key=? ";
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->bind_param("is", $account_id, $element_key)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $result = new be_iot_element();
+        $stmt->bind_result($result->account_id, $result->element_key);
+
+        if (!$stmt->fetch()) {
+            $result = NULL;
+        }
+
+        $stmt->close();
+
+        return $result;
+    }
+
+    public static function CreateIoTElement($account_id) {
+        $element_key = uniqid();
+
+        $sqlCommand = "INSERT INTO iot_elements (account_id, element_key, created_datetime)"
+                . "VALUES (?,?, NOW())";
+
+        $paramTypeSpec = "is";
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->bind_param($paramTypeSpec, $account_id, $element_key)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $stmt->close();
+
+        $retrievedElement = da_account::ValidateElementKey($account_id, $element_key);
+        return $retrievedElement;
+    }
 
 }
