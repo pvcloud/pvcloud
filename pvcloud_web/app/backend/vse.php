@@ -12,7 +12,8 @@ require_once './DA/da_apps_registry.php';
 require_once './DA/da_session.php';
 require_once './inc/SimpleResponse.php';
 
-$app = new \Slim\Slim();
+$app = new \Slim\App();
+
 
 $app->post('/login', function () {
     $loginResult = LoginHelper::DoLogin();
@@ -24,11 +25,73 @@ $app->post('/login', function () {
 $app->post("/connect", function() {
 
     $connectResult = AppConnectHelper::AppConnect();
-    
+
     include './inc/incJSONHeaders.php';
     setcookie("loginResult", json_encode($connectResult));
     echo json_encode($connectResult);
 });
+
+/* label, app_key, element_key, value come in the body of the request */
+
+$app->get('/appdata',function($request, $response, $args) {
+    $result = new stdClass();
+    $result->message = "GET: /appdata";
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
+$app->get('/appdata/{id}', function($request, $response, $args) {
+    $result = new stdClass();
+    $result->message = "GET: /appdata/{id}";
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
+$app->post('/appdata', function($request, $response, $args) {
+    $result = new stdClass();
+    $result->message = "POST: /appdata";
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
+$app->post('/appdata/{id}', function($request, $response, $args) {
+    $result = new stdClass();
+    $result->message = "POST: /appdata/{id}";
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
+/* app_key, element_key are passed through header or through cookies */
+$app->delete("/appdata", function() {
+    $result = new stdClass();
+    $result->message = "DELETE: /appdata";
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
+/* app_key, element_key are passed through header or through cookies */
+$app->delete("/appdata/{app_id}", function() {
+    $result = new stdClass();
+    $result->message = "DELETE: /appdata/{app_id}";
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
+/* app_key, element_key are passed through header or through cookies */
+$app->delete("/appdata/{app_id}/{count}", function($request, $response, $args) {
+    $result = new stdClass();
+    $result->message = "DELETE: /appdata/{app_id}/{count}";
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
 $app->run();
 
 class LoginHelper {
@@ -123,7 +186,7 @@ class AppConnectHelper {
 
             if (AppConnectHelper::parametersAreValid($parameters)) {
                 $response->status = "OK";
-                $response->message = "";                
+                $response->message = "";
                 $response->data = AppConnectHelper::doAppConnect($parameters->account_id, $parameters->token, $parameters->element_key, $parameters->app_id, $parameters->app_name);
             } else {
                 $response->status = "Error";
@@ -149,7 +212,7 @@ class AppConnectHelper {
 
     private static function parametersAreValid($parameters) {
         if ($parameters->account_id > 0 && ($parameters->token != "" || $parameters->element_key != "")) {
-            if ($parameters->app_id > 0  || $parameters->app_name != "") {
+            if ($parameters->app_id > 0 || $parameters->app_name != "") {
                 return true;
             }
         }
@@ -161,7 +224,7 @@ class AppConnectHelper {
         $result = new be_ConnectResult();
         $elementAuthentication = AppConnectHelper::doElementAuthentication($account_id, $token, $element_key);
         if ($elementAuthentication != "") {
-            
+
             $result->element_key = $elementAuthentication;
             $app = AppConnectHelper::getAppData($app_id, $app_name, $account_id);
             $result->app_id = $app->app_id;
@@ -193,6 +256,30 @@ class AppConnectHelper {
         } else { //GET APP KEY BY ACCOUNT/APPNAME SEARCH
             return da_apps_registry::GetAppByAccountAndAppName($account_id, $app_name);
         }
+    }
+
+}
+
+class AppDataHelper {
+
+    public static function Write() {
+        
+    }
+    
+    public static function Read(){
+        
+    }
+    
+    public static function Delete(){
+        
+    }
+
+    private static function collectParameters() {
+        
+    }
+
+    private static function parametersAreValid() {
+        
     }
 
 }
