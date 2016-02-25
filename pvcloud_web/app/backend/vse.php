@@ -31,62 +31,60 @@ $app->post("/connect", function() {
     echo json_encode($connectResult);
 });
 
-/* label, app_key, element_key, value come in the body of the request */
-
-$app->get('/appdata',function($request, $response, $args) {
-    $result = new stdClass();
-    $result->message = "GET: /appdata";
-
+$app->get('/appdata/{app_id}/{app_key}/{element_key}', function($request, $response, $args) {
+    
+    $result = AppDataHelper::Read($args['app_id'], $args['app_key'], $args['element_key']);
+    
     include './inc/incJSONHeaders.php';
     echo json_encode($result);
 });
 
-$app->get('/appdata/{id}', function($request, $response, $args) {
-    $result = new stdClass();
-    $result->message = "GET: /appdata/{id}";
-
+$app->get('/appdata/{app_id}/{app_key}/{element_key}/{label}', function($request, $response, $args) {
     include './inc/incJSONHeaders.php';
-    echo json_encode($result);
+    echo json_encode($args);
 });
+
+$app->get('/appdata/{app_id}/{app_key}/{element_key}/{label}/{count}', function($request, $response, $args) {
+    include './inc/incJSONHeaders.php';
+    echo json_encode($args);
+});
+
+
+//$app->get('/appdata/{id}/{label}', function($request, $response, $args) {
+//    $result = new stdClass();
+//    $result->message = "GET: /appdata/{id}";
+//
+//    include './inc/incJSONHeaders.php';
+//    echo json_encode($args);
+//});
+//
+//$app->get('/appdata/{id}/{label}/{count}', function($request, $response, $args) {
+//    $result = new stdClass();
+//    $result->message = "GET: /appdata/{id}";
+//
+//    include './inc/incJSONHeaders.php';
+//    echo json_encode($args);
+//});
 
 $app->post('/appdata', function($request, $response, $args) {
     $result = new stdClass();
     $result->message = "POST: /appdata";
 
     include './inc/incJSONHeaders.php';
-    echo json_encode($result);
+    echo json_encode($args);
 });
 
-$app->post('/appdata/{id}', function($request, $response, $args) {
+$app->post('/appdata/{data1}', function($request, $response, $args) {
     $result = new stdClass();
-    $result->message = "POST: /appdata/{id}";
+    $result->message = "POST: /appdata";
 
     include './inc/incJSONHeaders.php';
-    echo json_encode($result);
+    echo json_encode($request);
 });
 
-/* app_key, element_key are passed through header or through cookies */
-$app->delete("/appdata", function() {
+$app->delete("/appdata/{data1}", function() {
     $result = new stdClass();
     $result->message = "DELETE: /appdata";
-
-    include './inc/incJSONHeaders.php';
-    echo json_encode($result);
-});
-
-/* app_key, element_key are passed through header or through cookies */
-$app->delete("/appdata/{app_id}", function() {
-    $result = new stdClass();
-    $result->message = "DELETE: /appdata/{app_id}";
-
-    include './inc/incJSONHeaders.php';
-    echo json_encode($result);
-});
-
-/* app_key, element_key are passed through header or through cookies */
-$app->delete("/appdata/{app_id}/{count}", function($request, $response, $args) {
-    $result = new stdClass();
-    $result->message = "DELETE: /appdata/{app_id}/{count}";
 
     include './inc/incJSONHeaders.php';
     echo json_encode($result);
@@ -262,23 +260,56 @@ class AppConnectHelper {
 
 class AppDataHelper {
 
+    public static function Read($app_id, $app_key, $element_key, $label, $count) {
+        /*
+         * 1. Validate App_id and App Key
+         * 2. Validate Element Key
+         * 3. Bring data for label and count
+         */
+
+        $result = new SimpleResponse();
+
+        try {
+            if (AppDataHelper::validateApp($app_id, $app_key)) {
+                if (AppDataHelper::validateElementKey($element_key)) {
+                    $appData = AppDataHelper::retrieveData($label, $count);
+                    $result->status = "OK";
+                    $result->data = $appData;
+                } else {
+                    $result->status = "ERROR";
+                    $result->message = "Element Key Validation Error";
+                }
+            } else {
+                $result->status = "ERROR";
+                $result->message = "App Validation Error";
+            }
+        } catch (Exception $e) {
+            $result->status = "EXCEPTION";
+            $result->message = $e->getMessage();
+        }
+
+        return $result;
+    }
+
     public static function Write() {
         
     }
-    
-    public static function Read(){
-        
-    }
-    
-    public static function Delete(){
+
+    public static function Delete() {
         
     }
 
-    private static function collectParameters() {
+    private static function validateApp($app_id, $app_key) {
+        $app = da_apps_registry::GetApp($app_id);
+        if($app && $app->api_key == $app_key) return true;
+        return false;
+    }
+
+    private static function validateElementKey($element_key) {
         
     }
 
-    private static function parametersAreValid() {
+    private static function retrieveData($label, $count) {
         
     }
 
