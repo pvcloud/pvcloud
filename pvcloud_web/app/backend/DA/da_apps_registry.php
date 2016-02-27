@@ -172,19 +172,23 @@ class da_apps_registry {
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            $msg =  "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
         }
 
         if (!($stmt = $mysqli->prepare($sqlCommand))) {
-            echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            $msg =  "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $mysqli->errno);
         }
 
         if (!$stmt->bind_param("i", $account_id)) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg =  "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
         }
 
         if (!$stmt->execute()) {
-            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg =  "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
         }
 
         $appEntry = new be_app();
@@ -214,19 +218,23 @@ class da_apps_registry {
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            $msg =  "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
         }
 
         if (!($stmt = $mysqli->prepare($sqlCommand))) {
-            echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            $msg =  "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $mysqli->errno);
         }
 
         if (!$stmt->bind_param("i", $app_id)) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
         }
 
         if (!$stmt->execute()) {
-            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg =  "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
         }
 
         $pageEntry = new be_page();

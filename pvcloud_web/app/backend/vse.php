@@ -10,6 +10,7 @@ require_once './DA/da_helper.php';
 require_once './DA/da_account.php';
 require_once './DA/da_apps_registry.php';
 require_once './DA/da_session.php';
+require_once '/DA/da_vse_data.php';
 require_once './inc/SimpleResponse.php';
 
 $app = new \Slim\App();
@@ -32,39 +33,28 @@ $app->post("/connect", function() {
 });
 
 $app->get('/appdata/{app_id}/{app_key}/{element_key}', function($request, $response, $args) {
-    
+
     $result = AppDataHelper::Read($args['app_id'], $args['app_key'], $args['element_key']);
-    
+
     include './inc/incJSONHeaders.php';
     echo json_encode($result);
 });
 
 $app->get('/appdata/{app_id}/{app_key}/{element_key}/{label}', function($request, $response, $args) {
+    $result = AppDataHelper::Read($args['app_id'], $args['app_key'], $args['element_key'], $args['label']);
+
     include './inc/incJSONHeaders.php';
-    echo json_encode($args);
+    echo json_encode($result);
 });
 
 $app->get('/appdata/{app_id}/{app_key}/{element_key}/{label}/{count}', function($request, $response, $args) {
+    $result = AppDataHelper::Read($args['app_id'], $args['app_key'], $args['element_key'], $args['label'], $args['count']);
+
     include './inc/incJSONHeaders.php';
-    echo json_encode($args);
+    echo json_encode($result);
 });
 
 
-//$app->get('/appdata/{id}/{label}', function($request, $response, $args) {
-//    $result = new stdClass();
-//    $result->message = "GET: /appdata/{id}";
-//
-//    include './inc/incJSONHeaders.php';
-//    echo json_encode($args);
-//});
-//
-//$app->get('/appdata/{id}/{label}/{count}', function($request, $response, $args) {
-//    $result = new stdClass();
-//    $result->message = "GET: /appdata/{id}";
-//
-//    include './inc/incJSONHeaders.php';
-//    echo json_encode($args);
-//});
 
 $app->post('/appdata', function($request, $response, $args) {
     $result = new stdClass();
@@ -271,10 +261,11 @@ class AppDataHelper {
 
         try {
             if (AppDataHelper::validateApp($app_id, $app_key)) {
-                if (AppDataHelper::validateElementKey($element_key)) {
-                    $appData = AppDataHelper::retrieveData($label, $count);
+                $app = da_apps_registry::GetApp($app_id);
+                if (AppDataHelper::validateElementKey($app->account_id, $app_id, $element_key)) {
+                    $data = AppDataHelper::retrieveData($app_id, $label, $count);
                     $result->status = "OK";
-                    $result->data = $appData;
+                    $result->data = $data;
                 } else {
                     $result->status = "ERROR";
                     $result->message = "Element Key Validation Error";
@@ -301,16 +292,17 @@ class AppDataHelper {
 
     private static function validateApp($app_id, $app_key) {
         $app = da_apps_registry::GetApp($app_id);
-        if($app && $app->api_key == $app_key) return true;
+        if ($app && $app->api_key == $app_key)
+            return true;
         return false;
     }
 
-    private static function validateElementKey($element_key) {
-        
+    private static function validateElementKey($account_id, $app_id, $element_key) {
+        return da_account::ValidateElementKeyAccess($account_id, $app_id, $element_key);
     }
 
-    private static function retrieveData($label, $count) {
-        
+    private static function retrieveData($app_id, $label, $count) {
+        return da_vse_data::GetEntries($app_id, $label, $count);
     }
 
 }

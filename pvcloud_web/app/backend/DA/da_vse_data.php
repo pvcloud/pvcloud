@@ -1,5 +1,5 @@
 <?php
-
+//TODO: Explore whole DA to find missing throws
 /**
  * @author janunezc
  */
@@ -60,57 +60,53 @@ class da_vse_data {
     /**
      * 
      * @param int $app_id
-     * @param int $optional_label Use it to retrieve specific labels for a app. Leave NULL to return all values of app regardless of label
-     * @param int $optional_last_limit Max Quantity to return. Will return last number of records specified.
+     * @param int $label Use it to retrieve specific labels for a app. Leave NULL to return all values of app regardless of label
+     * @param int $count Max Quantity to return. Will return last number of records specified.
      * @return array
      */
-    public static function GetEntries($app_id, $optional_label, $optional_last_limit) {
-        
-        $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
-             . " FROM vse_data "
-             . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
-             . " ORDER BY entry_id DESC ";
-        /*
-        $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
+    public static function GetEntries($app_id, $label, $count) {
+
+        $sqlCommand = new stdClass();
+        $sqlCommand = "SELECT entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
                 . " FROM vse_data "
-                . " WHERE app_id = ? AND vse_label = ? "
+                . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
                 . " ORDER BY entry_id DESC ";
-          */      
-        //  $sqlCommand = "SELECT  entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
-        //         . " FROM vse_data "
-        //         . " WHERE app_id = ? "
-        //         . " ORDER BY entry_id DESC ";
 
+        $label = $label && $label != "*" ? $label : "";
+        $count = $count ? $count : 1;
 
-
-        if (isset($optional_last_limit) && $optional_last_limit != NULL && is_numeric($optional_last_limit) && $optional_last_limit > 0) {
-            $sqlCommand .= " LIMIT $optional_last_limit ";
+        if (isset($count) && $count != NULL && is_numeric($count) && $count > 0) {
+            $sqlCommand .= " LIMIT $count ";
+        } else {
+            $sqlCommand .= " LIMIT 1 ";
         }
-        //return $sqlCommand;
+
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
         }
 
         if (!($stmt = $mysqli->prepare($sqlCommand))) {
-            echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $mysqli->connect_errno);
         }
-        
-        //if (!$stmt->bind_param("iss", $app_id, $optional_label, $optional_label)) {
-          if (!$stmt->bind_param("iss", $app_id, $optional_label, $optional_label)) {
-        //if (!$stmt->bind_param("is", $app_id)) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+
+        if (!$stmt->bind_param("iss", $app_id, $label, $label)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
         }
-        
+
         if (!$stmt->execute()) {
-            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
         }
-        
+
         $entry = new be_vse_data();
 
         $stmt->bind_result(
                 $entry->entry_id, $entry->app_id, $entry->vse_label, $entry->vse_value, $entry->vse_type, $entry->vse_annotations, $entry->captured_datetime, $entry->created_datetime);
-        
+
         $arrayResult = [];
         while ($stmt->fetch()) {
             $arrayResult[] = json_decode(json_encode($entry));
@@ -120,7 +116,7 @@ class da_vse_data {
 
         return $arrayResult;
     }
-    
+
     public static function GetEntriesForWidget($widget_id, $optional_max_limit, $last_entry_id) {
         $sqlCommand = "SELECT  d.entry_id, d.app_id, d.vse_label, d.vse_value, d.vse_type,vse_annotations, d.captured_datetime, d.created_datetime "
                 . " FROM vse_data d"
@@ -136,21 +132,28 @@ class da_vse_data {
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            $errno = $mysqli->connect_errno;
+            throw new Exception($msg, $errno);
         }
 
         if (!($stmt = $mysqli->prepare($sqlCommand))) {
-            echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            $errno = $mysqli->errno;
+            throw new Exception($msg, $errno);
         }
 
         if (!$stmt->bind_param("iii", $widget_id, $widget_id, $last_entry_id)) {
-            echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            $errno = $stmt->errno;
+            throw new Exception($msg, $errno);
         }
 
         if (!$stmt->execute()) {
-            echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $errno = $stmt->errno;
+            throw new Exception($msg, $errno);
         }
-        
 
         $entry = new be_vse_data();
 
@@ -165,7 +168,7 @@ class da_vse_data {
         $stmt->close();
 
         return $arrayResult;
-    }    
+    }
 
     /**
      * 

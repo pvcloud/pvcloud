@@ -274,7 +274,7 @@ class da_account {
 
         return $result;
     }
-    
+
     public static function GetIoTElementByID($iot_element_id) {
         $sqlCommand = "SELECT account_id,element_key"
                 . " FROM iot_elements "
@@ -311,7 +311,55 @@ class da_account {
         $stmt->close();
 
         return $result;
-    }    
+    }
+
+    /**
+     * Validates Element Key has access to provided app_id and account_id 
+     * @param type $account_id
+     * @param type $app_id
+     * @param type $element_key
+     * @return boolean
+     * @throws Exception
+     */
+    public static function ValidateElementKeyAccess($account_id, $app_id, $element_key) {
+        $sqlCommand = "SELECT account_id,element_key"
+                . " FROM iot_elements "
+                . " WHERE account_id = ? AND element_key = ? ";
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->bind_param("is", $account_id, $element_key)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $result = new be_iot_element();
+        $stmt->bind_result($result->account_id, $result->element_key);
+
+        if (!$stmt->fetch()) {
+            $result = false;
+        } else {
+            $result = true;
+        }
+
+        $stmt->close();
+
+        return $result;
+    }
 
     public static function CreateIoTElement($account_id) {
         $salt = DAConf::$salt;
