@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/janunezc/pvcloud#readme",
   "dependencies": {
-    "pvcloud_lib": "^1.0.6"
+    "pvcloud_lib": "^1.0.8"
   },
   "devDependencies": {}
 }

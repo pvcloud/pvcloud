@@ -1,6 +1,6 @@
 {
   "name": "pvcloud_lib",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Library to communicate to a pvCloud environment",
   "main": "index.js",
   "scripts": {

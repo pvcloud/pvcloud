@@ -2,7 +2,6 @@ var request = require("request");
 var pvcloud = require("../index.js");
 pvcloud = pvcloud.pvcloudAPI;
 var baseURL = "http://crmakers.intel.com:8080/pvcloud_test/backend/";
-//baseURL = "http://janunezc-mobl4.amr.corp.intel.com:8080/pvcloud/backend/";
 var loginInfo;
 var appConnectInfo;
 var account_id = 0;
@@ -33,7 +32,6 @@ describe("pvCloud API Object", function () {
         expect(smoketestResult).toBe("SIMPLE SMOKE TEST");
     });
 });
-
 
 describe("pvCloud User Context", function () {
 
@@ -450,6 +448,18 @@ describe("pvCloud User Context", function () {
                         errorCallback,
                         finallyCallback);
             });
+
+            //TODO: MISSING TESTS
+            // WRITE WITH MISSING PARAMETERS
+            // READ FOR SPECIFIC LABEL
+            // READ FOR SPECIFIC LABEL NOT PRESENT
+            // READ FOR * WILDCARD LABEL
+            // READ FOR SPECIFIC LABEL WITH NO COUNT
+            // READ FOR SPECIFIC LABEL WITH COUNT
+            // READ FOR SPECIFIC LABEL WITH COUNT OF * WILDCARD
+            // DELETE FOR LABEL OF * WILDCARD AND SPECIFIC COUNT
+            // MISSING ROUTES and other NETWORK FAILURES... how should pvcloud_lib process those?
+            
         });
     });
 
