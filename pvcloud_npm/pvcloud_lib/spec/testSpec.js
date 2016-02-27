@@ -4,8 +4,12 @@ pvcloud = pvcloud.pvcloudAPI;
 var baseURL = "http://crmakers.intel.com:8080/pvcloud_test/backend/";
 //baseURL = "http://janunezc-mobl4.amr.corp.intel.com:8080/pvcloud/backend/";
 var loginInfo;
-
+var appConnectInfo;
+var account_id = 0;
+var app_id = 0;
+var app_key = "";
 var elementKey = "";
+
 var infoStep = 0;
 
 describe("pvCloud API Object", function () {
@@ -122,8 +126,8 @@ describe("pvCloud User Context", function () {
                 expect(myBody.status).toBe("OK");
                 info(testHint + ": EXCEPTION");
                 info(myBody);
-                
-                
+
+
                 expect(error).toBeFalsy();
                 expect(response).not.toBe(undefined);
                 expect(myBody).not.toBe(undefined);
@@ -154,7 +158,7 @@ describe("pvCloud User Context", function () {
                     finallyCallback
                     );
         });
-        
+
         it("SHOULD BE ABLE TO RECONNECT TO ANOTHER APP (Via ElementKey and AppName)", function (done) {
             var testHint = "APP RECONNECT WITH ELEMENT KEY AND APPNAME ";
             var successReached = false;
@@ -166,9 +170,9 @@ describe("pvCloud User Context", function () {
                 info(testHint + ": Success Callback Reached!");
 
                 var body = JSON.parse(response.body);
-                loginInfo = body.data;
+                appConnectInfo = body.data;
                 info(testHint + ": CONNECT INFO!");
-                info(loginInfo);
+                info(appConnectInfo);
                 expect(body.status).toBe("OK");
                 info(testHint + ": EXCEPTION");
                 info(body);
@@ -198,13 +202,254 @@ describe("pvCloud User Context", function () {
                     baseURL,
                     loginInfo.account_id,
                     "", /*NO TOKEN*/
-                    elementKey, 
+                    elementKey,
                     0, /*TEST APP ID*/
                     "PRUEBA 2", /*TEST App Name*/
                     successCallback,
                     errorCallback,
                     finallyCallback
                     );
+        });
+
+        describe("UNDER App Context (have an app_key and element_key on our side.", function () {
+            it("SHOULD BE ABLE TO CALL OUT APP_KEY AND ELEMENT_KEY", function (done) {
+                info("APP CONNECT INFO");
+                info(appConnectInfo);
+                expect(appConnectInfo).not.toBe(undefined);
+                expect(appConnectInfo.account_id).toBe(2);
+                expect(appConnectInfo.app_id).toBe(19);
+                done();
+            });
+
+            it("SHOULD BE ABLE TO WRITE DATA TO TEST APP USING LAST CONNECT INFO", function (done) {
+                var testHint = "SEND DATA TO AN APP ";
+                var errorReached = false;
+                var successReached = false;
+                var successCallback = function (error, response, body) {
+                    successReached = true;
+                    info(testHint + ": Success Callback Reached!");
+
+                    var body = JSON.parse(response.body);
+                    var dataWritten = body.data;
+                    info(testHint + ": DATA WRITTEN!");
+                    info(dataWritten);
+                    expect(body.status).toBe("OK");
+                    expect(error).toBeFalsy();
+                    expect(response).not.toBe(undefined);
+                    expect(body).not.toBe(undefined);
+
+                };
+                var errorCallback = function (error, response, body) {
+                    errorReached = true;
+                    info(testHint + ": Error Callback Reached!");
+                    expect(error).not.toBe(undefined);
+                };
+                var finallyCallback = function (error, response, body) {
+                    info(testHint + ": Finally Callback Reached");
+
+                    expect(successReached).toBe(true);
+                    expect(errorReached).toBe(false);
+                    done();
+                };
+
+
+                var label = "TEST LABEL";
+                var value = "TEST VALUE";
+
+                pvcloud.Write(
+                        baseURL,
+                        appConnectInfo.app_id,
+                        appConnectInfo.app_key,
+                        appConnectInfo.element_key,
+                        label,
+                        value,
+                        undefined,
+                        successCallback,
+                        errorCallback,
+                        finallyCallback);
+            });
+
+            it("SHOULD BE ABLE TO READ DATA FROM TEST APP USING LAST CONNECT INFO", function (done) {
+                var testHint = "READ DATA FROM APP ";
+                var errorReached = false;
+                var successReached = false;
+                var successCallback = function (error, response, body) {
+                    successReached = true;
+                    info(testHint + ": Success Callback Reached!");
+
+                    var bodyObject = JSON.parse(body);
+                    var dataReceived = bodyObject.data;
+                    info(testHint + ": DATA RECEIVED!");
+                    info(dataReceived);
+                    info(dataReceived.length);
+                    expect(bodyObject.status).toBe("OK");
+                    expect(error).toBeFalsy();
+                    expect(response).not.toBe(undefined);
+                    expect(bodyObject).not.toBe(undefined);
+
+                };
+                var errorCallback = function (error, response, body) {
+                    errorReached = true;
+                    info(testHint + ": Error Callback Reached!");
+                    expect(error).not.toBe(undefined);
+                };
+                var finallyCallback = function (error, response, body) {
+                    info(testHint + ": Finally Callback Reached");
+
+                    expect(successReached).toBe(true);
+                    expect(errorReached).toBe(false);
+                    done();
+                };
+
+
+                var label = "TEST LABEL";
+                var count = 2;
+                pvcloud.Read(
+                        baseURL,
+                        appConnectInfo.app_id,
+                        appConnectInfo.app_key,
+                        appConnectInfo.element_key,
+                        label,
+                        count,
+                        successCallback,
+                        errorCallback,
+                        finallyCallback);
+            });
+            it("SHOULD BE ABLE TO READ ALL DATA USING * WILDCARDS", function (done) {
+                var testHint = "READ DATA FROM APP ";
+                var errorReached = false;
+                var successReached = false;
+                var successCallback = function (error, response, body) {
+                    successReached = true;
+                    info(testHint + ": Success Callback Reached!");
+
+                    var bodyObject = JSON.parse(body);
+                    var dataReceived = bodyObject.data;
+                    info(testHint + ": DATA RECEIVED!");
+                    info(dataReceived);
+                    info(dataReceived.length);
+                    expect(bodyObject.status).toBe("OK");
+                    expect(error).toBeFalsy();
+                    expect(response).not.toBe(undefined);
+                    expect(bodyObject).not.toBe(undefined);
+
+                };
+                var errorCallback = function (error, response, body) {
+                    errorReached = true;
+                    info(testHint + ": Error Callback Reached!");
+                    expect(error).not.toBe(undefined);
+                };
+                var finallyCallback = function (error, response, body) {
+                    info(testHint + ": Finally Callback Reached");
+
+                    expect(successReached).toBe(true);
+                    expect(errorReached).toBe(false);
+                    done();
+                };
+
+
+                var label = "TEST LABEL 1235";
+
+                pvcloud.Read(
+                        baseURL,
+                        appConnectInfo.app_id,
+                        appConnectInfo.app_key,
+                        appConnectInfo.element_key,
+                        "*",
+                        200000,
+                        successCallback,
+                        errorCallback,
+                        finallyCallback);
+            });
+            
+            it("SHOULD BE ABLE TO DELETE TWO RECORDS OF DATA USING * WILDCARDS", function (done) {
+                var testHint = "READ DATA FROM APP ";
+                var errorReached = false;
+                var successReached = false;
+                var successCallback = function (error, response, body) {
+                    successReached = true;
+                    info(testHint + ": Success Callback Reached!");
+
+                    var bodyObject = JSON.parse(body);
+                    var dataReceived = bodyObject.data;
+                    info(testHint + ": DATA RECEIVED!");
+                    info(dataReceived);
+                    info(dataReceived.length);
+                    expect(bodyObject.status).toBe("OK");
+                    expect(error).toBeFalsy();
+                    expect(response).not.toBe(undefined);
+                    expect(bodyObject).not.toBe(undefined);
+
+                };
+                var errorCallback = function (error, response, body) {
+                    errorReached = true;
+                    info(testHint + ": Error Callback Reached!");
+                    expect(error).not.toBe(undefined);
+                };
+                var finallyCallback = function (error, response, body) {
+                    info(testHint + ": Finally Callback Reached");
+
+                    expect(successReached).toBe(true);
+                    expect(errorReached).toBe(false);
+                    done();
+                };
+
+
+                pvcloud.Delete(
+                        baseURL,
+                        appConnectInfo.app_id,
+                        appConnectInfo.app_key,
+                        appConnectInfo.element_key,
+                        "*",
+                        2,
+                        successCallback,
+                        errorCallback,
+                        finallyCallback);
+            });
+            
+            it("SHOULD BE ABLE TO DELETE ALL DATA USING * WILDCARDS", function (done) {
+                var testHint = "READ DATA FROM APP ";
+                var errorReached = false;
+                var successReached = false;
+                var successCallback = function (error, response, body) {
+                    successReached = true;
+                    info(testHint + ": Success Callback Reached!");
+
+                    var bodyObject = JSON.parse(body);
+                    var dataReceived = bodyObject.data;
+                    info(testHint + ": DATA RECEIVED!");
+                    info(dataReceived);
+                    info(dataReceived.length);
+                    expect(bodyObject.status).toBe("OK");
+                    expect(error).toBeFalsy();
+                    expect(response).not.toBe(undefined);
+                    expect(bodyObject).not.toBe(undefined);
+
+                };
+                var errorCallback = function (error, response, body) {
+                    errorReached = true;
+                    info(testHint + ": Error Callback Reached!");
+                    expect(error).not.toBe(undefined);
+                };
+                var finallyCallback = function (error, response, body) {
+                    info(testHint + ": Finally Callback Reached");
+
+                    expect(successReached).toBe(true);
+                    expect(errorReached).toBe(false);
+                    done();
+                };
+
+                pvcloud.Delete(
+                        baseURL,
+                        appConnectInfo.app_id,
+                        appConnectInfo.app_key,
+                        appConnectInfo.element_key,
+                        "*",
+                        "*",
+                        successCallback,
+                        errorCallback,
+                        finallyCallback);
+            });
         });
     });
 

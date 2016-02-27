@@ -47,6 +47,53 @@
                     app_name: app_name
                 };
                 postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
+            },
+            /**
+             * Sends data to a pvcloud server for specific app, label and value
+             * @param {type} baseURL
+             * @param {type} app_id
+             * @param {type} app_key
+             * @param {type} element_key
+             * @param {type} label
+             * @param {type} value
+             * @param {type} captured_datetime
+             * @param {type} successCallback
+             * @param {type} errorCallback
+             * @param {type} finallyCallback
+             * @returns {undefined}
+             */
+            Write: function (baseURL, app_id, app_key, element_key, label, value, captured_datetime, successCallback, errorCallback, finallyCallback) {
+                var appConnectURL = baseURL + "vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
+
+                if (!captured_datetime) {
+                    captured_datetime = getFormattedDateTime();
+                }
+
+                var PostData = {
+                    label: label,
+                    value: value,
+                    captured_datetime: captured_datetime
+                };
+                postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
+            },
+            Read: function (baseURL, app_id, app_key, element_key, label, count, successCallback, errorCallback, finallyCallback) {
+                var targetURL = baseURL + "vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
+                if (label)
+                    targetURL += "/" + label;
+                if (count)
+                    targetURL += "/" + count;
+
+                getWrapper(targetURL, successCallback, errorCallback, finallyCallback);
+            },
+            
+            Delete: function (baseURL, app_id, app_key, element_key, label, count, successCallback, errorCallback, finallyCallback) {
+                var targetURL = baseURL + "vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
+                if (label)
+                    targetURL += "/" + label;
+                if (count)
+                    targetURL += "/" + count;
+
+                deleteWrapper(targetURL, successCallback, errorCallback, finallyCallback);
             }
         };
 
@@ -102,6 +149,105 @@
         });
     }
 
+    function getWrapper(url, successCallback, errorCallback, finallyCallback) {
+        log("requestWrapper()");
+        log("URL: ");
+        log(url);
+        request.get({url: url}, function (error, response, body) {
+            if (!error && response && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
+                if (successCallback)
+                    successCallback(error, response, body);
+            } else if (error) {
+                if (errorCallback) {
+                    errorCallback(error, response, body);
+                }
+            } else if (response && response.statusCode) {
+                log("WRONG STATUS CODE:---------------------------------------------");
+                log(response.statusCode);
+                log("RESPONSE!!!----------------------------------------------");
+                log(response);
+                logError("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
+                if (errorCallback) {
+                    errorCallback(error, response, body);
+                } else {
+                    OutputResult("PVCLOUD_ERROR");
+                }
+
+            } else if (error) {
+                log("ERROR:------------------------------------------------");
+                log(error);
+                log("PVCLOUD ERROR PROCESSING:-----------------------------");
+                logError(error);
+                if (errorCallback)
+                    errorCallback(error, response, body);
+                else {
+                    OutputResult("PVCLOUD_ERROR");
+                }
+            } else {
+                log("UNKNOWN FAILURE:---------------------------------------");
+                log(error);
+                logError(response);
+                if (errorCallback)
+                    errorCallback(error, response, body);
+                else
+                    OutputResult("PVCLOUD_FAILURE");
+            }
+
+            if (finallyCallback)
+                finallyCallback(error, response, body);
+        });
+    }
+
+    function deleteWrapper(url, successCallback, errorCallback, finallyCallback) {
+        log("requestWrapper()");
+        log("URL: ");
+        log(url);
+        request.del({url: url}, function (error, response, body) {
+            if (!error && response && response.statusCode === 200) {
+                log("SUCCESS!!!--------------------------------------------");
+                if (successCallback)
+                    successCallback(error, response, body);
+            } else if (error) {
+                if (errorCallback) {
+                    errorCallback(error, response, body);
+                }
+            } else if (response && response.statusCode) {
+                log("WRONG STATUS CODE:---------------------------------------------");
+                log(response.statusCode);
+                log("RESPONSE!!!----------------------------------------------");
+                log(response);
+                logError("REQUEST FAILED WITH STATUS CODE: " + response.statusCode);
+                if (errorCallback) {
+                    errorCallback(error, response, body);
+                } else {
+                    OutputResult("PVCLOUD_ERROR");
+                }
+
+            } else if (error) {
+                log("ERROR:------------------------------------------------");
+                log(error);
+                log("PVCLOUD ERROR PROCESSING:-----------------------------");
+                logError(error);
+                if (errorCallback)
+                    errorCallback(error, response, body);
+                else {
+                    OutputResult("PVCLOUD_ERROR");
+                }
+            } else {
+                log("UNKNOWN FAILURE:---------------------------------------");
+                log(error);
+                logError(response);
+                if (errorCallback)
+                    errorCallback(error, response, body);
+                else
+                    OutputResult("PVCLOUD_FAILURE");
+            }
+
+            if (finallyCallback)
+                finallyCallback(error, response, body);
+        });
+    }
     /**
      * Logs debug data to console if DEBUG is set to true.
      * @param {String} message
