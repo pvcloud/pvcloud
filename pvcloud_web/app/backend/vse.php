@@ -54,27 +54,23 @@ $app->get('/appdata/{app_id}/{app_key}/{element_key}/{label}/{count}', function(
     echo json_encode($result);
 });
 
+$app->post('/appdata/{app_id}/{app_key}/{element_key}', function($request, $response, $args) {
 
-
-$app->post('/appdata', function($request, $response, $args) {
-    $result = new stdClass();
-    $result->message = "POST: /appdata";
+    $result = AppDataHelper::Write($args['app_id'], $args['app_key'], $args['element_key']);
 
     include './inc/incJSONHeaders.php';
-    echo json_encode($args);
+    echo json_encode($result);
 });
 
-$app->post('/appdata/{data1}', function($request, $response, $args) {
-    $result = new stdClass();
-    $result->message = "POST: /appdata";
+$app->delete('/appdata/{app_id}/{app_key}/{element_key}/{label}', function($request, $response, $args) {
+    $result = AppDataHelper::Delete($args);
 
     include './inc/incJSONHeaders.php';
-    echo json_encode($request);
+    echo json_encode($result);
 });
 
-$app->delete("/appdata/{data1}", function() {
-    $result = new stdClass();
-    $result->message = "DELETE: /appdata";
+$app->delete('/appdata/{app_id}/{app_key}/{element_key}/{label}/{count}', function($request, $response, $args) {
+    $result = AppDataHelper::Delete($args);
 
     include './inc/incJSONHeaders.php';
     echo json_encode($result);
@@ -263,7 +259,7 @@ class AppDataHelper {
             if (AppDataHelper::validateApp($app_id, $app_key)) {
                 $app = da_apps_registry::GetApp($app_id);
                 if (AppDataHelper::validateElementKey($app->account_id, $app_id, $element_key)) {
-                    $data = AppDataHelper::retrieveData($app_id, $label, $count);
+                    $data = da_vse_data::GetEntries($app_id, $label, $count);
                     $result->status = "OK";
                     $result->data = $data;
                 } else {
@@ -282,12 +278,114 @@ class AppDataHelper {
         return $result;
     }
 
-    public static function Write() {
-        
+    /**
+     * Writes a new VSE Value entry passed in the POST Body.
+     * @param type $app_id
+     * @param type $app_key
+     * @param type $element_key
+     * @return \SimpleResponse
+     */
+    public static function Write($app_id, $app_key, $element_key) {
+        /*
+         * 1. Validate App_id and App Key
+         * 2. Validate Element Key
+         * 3. Save data 
+         */
+
+        $result = new SimpleResponse();
+
+        try {
+
+            $parameters = AppDataHelper::collectPOSTParameters();
+
+            if (!AppDataHelper::validatePOSTParameters($parameters)) {
+                $result->status = "ERROR";
+                $result->message = "INVALID PARAMETERS";
+                return $result;
+            }
+            $result->parameters = $parameters;
+            if (AppDataHelper::validateApp($app_id, $app_key)) {
+                $app = da_apps_registry::GetApp($app_id);
+
+                if (AppDataHelper::validateElementKey($app->account_id, $app_id, $element_key)) {
+                    $entry = new be_vse_data();
+                    $entry->app_id = $app_id;
+                    $entry->vse_label = $parameters->label;
+                    $entry->vse_value = $parameters->value;
+                    $entry->captured_datetime = $parameters->captured_datetime;
+
+                    $result->data = da_vse_data::AddEntry($entry);
+                    $result->status = "OK";
+                } else {
+                    $result->status = "ERROR";
+                    $result->message = "Element Key Validation Error";
+                }
+            } else {
+                $result->status = "ERROR";
+                $result->message = "App Validation Error";
+            }
+        } catch (Exception $e) {
+            $result->status = "EXCEPTION";
+            $result->message = $e->getMessage();
+        }
+
+        return $result;
     }
 
-    public static function Delete() {
+    private static function collectPOSTParameters() {
+        $parameters = new stdClass();
+        $parameters->label = filter_input(INPUT_POST, "label");
+        $parameters->value = filter_input(INPUT_POST, "value");
+        $parameters->captured_datetime = filter_input(INPUT_POST, "captured_datetime");
         
+        return $parameters;
+    }
+
+    private static function validatePOSTParameters($parameters) {
+        if (!isset($parameters->label) || $parameters->label == "" || !isset($parameters->value) || !isset($parameters->captured_datetime)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static function Delete($args) {
+        /*
+         * 1. Validate App_id and App Key
+         * 2. Validate Element Key
+         * 3. DELETE the data
+         */
+
+        $result = new SimpleResponse();
+
+        $app_id = $args['app_id'];
+        $app_key = $args['app_key'];
+        $element_key = $args['element_key'];
+        $label = $args['label'];
+        $count = $args['count'];
+        
+        try {
+            if (AppDataHelper::validateApp($app_id, $app_key)) {
+                $app = da_apps_registry::GetApp($app_id);
+                if (AppDataHelper::validateElementKey($app->account_id, $app_id, $element_key)) {
+                    $data = da_vse_data::ClearEntries($app_id, $label, $count);
+                    $result->status = "OK";
+                    $result->data = $data;
+                } else {
+                    $result->status = "ERROR";
+                    $result->message = "Element Key Validation Error";
+                }
+            } else {
+                $result->status = "ERROR";
+                $result->message = "App Validation Error";
+            }
+        } catch (Exception $e) {
+            $result->status = "EXCEPTION";
+            $result->message = $e->getMessage();
+        }
+
+        return $result;
+
     }
 
     private static function validateApp($app_id, $app_key) {
@@ -299,10 +397,6 @@ class AppDataHelper {
 
     private static function validateElementKey($account_id, $app_id, $element_key) {
         return da_account::ValidateElementKeyAccess($account_id, $app_id, $element_key);
-    }
-
-    private static function retrieveData($app_id, $label, $count) {
-        return da_vse_data::GetEntries($app_id, $label, $count);
     }
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 //TODO: Explore whole DA to find missing throws
 /**
  * @author janunezc
@@ -66,7 +67,6 @@ class da_vse_data {
      */
     public static function GetEntries($app_id, $label, $count) {
 
-        $sqlCommand = new stdClass();
         $sqlCommand = "SELECT entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
                 . " FROM vse_data "
                 . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
@@ -219,16 +219,42 @@ class da_vse_data {
     }
 
     /**
-     * 
+     * Deletes entries in database for specific app id and label and count. 
+     * When no label is specified any label will be deleted
+     * When no count is specified, only last record of matching label 
      * @param type $app_id
-     * @param type $optional_label Use it to clear entries of an specific label for the provided app.
-     * @return boolean
+     * @param type $label
+     * @param type $count
+     * @return type
+     * @throws Exception
      */
-    public static function ClearEntries($app_id, $optional_label) {
-        $sqlCommand = "DELETE FROM vse_data "
-                . " WHERE app_id = ? AND (vse_label = ? OR ? = '') ";
+    public static function ClearEntries($app_id, $label, $count) {
+
+        $label = $label && $label != "*" ? $label : "";
+
+        $result = new stdClass();
+
+        if (!isset($count)) {
+            $count = 1;
+        } else if ($count == "*") {
+            $count = ""; //DELETE ALL
+        }
+
+        if ($count > 0) {
+            $result->EntriesToDelete = da_vse_data::GetEntries($app_id, $label, $count);
+        }
+
+        $sqlCommand = ""
+                . " DELETE FROM vse_data "
+                . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
+                . " ORDER BY entry_id DESC";
 
         $paramTypeSpec = "iss";
+
+        if ($count > 0) {
+            $sqlCommand .= " LIMIT ?";
+            $paramTypeSpec .= "i";
+        }
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
@@ -241,9 +267,16 @@ class da_vse_data {
             throw new Exception($msg, $stmt->errno);
         }
 
-        if (!$stmt->bind_param($paramTypeSpec, $app_id, $optional_label, $optional_label)) {
-            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-            throw new Exception($msg, $stmt->errno);
+        if ($paramTypeSpec == "iss") {
+            if (!$stmt->bind_param($paramTypeSpec, $app_id, $label, $label)) {
+                $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                throw new Exception($msg, $stmt->errno);
+            }
+        } else {
+            if (!$stmt->bind_param($paramTypeSpec, $app_id, $label, $label, $count)) {
+                $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+                throw new Exception($msg, $stmt->errno);
+            }
         }
 
         if (!$stmt->execute()) {
@@ -253,8 +286,9 @@ class da_vse_data {
 
         $stmt->close();
 
-        $retrievedEntries = da_vse_data::GetEntries($app_id, $optional_label, 0);
-        return $retrievedEntries;
+        $result->RemainingEntries = da_vse_data::GetEntries($app_id, $label, $count);
+
+        return $result;
     }
 
     /**
