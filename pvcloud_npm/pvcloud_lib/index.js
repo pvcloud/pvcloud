@@ -23,7 +23,7 @@
              * @returns {undefined}
              */
             Login: function (baseURL, userName, password, successCallback, errorCallback, finallyCallback) {
-                var loginURL = baseURL + "vse.php/login";
+                var loginURL = baseURL + "/backend/vse.php/login";
                 var PostData = {email: userName, pwd: password};
                 postWrapper(loginURL, PostData, successCallback, errorCallback, finallyCallback);
             },
@@ -42,7 +42,7 @@
              * @returns {undefined}
              */
             Connect: function (baseURL, account_id, loginToken, elementKey, app_id, app_name, successCallback, errorCallback, finallyCallback) {
-                var appConnectURL = baseURL + "vse.php/connect";
+                var appConnectURL = baseURL + "/backend/vse.php/connect";
                 var PostData = {
                     account_id: account_id,
                     token: loginToken,
@@ -68,7 +68,7 @@
              * @returns {undefined}
              */
             Write: function (baseURL, app_id, app_key, element_key, label, value, captured_datetime, successCallback, errorCallback, finallyCallback) {
-                var appConnectURL = baseURL + "vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
+                var appConnectURL = baseURL + "/backend/vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
 
                 if (!captured_datetime) {
                     captured_datetime = getFormattedDateTime();
@@ -97,7 +97,7 @@
              * @returns {undefined}
              */
             SendFile: function (baseURL, app_id, app_key, element_key, label, filePath, captured_datetime, successCallback, errorCallback, finallyCallback) {
-                var appConnectURL = baseURL + "vse.php/appfiles/" + app_id + "/" + app_key + "/" + element_key;
+                var appConnectURL = baseURL + "/backend/vse.php/appfiles/" + app_id + "/" + app_key + "/" + element_key;
 
                 if (!captured_datetime) {
                     captured_datetime = getFormattedDateTime();
@@ -114,7 +114,7 @@
             },
             
             Read: function (baseURL, app_id, app_key, element_key, label, count, successCallback, errorCallback, finallyCallback) {
-                var targetURL = baseURL + "vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
+                var targetURL = baseURL + "/backend/vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
                 if (label)
                     targetURL += "/" + label;
                 if (count)
@@ -124,7 +124,7 @@
             },
             
             Delete: function (baseURL, app_id, app_key, element_key, label, count, successCallback, errorCallback, finallyCallback) {
-                var targetURL = baseURL + "vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
+                var targetURL = baseURL + "/backend/vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
                 if (label)
                     targetURL += "/" + label;
                 if (count)

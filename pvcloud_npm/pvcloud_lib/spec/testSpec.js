@@ -1,7 +1,7 @@
 var request = require("request");
 var pvcloud = require("../index.js");
 pvcloud = pvcloud.pvcloudAPI;
-var baseURL = "http://crmakers.intel.com:8080/pvcloud_test/backend/";
+var baseURL = "http://crmakers.intel.com:8080/pvcloud_test/";
 var loginInfo;
 var appConnectInfo;
 var account_id = 0;
