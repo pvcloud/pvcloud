@@ -1,14 +1,17 @@
 (function () {
     var request = require("request");
+    var fs = require("fs");
     var options = {
         DEBUG: false,
         DEBUG_COUNT: 0
     };
+    
     var pvCloudAPI = function () {
         return{
             test: function () {
                 return "SIMPLE SMOKE TEST";
             },
+            
             /**
              * Performs a LOGIN operation to a target pvCloud server defined in baseURL
              * @param {type} baseURL target pvCloud Server
@@ -24,6 +27,7 @@
                 var PostData = {email: userName, pwd: password};
                 postWrapper(loginURL, PostData, successCallback, errorCallback, finallyCallback);
             },
+            
             /**
              * Obtains the data required for connecting an IoT Element to an IoT App
              * @param {type} baseURL pvCloud Server Instance
@@ -48,6 +52,7 @@
                 };
                 postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
             },
+            
             /**
              * Sends data to a pvcloud server for specific app, label and value
              * @param {type} baseURL
@@ -76,6 +81,38 @@
                 };
                 postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
             },
+            
+            /**
+             * Sends data to a pvcloud server for specific app, label and value
+             * @param {type} baseURL
+             * @param {type} app_id
+             * @param {type} app_key
+             * @param {type} element_key
+             * @param {type} label
+             * @param {type} filePath
+             * @param {type} captured_datetime
+             * @param {type} successCallback
+             * @param {type} errorCallback
+             * @param {type} finallyCallback
+             * @returns {undefined}
+             */
+            SendFile: function (baseURL, app_id, app_key, element_key, label, filePath, captured_datetime, successCallback, errorCallback, finallyCallback) {
+                var appConnectURL = baseURL + "vse.php/appfiles/" + app_id + "/" + app_key + "/" + element_key;
+
+                if (!captured_datetime) {
+                    captured_datetime = getFormattedDateTime();
+                }
+
+                var fileRead = fs.createReadStream(filePath);
+
+                var PostData = {
+                    label: label,
+                    vse_file: fileRead,
+                    captured_datetime: captured_datetime
+                };
+                postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
+            },
+            
             Read: function (baseURL, app_id, app_key, element_key, label, count, successCallback, errorCallback, finallyCallback) {
                 var targetURL = baseURL + "vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
                 if (label)
@@ -95,8 +132,8 @@
 
                 deleteWrapper(targetURL, successCallback, errorCallback, finallyCallback);
             }
+            
         };
-
     }();
 
     function postWrapper(url, postData, successCallback, errorCallback, finallyCallback) {
@@ -248,6 +285,7 @@
                 finallyCallback(error, response, body);
         });
     }
+    
     /**
      * Logs debug data to console if DEBUG is set to true.
      * @param {String} message

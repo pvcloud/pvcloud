@@ -76,6 +76,14 @@ $app->delete('/appdata/{app_id}/{app_key}/{element_key}/{label}/{count}', functi
     echo json_encode($result);
 });
 
+$app->post('/appfiles/{app_id}/{app_key}/{element_key}', function($request, $response, $args) {
+
+    $result = AppFilesHelper::SaveFile($args['app_id'], $args['app_key'], $args['element_key']);
+
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
 $app->run();
 
 class LoginHelper {
@@ -256,9 +264,9 @@ class AppDataHelper {
         $result = new SimpleResponse();
 
         try {
-            if (AppDataHelper::validateApp($app_id, $app_key)) {
+            if (AppDataHelper::ValidateApp($app_id, $app_key)) {
                 $app = da_apps_registry::GetApp($app_id);
-                if (AppDataHelper::validateElementKey($app->account_id, $app_id, $element_key)) {
+                if (AppDataHelper::ValidateElementKey($app->account_id, $app_id, $element_key)) {
                     $data = da_vse_data::GetEntries($app_id, $label, $count);
                     $result->status = "OK";
                     $result->data = $data;
@@ -304,10 +312,10 @@ class AppDataHelper {
                 return $result;
             }
             $result->parameters = $parameters;
-            if (AppDataHelper::validateApp($app_id, $app_key)) {
+            if (AppDataHelper::ValidateApp($app_id, $app_key)) {
                 $app = da_apps_registry::GetApp($app_id);
 
-                if (AppDataHelper::validateElementKey($app->account_id, $app_id, $element_key)) {
+                if (AppDataHelper::ValidateElementKey($app->account_id, $app_id, $element_key)) {
                     $entry = new be_vse_data();
                     $entry->app_id = $app_id;
                     $entry->vse_label = $parameters->label;
@@ -337,7 +345,7 @@ class AppDataHelper {
         $parameters->label = filter_input(INPUT_POST, "label");
         $parameters->value = filter_input(INPUT_POST, "value");
         $parameters->captured_datetime = filter_input(INPUT_POST, "captured_datetime");
-        
+
         return $parameters;
     }
 
@@ -363,11 +371,11 @@ class AppDataHelper {
         $element_key = $args['element_key'];
         $label = $args['label'];
         $count = $args['count'];
-        
+
         try {
-            if (AppDataHelper::validateApp($app_id, $app_key)) {
+            if (AppDataHelper::ValidateApp($app_id, $app_key)) {
                 $app = da_apps_registry::GetApp($app_id);
-                if (AppDataHelper::validateElementKey($app->account_id, $app_id, $element_key)) {
+                if (AppDataHelper::ValidateElementKey($app->account_id, $app_id, $element_key)) {
                     $data = da_vse_data::ClearEntries($app_id, $label, $count);
                     $result->status = "OK";
                     $result->data = $data;
@@ -385,18 +393,124 @@ class AppDataHelper {
         }
 
         return $result;
-
     }
 
-    private static function validateApp($app_id, $app_key) {
+    public static function ValidateApp($app_id, $app_key) {
         $app = da_apps_registry::GetApp($app_id);
         if ($app && $app->api_key == $app_key)
             return true;
         return false;
     }
 
-    private static function validateElementKey($account_id, $app_id, $element_key) {
+    public static function ValidateElementKey($account_id, $app_id, $element_key) {
         return da_account::ValidateElementKeyAccess($account_id, $app_id, $element_key);
+    }
+
+}
+
+class AppFilesHelper {
+
+    /**
+     * Writes a new VSE Value entry passed in the POST Body.
+     * @param type $app_id
+     * @param type $app_key
+     * @param type $element_key
+     * @return \SimpleResponse
+     */
+    public static function SaveFile($app_id, $app_key, $element_key) {
+
+        $result = new SimpleResponse();
+
+        try {
+
+            $parameters = AppFilesHelper::collectPOSTParameters();
+
+            if (!AppFilesHelper::validatePOSTParameters($parameters)) {
+                $result->status = "ERROR";
+                $result->message = "INVALID PARAMETERS";
+                return $result;
+            }
+            $parameters->app_id = $app_id;
+
+            if (AppDataHelper::ValidateApp($app_id, $app_key)) {
+                $app = da_apps_registry::GetApp($app_id);
+
+                if (AppDataHelper::ValidateElementKey($app->account_id, $app_id, $element_key)) {
+                    $fileResult = AppFilesHelper::moveUploadedFile();
+                    $result->data = AppFilesHelper::createVSEEntry($parameters, $fileResult);
+                    $result->status = "OK";
+                } else {
+                    $result->status = "ERROR";
+                    $result->message = "Element Key Validation Error";
+                }
+            } else {
+                $result->status = "ERROR";
+                $result->message = "App Validation Error";
+            }
+        } catch (Exception $e) {
+            $result->status = "EXCEPTION";
+            $result->message = $e->getMessage();
+        }
+
+        return $result;
+    }
+
+    private static function collectPOSTParameters() {
+        $parameters = new stdClass();
+        $parameters->label = filter_input(INPUT_POST, "label");
+        $parameters->captured_datetime = filter_input(INPUT_POST, "captured_datetime");
+
+        return $parameters;
+    }
+
+    private static function validatePOSTParameters($parameters) {
+        if (!isset($parameters->label) || $parameters->label == "" || !isset($parameters->captured_datetime)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private static function moveUploadedFile() {
+
+        $fileResult = new stdClass();
+        $target_dir = "vse_files/";
+
+        //TODO: Need to add a random factor that cannot be guessed through brute force.
+        $fileResult->file_guid = uniqid("file_", true);
+        $fileResult->file_name = $_FILES["vse_file"]["name"];
+        $target_file = $target_dir . $fileResult->file_guid;
+
+        if (file_exists($target_file)) {
+            throw new Exception("File Already Exists");
+        }
+
+        if ($_FILES["vse_file"]["size"] > 100000000) {
+            throw new Exception("File is too large");
+        }
+
+        if (move_uploaded_file($_FILES["vse_file"]["tmp_name"], $target_file)) {
+            return $fileResult;
+        } else {
+            throw new Exception("File Upload Failed for ".$_FILES["vse_file"]["tmp_name"]." with target $target_file");
+        }
+    }
+
+    private static function createVSEEntry($params, $fileResult) {
+        $vseEntry = new be_vse_data();
+        $vseEntry->app_id = $params->app_id;
+        $vseEntry->vse_label = $params->label;
+
+        $fileSimpleObject = new stdClass();
+        $fileSimpleObject->file_name = $fileResult->file_name;
+        $fileSimpleObject->file_guid = $fileResult->file_guid;
+
+        $vseEntry->vse_value = json_encode($fileSimpleObject);
+        $vseEntry->vse_type = "_FILE_";
+        $vseEntry->captured_datetime = $params->captured_datetime;
+
+        $savedEntry = da_vse_data::AddEntry($vseEntry);
+        return $savedEntry;
     }
 
 }

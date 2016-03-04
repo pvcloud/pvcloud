@@ -21,10 +21,10 @@ describe("pvCloud API Object", function () {
     it("Must have the minimal API functions declared", function () {
         info("API MINIMAL FUNCTIONS");
         expect(pvcloud.Login).not.toBe(undefined);
-//        expect(pvcloud.Read).not.toBe(undefined);
-//        expect(pvcloud.Write).not.toBe(undefined);
-        //expect(pvcloud.PostFile).not.toBe(undefined);
-        //expect(pvcloud.Check).not.toBe(undefined);
+        expect(pvcloud.Read).not.toBe(undefined);
+        expect(pvcloud.Write).not.toBe(undefined);
+        expect(pvcloud.SendFile).not.toBe(undefined);
+
     });
     it("Must run Test Point Properly", function () {
         info("SMOKE TEST");
@@ -210,6 +210,7 @@ describe("pvCloud User Context", function () {
         });
 
         describe("UNDER App Context (have an app_key and element_key on our side.", function () {
+            
             it("SHOULD BE ABLE TO CALL OUT APP_KEY AND ELEMENT_KEY", function (done) {
                 info("APP CONNECT INFO");
                 info(appConnectInfo);
@@ -239,7 +240,9 @@ describe("pvCloud User Context", function () {
                 };
                 var errorCallback = function (error, response, body) {
                     errorReached = true;
-                    info(testHint + ": Error Callback Reached!");
+                    info(testHint + ": Error Callback Reached!!!!!");
+                    info("BODY----------------------");
+                    info(body);
                     expect(error).not.toBe(undefined);
                 };
                 var finallyCallback = function (error, response, body) {
@@ -313,6 +316,7 @@ describe("pvCloud User Context", function () {
                         errorCallback,
                         finallyCallback);
             });
+            
             it("SHOULD BE ABLE TO READ ALL DATA USING * WILDCARDS", function (done) {
                 var testHint = "READ DATA FROM APP ";
                 var errorReached = false;
@@ -359,7 +363,7 @@ describe("pvCloud User Context", function () {
                         errorCallback,
                         finallyCallback);
             });
-            
+
             it("SHOULD BE ABLE TO DELETE TWO RECORDS OF DATA USING * WILDCARDS", function (done) {
                 var testHint = "READ DATA FROM APP ";
                 var errorReached = false;
@@ -404,7 +408,7 @@ describe("pvCloud User Context", function () {
                         errorCallback,
                         finallyCallback);
             });
-            
+
             it("SHOULD BE ABLE TO DELETE ALL DATA USING * WILDCARDS", function (done) {
                 var testHint = "READ DATA FROM APP ";
                 var errorReached = false;
@@ -449,6 +453,56 @@ describe("pvCloud User Context", function () {
                         finallyCallback);
             });
 
+            it("SHOULD BE ABLE TO UPLOAD A FILE", function (done) {
+                var testHint = "SEND FILE TO AN APP ";
+                var errorReached = false;
+                var successReached = false;
+                var successCallback = function (error, response, body) {
+                    successReached = true;
+                    info(testHint + ": Success Callback Reached!");
+
+                    var body = JSON.parse(response.body);
+                    var dataWritten = body.data;
+                    info(testHint + ": DATA WRITTEN!");
+                    info(dataWritten);
+                    expect(body.status).toBe("OK");
+                    expect(error).toBeFalsy();
+                    expect(response).not.toBe(undefined);
+                    expect(body).not.toBe(undefined);
+
+                };
+                var errorCallback = function (error, response, body) {
+                    errorReached = true;
+                    info(testHint + ": Error Callback Reached!!!!!");
+                    info("BODY----------------------");
+                    info(response.body);                    
+                    expect(error).not.toBe(undefined);
+                };
+                var finallyCallback = function (error, response, body) {
+                    info(testHint + ": Finally Callback Reached");
+                    info(response.body);
+                    expect(successReached).toBe(true);
+                    expect(errorReached).toBe(false);
+                    done();
+                };
+
+
+                var label = "TEST LABEL";
+                var filePath = "index.js";
+
+                pvcloud.SendFile(
+                        baseURL,
+                        appConnectInfo.app_id,
+                        appConnectInfo.app_key,
+                        appConnectInfo.element_key,
+                        label,
+                        filePath,
+                        undefined /*Captured Datetime*/,
+                        successCallback,
+                        errorCallback,
+                        finallyCallback);
+            });
+
             //TODO: MISSING TESTS
             // WRITE WITH MISSING PARAMETERS
             // READ FOR SPECIFIC LABEL
@@ -459,107 +513,12 @@ describe("pvCloud User Context", function () {
             // READ FOR SPECIFIC LABEL WITH COUNT OF * WILDCARD
             // DELETE FOR LABEL OF * WILDCARD AND SPECIFIC COUNT
             // MISSING ROUTES and other NETWORK FAILURES... how should pvcloud_lib process those?
-            
+
         });
     });
 
 
 });
-
-
-//describe("pvCloud Library WAIT WRITE Call.", function () {
-//    info("WRITE CALL TEST (WAIT)");
-//    var callResponse;
-//    it("should be able to make WRITE SYNCHRONOUS Call and pass through FINALLY callback", function (done) {
-//        var testHint = "WRITE CALL WAIT";
-//        var account_id = 1;
-//        var app_id = 9;
-//        var api_key = '1ff73344d60297700b45b8368c927395ffedebec';
-//        var label = "test";
-//        var value = "VALUE";
-//        var type = "STRING";
-//        var captured_datetime = "2016-01-01";
-//
-//        var successCallback = function (error, response, body) {
-//            info(testHint + ": Success Callback Reached!");
-//            callResponse = response;
-//        };
-//        var errorCallback = function (error, response, body) {
-//            info(testHint + ": Error Callback Reached!");
-//            callResponse = response;
-//        };
-//        var finallyCallback = function (error, response, body) {
-//            info(testHint + ": Finally Callback Reached!");
-//            done();
-//        };
-//
-//        pvcloud.Write(baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback);
-//    });
-//
-//    it("returns proper data", function () {
-//        var testHint = "PROPER DATA";
-//        expect(callResponse).not.toBe(undefined);
-//        expect(callResponse.body).not.toBe(undefined);
-//
-//        info(testHint + ": EXTRACTING DATA FROM RESPONSE...");
-//        info(callResponse.body);
-//        data = JSON.parse(callResponse.body);
-//        expect(data).not.toBe(undefined);
-//        expect(data.entry_id).toBeGreaterThan(1);
-//
-//    });
-//});
-//
-//describe("pvCloud Library NO_WAIT WRITE Call.", function () {
-//    info("WRITE CALL TEST (NO_WAIT)");
-//    var callResponse;
-//    it("should be able to make WRITE ASYNC Call and pass through FINALLY callback", function (done) {
-//        var testHint = "WRITE NOWAIT";
-//        info("JASMINE DEFAULT TIMEOUT");
-//        info(jasmine.DEFAULT_TIMEOUT_INTERVAL);
-//        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-//        var account_id = 1;
-//        var app_id = 9;
-//        var api_key = '1ff73344d60297700b45b8368c927395ffedebec';
-//        var label = "test";
-//        var value = "VALUE";
-//        var type = "STRING";
-//        var captured_datetime = "2016-01-01";
-//
-//        var successCallback = function (error, response, body) {
-//            info(testHint + ": Success Callback Reached!");
-//            callResponse = response;
-//        };
-//        var errorCallback = function (error, response, body) {
-//            info(testHint + ": Error Callback Reached!");
-//            callResponse = response;
-//        };
-//        var finallyCallback = function (error, response, body) {
-//            info(testHint + ": Finally Callback Reached!");
-//
-//            info(testHint + ": Waiting 1 Second for File Operation Flushout...");
-//            setTimeout(function () {
-//                info(testHint + ": DONE!");
-//                done();
-//            }, 1000);
-//
-//        };
-//
-//        pvcloud.Write(baseURL, account_id, app_id, api_key, label, value, type, captured_datetime, successCallback, errorCallback, finallyCallback, true /*NO_WAIT*/);
-//    });
-//
-//    it("returns proper data", function () {
-//        var testHint = "RETURNS PROPER DATA"
-//        expect(callResponse).not.toBe(undefined);
-//        expect(callResponse.body).not.toBe(undefined);
-//
-//        info(testHint + ": EXTRACTING DATA FROM RESPONSE...");
-//        data = JSON.parse(callResponse.body);
-//        expect(data).not.toBe(undefined);
-//        expect(data.entry_id).toBeGreaterThan(1);
-//
-//    });
-//});
 
 function info(message) {
     infoStep++;
