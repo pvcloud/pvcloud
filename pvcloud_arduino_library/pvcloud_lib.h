@@ -19,6 +19,7 @@ public:
     void Write(String, float);
     void Write(String, double);
     void Read(String);
+    void SendFile(String label, String path);
     
     /*SIMPLIFIED LIBRARTY ASYNC INTERFACE*/
     void WriteAsync(String label, String value);
@@ -56,6 +57,7 @@ public:
     String RetrieveString_CheckResult(String label);
     
     inline bool exists_test3(String name);
+    
 
 
 };

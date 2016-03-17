@@ -130,6 +130,16 @@ void PVCloud::Read(String label) {
     system(command.buffer);
 }
 
+ void PVCloud::SendFile(String label, String path){
+    String command = "node /home/root/pvcloud_api.js action='post_file' ";
+    command += " label='" + label + "' ";
+    command += " file_path='" + path + "' ";
+    command += " error_log_file='" + errorFile + "'";
+
+    system(command.buffer);
+     
+ }
+
 /*LEGACY LOG INTERFACE*/
 void PVCloud::LogEntry(String message) {
     String command = "echo \"";
