@@ -5,13 +5,12 @@
         DEBUG: false,
         DEBUG_COUNT: 0
     };
-    
+
     var pvCloudAPI = function () {
         return{
             test: function () {
                 return "SIMPLE SMOKE TEST";
             },
-            
             /**
              * Performs a LOGIN operation to a target pvCloud server defined in baseURL
              * @param {type} baseURL target pvCloud Server
@@ -27,7 +26,6 @@
                 var PostData = {email: userName, pwd: password};
                 postWrapper(loginURL, PostData, successCallback, errorCallback, finallyCallback);
             },
-            
             /**
              * Obtains the data required for connecting an IoT Element to an IoT App
              * @param {type} baseURL pvCloud Server Instance
@@ -52,7 +50,6 @@
                 };
                 postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
             },
-            
             /**
              * Sends data to a pvcloud server for specific app, label and value
              * @param {type} baseURL
@@ -81,7 +78,6 @@
                 };
                 postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
             },
-            
             /**
              * Sends data to a pvcloud server for specific app, label and value
              * @param {type} baseURL
@@ -112,7 +108,6 @@
                 };
                 postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
             },
-            
             Read: function (baseURL, app_id, app_key, element_key, label, count, successCallback, errorCallback, finallyCallback) {
                 var targetURL = baseURL + "/backend/vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
                 if (label)
@@ -122,7 +117,6 @@
 
                 getWrapper(targetURL, successCallback, errorCallback, finallyCallback);
             },
-            
             Delete: function (baseURL, app_id, app_key, element_key, label, count, successCallback, errorCallback, finallyCallback) {
                 var targetURL = baseURL + "/backend/vse.php/appdata/" + app_id + "/" + app_key + "/" + element_key;
                 if (label)
@@ -132,7 +126,7 @@
 
                 deleteWrapper(targetURL, successCallback, errorCallback, finallyCallback);
             }
-            
+
         };
     }();
 
@@ -285,7 +279,7 @@
                 finallyCallback(error, response, body);
         });
     }
-    
+
     /**
      * Logs debug data to console if DEBUG is set to true.
      * @param {String} message

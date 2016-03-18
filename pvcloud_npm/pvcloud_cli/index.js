@@ -1,7 +1,10 @@
 #! /usr/bin/env node
 
 (function () {
-    var DEBUG = false;
+    var options = {
+        DEBUG: true,
+        DEBUG_COUNT: 0
+    };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
     var fs = require("fs");
     var pvCloudCLModule = function () {
@@ -18,18 +21,22 @@
         };
 
         function commandLineExecution() {
-
+            log("commandLineExecution()");
             var params = processParameters(process.argv);
-
+            log(params);
             switch (params.action) {
                 case "test":
-                    console.log(pvcloud.test());
-                    console.log(pvcloud);
+                    options.DEBUG=true;
+                    log("CLEx: test");
+                    log(pvcloud.test());
+                    log(pvcloud);
                     break;
                 case "init":
+                    log("CLEx: init");
                     init(params);
                     break;
                 case "write":
+                    log("CLEx: write");
                     if (!checkConfig())
                         return;
                     break;
@@ -118,7 +125,7 @@
 
         function checkConfig() {
             var configOnFile = loadConfig();
-            if (!configOnFile || configOnFile.ElementKey == undefined) {
+            if (!configOnFile || configOnFile.ElementKey === undefined) {
                 console.log("PVCloud is not configured. Consider running the following command");
                 console.log("    pvcloud init");
             }
@@ -138,13 +145,20 @@
         }
 
         function init(parameters) {
+            log("init(parameters)");
             console.log("------------------------");
             console.log("- pvCloud INIT Routine -");
             console.log("------------------------");
-            init_promptMissingParameters(parameters, function () {
 
+            log("PUNTO 0");
+            log(parameters);
+            
+            init_promptMissingParameters(parameters, function () {
+                log("PUNTO 1");
                 if (init_validateParameters(parameters)) {
-                    console.log("VALIDATED");
+                    log("VALIDATED PARAMETERS");
+                    log(parameters);
+                    init_executeAction(parameters);
                 } else {
                     console.log("INVALID PARAMETERS");
                 }
@@ -153,6 +167,7 @@
         }
 
         function init_promptMissingParameters(parameters, callback) {
+            log("PROMPT MISSING PARAMETERS");
             var promptSpec = [];
             if (!parameters.base_url) {
                 promptSpec.push("Base URL");
@@ -169,6 +184,7 @@
             }
 
             if (promptSpec.length > 0) {
+                
                 console.log("In this process we will collect configuration data to connect this instance of pvCloud Client to a pvCloud IoT App.");
                 var prompt = require('prompt');
                 prompt.start();
@@ -180,6 +196,8 @@
                     callback(parameters);
                     prompt.stop();
                 });
+            } else {
+                callback(parameters);
             }
 
             function fillParams(parameters, resultContainer, promptKey, paramKey) {
@@ -189,10 +207,85 @@
 
                 return parameters;
             }
+
         }
 
         function init_validateParameters(parameters) {
             return true;
+        }
+
+        function init_executeAction(parameters) {
+            log("init_executeAction");
+            log(parameters);
+            switch (parameters.action) {
+                case "init":
+                    log("Executing INIT action");
+                    init_login(parameters);
+                    
+                    //....
+                    break;
+            }
+        }
+        function isNumeric(n) {
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
+        function init_login(parameters) {
+            log("init_login()");
+            pvcloud.Login(
+                    parameters.base_url,
+                    parameters.username,
+                    parameters.password,
+                    function (error, response, body) {//SUCCESS
+                        var bodyObject = JSON.parse(response.body);
+                        loginInfo = bodyObject.data;
+                        parameters.account_id = loginInfo.account_id;
+                        parameters.token = loginInfo.token;
+
+                        init_connect(parameters);
+                    },
+                    function (error, response, body) {//ERROR
+                        log("ERROR @ LOGIN");
+                        log(error);
+                        log(response.body);
+                    },
+                    function (error, response, body) {//FINALLY
+                        console.log("FINALLY @ LOGIN");
+                    });
+        }
+        function init_connect(parameters) {
+            log("init_connect");
+            var app_id = 0;
+            var app_name = "";
+            
+            log(parameters);
+            if (isNumeric(parameters.app_descriptor)) {
+                app_id = parameters.app_descriptor;
+            } else {
+                app_name = parameters.app_descriptor;
+            }
+
+            pvcloud.Connect(
+                    parameters.base_url,
+                    parameters.account_id,
+                    parameters.token,
+                    "" /*element key*/,
+                    app_id,
+                    app_name,
+                    function (error, request, body) { //SUCCESS
+                        log("SUCCESS!");
+                        log(body);
+                    },
+                    function (error, request, body) {//ERROR
+                        console.log("ERROR @ CONNECT");
+                        console.log(error);
+                    },
+                    function (error, request, body) {//FINALLY
+                        console.log("FINALLY @ CONNECT");
+                    });
+        }
+
+        function init_saveConfig(parameters) {
+
         }
 
         /**
@@ -221,7 +314,49 @@
             var finallyCallback = function (error, request, body) {
 
             };
+
             pvcloud.Login(baseURL, username, password, successCallback, errorCallback, finallyCallback);
+        }
+
+        /**
+         * Logs debug data to console if DEBUG is set to true.
+         * @param {String} message
+         * @returns {undefined}
+         */
+
+
+        function log(message) {
+            if (options.DEBUG === true) {
+                options.DEBUG_COUNT++;
+                var dt = getFormattedDateTime();
+                if (typeof message === "object") {
+                    console.log("#" + options.DEBUG_COUNT + " - " + dt + " : -------------------");
+                    console.log(message);
+                } else {
+                    console.log("#" + options.DEBUG_COUNT + " - " + dt + " : " + message);
+                }
+            }
+        }
+
+        function getFormattedDateTime() {
+            var rawDate = new Date();
+            var year = rawDate.getFullYear();
+            var month = rawDate.getMonth() + 1;
+            var day = rawDate.getDate();
+            var hour = rawDate.getHours();
+            var minute = rawDate.getMinutes();
+            var second = rawDate.getSeconds();
+            if (month < 10)
+                month = "0" + month;
+            if (day < 10)
+                day = "0" + day;
+            if (hour < 10)
+                hour = "0" + hour;
+            if (minute < 10)
+                minute = "0" + minute;
+            if (second < 10)
+                second = "0" + second;
+            return year + "-" + month + "-" + day + "+" + hour + ":" + minute + ":" + second;
         }
 
         commandLineExecution();
