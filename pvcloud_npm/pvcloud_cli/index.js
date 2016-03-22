@@ -26,7 +26,7 @@
             log(params);
             switch (params.action) {
                 case "test":
-                    options.DEBUG=true;
+                    options.DEBUG = true;
                     log("CLEx: test");
                     log(pvcloud.test());
                     log(pvcloud);
@@ -152,7 +152,7 @@
 
             log("PUNTO 0");
             log(parameters);
-            
+
             init_promptMissingParameters(parameters, function () {
                 log("PUNTO 1");
                 if (init_validateParameters(parameters)) {
@@ -184,7 +184,7 @@
             }
 
             if (promptSpec.length > 0) {
-                
+
                 console.log("In this process we will collect configuration data to connect this instance of pvCloud Client to a pvCloud IoT App.");
                 var prompt = require('prompt');
                 prompt.start();
@@ -221,7 +221,7 @@
                 case "init":
                     log("Executing INIT action");
                     init_login(parameters);
-                    
+
                     //....
                     break;
             }
@@ -256,7 +256,7 @@
             log("init_connect");
             var app_id = 0;
             var app_name = "";
-            
+
             log(parameters);
             if (isNumeric(parameters.app_descriptor)) {
                 app_id = parameters.app_descriptor;
@@ -360,8 +360,9 @@
         }
 
         commandLineExecution();
-        return {};
-        ;
+        return {
+            Init: init
+        };
     }();
     exports.Client = pvCloudCLModule;
 })();

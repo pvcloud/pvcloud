@@ -27,5 +27,7 @@
     "prompt": "^1.0.0",
     "pvcloud_lib": "^1.0.10"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jasmine": "^2.4.1"
+  }
 }
