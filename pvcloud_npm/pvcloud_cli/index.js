@@ -46,7 +46,7 @@
         /**
          * This function processes parameters received from interpreter 
          * It supports 3 types of parameters:
-         *    - Sequenced parameters (first one is "action", second one is "action modifier1" etc..
+         *    - Sequenced parameters (first one is "action", second one is "action modifier1" etc.
          *    - double-dash parameters (--simple, --version, etc)
          *    - named parameters (label="SENSOR1", base_url="http:myservice.com/pvcloud")
          * @param {array} argv parameters received from interpreter
