@@ -2,7 +2,7 @@
 
 (function () {
     var options = {
-        DEBUG: true,
+        DEBUG: false,
         DEBUG_COUNT: 0
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
@@ -222,7 +222,6 @@
                     log("Executing INIT action");
                     init_login(parameters);
 
-                    //....
                     break;
             }
         }
@@ -237,11 +236,18 @@
                     parameters.password,
                     function (error, response, body) {//SUCCESS
                         var bodyObject = JSON.parse(response.body);
-                        loginInfo = bodyObject.data;
-                        parameters.account_id = loginInfo.account_id;
-                        parameters.token = loginInfo.token;
 
-                        init_connect(parameters);
+                        if (bodyObject.status === "OK") {
+                            loginInfo = bodyObject.data;
+                            log("LOGIN INFO!!!!");
+                            log(response.body);
+                            parameters.account_id = loginInfo.account_id;
+                            parameters.token = loginInfo.token;
+
+                            init_connect(parameters);
+                        } else {
+                            console.log(bodyObject.message);
+                        }
                     },
                     function (error, response, body) {//ERROR
                         log("ERROR @ LOGIN");
@@ -249,7 +255,7 @@
                         log(response.body);
                     },
                     function (error, response, body) {//FINALLY
-                        console.log("FINALLY @ LOGIN");
+                        log("FINALLY @ LOGIN");
                     });
         }
         function init_connect(parameters) {
@@ -271,16 +277,25 @@
                     "" /*element key*/,
                     app_id,
                     app_name,
-                    function (error, request, body) { //SUCCESS
+                    function (error, response, body) { //SUCCESS
                         log("SUCCESS!");
                         log(body);
+
+
+                        var bodyObject = JSON.parse(response.body);
+
+                        if (bodyObject.status !== "OK") {
+                            console.log(bodyObject.message);
+                        } else {
+                            console.log(bodyObject.data);
+                        }
                     },
                     function (error, request, body) {//ERROR
                         console.log("ERROR @ CONNECT");
                         console.log(error);
                     },
                     function (error, request, body) {//FINALLY
-                        console.log("FINALLY @ CONNECT");
+                        log("FINALLY @ CONNECT");
                     });
         }
 
@@ -297,7 +312,7 @@
             var username = parameters.username;
             var password = parameters.password;
             var baseURL = "http://crmakers.intel.com:8080/pvcloud_test/";
-            console.log(parameters);
+            log(parameters);
             return;
             var successCallback = function (error, request, body) {
                 var result = body;

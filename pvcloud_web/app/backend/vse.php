@@ -177,9 +177,22 @@ class AppConnectHelper {
             $parameters = AppConnectHelper::collectParameters();
 
             if (AppConnectHelper::parametersAreValid($parameters)) {
-                $response->status = "OK";
-                $response->message = "";
-                $response->data = AppConnectHelper::doAppConnect($parameters->account_id, $parameters->token, $parameters->element_key, $parameters->app_id, $parameters->app_name);
+                $connectResult = AppConnectHelper::doAppConnect($parameters->account_id, $parameters->token, $parameters->element_key, $parameters->app_id, $parameters->app_name);
+
+                if ($connectResult != NULL) {
+                    if ($connectResult->status == "OK") {
+                        $response->status = "OK";
+                        $response->message = "";
+                        $response->data = $connectResult;
+                    } else {
+                        $response->status = $connectResult->status;
+                        $response->message = $connectResult->message;
+                        $response->data = $connectResult;
+                    }
+                } else {
+                    $response->status = "Error";
+                    $response->message = "No se pudo realizar la conexión. Verifique los datos suministrados. (Cuenta, Password, App)";
+                }
             } else {
                 $response->status = "Error";
                 $response->message = "Parámetros Inválidos";
@@ -205,6 +218,7 @@ class AppConnectHelper {
     private static function parametersAreValid($parameters) {
         if ($parameters->account_id > 0 && ($parameters->token != "" || $parameters->element_key != "")) {
             if ($parameters->app_id > 0 || $parameters->app_name != "") {
+
                 return true;
             }
         }
@@ -212,6 +226,15 @@ class AppConnectHelper {
         return false;
     }
 
+    /**
+     * 
+     * @param type $account_id
+     * @param type $token
+     * @param type $element_key
+     * @param type $app_id
+     * @param type $app_name
+     * @return \be_ConnectResult
+     */
     private static function doAppConnect($account_id, $token, $element_key, $app_id, $app_name) {
         $result = new be_ConnectResult();
         $elementAuthentication = AppConnectHelper::doElementAuthentication($account_id, $token, $element_key);
@@ -219,9 +242,17 @@ class AppConnectHelper {
 
             $result->element_key = $elementAuthentication;
             $app = AppConnectHelper::getAppData($app_id, $app_name, $account_id);
-            $result->app_id = $app->app_id;
-            $result->app_key = $app->api_key;
-            $result->account_id = $app->account_id;
+            
+            if ($app == NULL) {
+                $result->status = "ERROR";
+                $result->message = "Application not found....";
+            } else {
+                $result->status = "OK";
+                $result->message = "";
+                $result->app_id = $app->app_id;
+                $result->app_key = $app->api_key;
+                $result->account_id = $app->account_id;
+            }
         }
 
         return $result;
@@ -492,7 +523,7 @@ class AppFilesHelper {
         if (move_uploaded_file($_FILES["vse_file"]["tmp_name"], $target_file)) {
             return $fileResult;
         } else {
-            throw new Exception("File Upload Failed for ".$_FILES["vse_file"]["tmp_name"]." with target $target_file");
+            throw new Exception("File Upload Failed for " . $_FILES["vse_file"]["tmp_name"] . " with target $target_file");
         }
     }
 
@@ -517,6 +548,8 @@ class AppFilesHelper {
 
 class be_ConnectResult {
 
+    public $status = "";
+    public $message = "";
     public $account_id = 0;
     public $app_id = 0;
     public $app_key = "";
