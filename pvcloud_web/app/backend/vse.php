@@ -183,7 +183,13 @@ class AppConnectHelper {
                     if ($connectResult->status == "OK") {
                         $response->status = "OK";
                         $response->message = "";
-                        $response->data = $connectResult;
+                        $data = new stdClass();
+                        $data->account_id = $connectResult->account_id;
+                        $data->app_id = $connectResult->app_id;
+                        $data->app_key = $connectResult->app_key;
+                        $data->element_key = $connectResult->element_key;
+                        $response->data = $data;
+                        
                     } else {
                         $response->status = $connectResult->status;
                         $response->message = $connectResult->message;

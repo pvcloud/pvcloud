@@ -2,7 +2,7 @@
 
 (function () {
     var options = {
-        DEBUG: false,
+        DEBUG: true,
         DEBUG_COUNT: 0
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
@@ -149,16 +149,15 @@
             console.log("------------------------");
             console.log("- pvCloud INIT Routine -");
             console.log("------------------------");
-
-            log("PUNTO 0");
             log(parameters);
 
+            log("Checking for missing parameters @ INIT...");
             init_promptMissingParameters(parameters, function () {
-                log("PUNTO 1");
+                log("init() - Validating Parameters...");
                 if (init_validateParameters(parameters)) {
-                    log("VALIDATED PARAMETERS");
+                    log("init() - Parameters are Valid.");
                     log(parameters);
-                    init_executeAction(parameters);
+                    init_Execute(parameters);
                 } else {
                     console.log("INVALID PARAMETERS");
                 }
@@ -167,109 +166,146 @@
         }
 
         function init_promptMissingParameters(parameters, callback) {
-            log("PROMPT MISSING PARAMETERS");
-            var promptSpec = [];
+            log("init_promptMissingParameters(parameters, callback)");
+
+            var prompt = require('prompt');
+            log(parameters);
+            var promptSpec = {};
+            var missingParamCount = 0;
             if (!parameters.base_url) {
-                promptSpec.push("Base URL");
+                log("Base URL not provided as parameter... adding to prompt queue");
+                promptSpec.base_url = {description: "Base URL"};
+                missingParamCount++;
             }
 
             if (!parameters.username) {
-                promptSpec.push("Account");
+                log("User Name not provided as parameter... adding to prompt queue");
+                promptSpec.username = {description: "Account"};
+                missingParamCount++;
             }
             if (!parameters.password) {
-                promptSpec.push("Password");
+                log("Password not provided as parameter... adding to prompt queue");
+                promptSpec.password = {description: "Type your password here:", hidden: true};
+                missingParamCount++;
             }
             if (!parameters.app_descriptor) {
-                promptSpec.push("App Name or ID");
+                log("App Descriptor not provided as parameter... adding to prompt queue");
+                promptSpec.app_descriptor = {message: "App Name or ID"};
+                missingParamCount++;
             }
 
-            if (promptSpec.length > 0) {
-
+            if (missingParamCount > 0) {
+                log("Prompt Queue Size:" + missingParamCount);
+                var schema = {};
+                schema.properties = promptSpec;
+                log(promptSpec);
                 console.log("In this process we will collect configuration data to connect this instance of pvCloud Client to a pvCloud IoT App.");
+
                 var prompt = require('prompt');
+
                 prompt.start();
-                prompt.get(promptSpec, function (err, result) {
-                    parameters = fillParams(parameters, result, "Base URL", "base_url");
-                    parameters = fillParams(parameters, result, "Account", "username");
-                    parameters = fillParams(parameters, result, "Password", "password");
-                    parameters = fillParams(parameters, result, "App Name or ID", "app_descriptor");
+                prompt.get(schema, function (err, result) {
+                    log(result);
+                    log(parameters);
+
+                    extendObject(parameters, result);
+                    log("New PARAMETERS Object:");
+                    log(parameters);
                     callback(parameters);
                     prompt.stop();
                 });
             } else {
+                log("Prompt Queue was empty. Calling callback...");
                 callback(parameters);
             }
-
-            function fillParams(parameters, resultContainer, promptKey, paramKey) {
-                if (resultContainer[promptKey]) {
-                    parameters[paramKey] = resultContainer[promptKey];
-                }
-
-                return parameters;
-            }
-
         }
 
         function init_validateParameters(parameters) {
             return true;
         }
 
-        function init_executeAction(parameters) {
-            log("init_executeAction");
+        function init_Execute(parameters) {
+            log("init_Execute()");
             log(parameters);
-            switch (parameters.action) {
-                case "init":
-                    log("Executing INIT action");
-                    init_login(parameters);
 
-                    break;
-            }
+            init_login(parameters, function () {
+                init_connect(parameters, function () {
+                    init_save(parameters, function () {
+                        log("INIT SEQUENCE SUCCESSFUL!");
+                        log(parameters);
+                    });
+                });
+            });
         }
+
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
-        function init_login(parameters) {
+        
+        function extendObject(parameters, resultContainer) {
+            for (var propertyname in resultContainer) {
+                parameters[propertyname] = resultContainer[propertyname];
+            }
+        }
+        
+        function init_login(parameters, callback) {
             log("init_login()");
             pvcloud.Login(
                     parameters.base_url,
                     parameters.username,
                     parameters.password,
                     function (error, response, body) {//SUCCESS
-                        var bodyObject = JSON.parse(response.body);
+                        log("pvcloud.Login > Success. Parsing result...");
+                        var bodyObject = JSON.parse(body);
+                        log("Parsed Body:   ");
+                        log(bodyObject);
 
                         if (bodyObject.status === "OK") {
+                            log("Status is OK. Grabing Login Info...");
                             loginInfo = bodyObject.data;
-                            log("LOGIN INFO!!!!");
-                            log(response.body);
+
+                            log(loginInfo);
+
+                            log("Adding account and token to parameters...");
                             parameters.account_id = loginInfo.account_id;
                             parameters.token = loginInfo.token;
 
-                            init_connect(parameters);
+                            callback();
                         } else {
+                            log("!!! STATUS NOT OK!!!");
+                            log(bodyObject.status);
                             console.log(bodyObject.message);
                         }
                     },
                     function (error, response, body) {//ERROR
+                        console.log("An error occurred during LOGIN process. Please check your URL and Credentials");
                         log("ERROR @ LOGIN");
                         log(error);
-                        log(response.body);
+                        log("ERROR - BODY @ LOGIN");
+                        log(body);
                     },
                     function (error, response, body) {//FINALLY
                         log("FINALLY @ LOGIN");
                     });
         }
-        function init_connect(parameters) {
-            log("init_connect");
+
+        function init_connect(parameters, callback) {
+            log("init_connect()");
+            log(parameters);
+
             var app_id = 0;
             var app_name = "";
 
-            log(parameters);
+            log("Determining if app_descriptor will be AppID or Name...");
             if (isNumeric(parameters.app_descriptor)) {
+                log("   Using AppID");
                 app_id = parameters.app_descriptor;
             } else {
+                log("   Using AppName");
                 app_name = parameters.app_descriptor;
             }
 
+            log("Calling pvcloud.Connect()");
             pvcloud.Connect(
                     parameters.base_url,
                     parameters.account_id,
@@ -278,17 +314,25 @@
                     app_id,
                     app_name,
                     function (error, response, body) { //SUCCESS
-                        log("SUCCESS!");
+                        log("SUCCESS @ pvcloud.Connect");
                         log(body);
 
-
                         var bodyObject = JSON.parse(response.body);
+
+                        var connectProperties = {
+                            account_id: bodyObject.data.account_id,
+                            app_id: bodyObject.data.app_id,
+                            app_key: bodyObject.data.app_key,
+                            element_key: bodyObject.data.element_key
+                        };
 
                         if (bodyObject.status !== "OK") {
                             console.log(bodyObject.message);
                         } else {
-                            console.log(bodyObject.data);
+                            extendObject(parameters, connectProperties);
                         }
+                        parameters.complete = true;
+                        callback();
                     },
                     function (error, request, body) {//ERROR
                         console.log("ERROR @ CONNECT");
@@ -299,8 +343,10 @@
                     });
         }
 
-        function init_saveConfig(parameters) {
-
+        function init_save(parameters, callback) {
+            log("init_save()");
+            log(parameters);
+            callback();
         }
 
         /**
@@ -338,8 +384,6 @@
          * @param {String} message
          * @returns {undefined}
          */
-
-
         function log(message) {
             if (options.DEBUG === true) {
                 options.DEBUG_COUNT++;
