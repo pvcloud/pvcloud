@@ -1,0 +1,1 @@
+pvcloud init http://crmakers.intel.com:8080/pvcloud_test test@costaricamakers.com abcd TEST BETO

@@ -6,6 +6,9 @@
         DEBUG_COUNT: 0
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
+    var nconf = require("nconf");
+    var configFile = __dirname + "/config.json";
+
     var fs = require("fs");
     var pvCloudCLModule = function () {
 
@@ -21,12 +24,27 @@
         };
 
         function commandLineExecution() {
+            nconf.use('file', {
+                file: configFile
+            });
+
+            var package_json = require("./package.json");
+            console.log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
+
+            if (nconf.get("device_name")) {
+                console.log("This device is already configured as " + nconf.get("device_name"));
+            } else {
+                console.log("This device is not configured yet. Please run pvcloud init command to begin.");
+            }
+
             log("commandLineExecution()");
             var params = processParameters(process.argv);
             log(params);
             switch (params.action) {
                 case "test":
                     options.DEBUG = true;
+                    var devname = nconf.get("device_name");
+                    console.log(devname);
                     log("CLEx: test");
                     log(pvcloud.test());
                     log(pvcloud);
@@ -91,7 +109,11 @@
                                 } else if (sequencedParametersIndex === 6 && !parameters.app_descriptor) {
                                     parameters.app_descriptor = currentParameter;
                                     sequencedParametersIndex++;
+                                } else if (sequencedParametersIndex === 7 && !parameters.device_name) {
+                                    parameters.device_name = currentParameter;
+                                    sequencedParametersIndex++;
                                 }
+
                                 break;
                             case "write":
                                 if (sequencedParametersIndex === 3 && !parameters.label) {
@@ -118,7 +140,6 @@
                     }
                 }
             }
-
 
             return parameters;
         }
@@ -151,27 +172,56 @@
             console.log("------------------------");
             log(parameters);
 
-            log("Checking for missing parameters @ INIT...");
-            init_promptMissingParameters(parameters, function () {
-                log("init() - Validating Parameters...");
-                if (init_validateParameters(parameters)) {
-                    log("init() - Parameters are Valid.");
-                    log(parameters);
-                    init_Execute(parameters);
-                } else {
-                    console.log("INVALID PARAMETERS");
-                }
+            log("Getting existing configuration...");
+            var currentDevName = nconf.get("device_name");
+            var currentElementKey = nconf.get("element_key");
 
-            });
+            if (currentDevName && currentElementKey) {
+                console.log("WARNING! This device is already configured as " + currentDevName);
+                var prompt = require('prompt');
+                prompt.start();
+                var schema = {};
+                schema.properties = {
+                    confirm: {
+                        message: "Do you want to Initialize it anyway? (Y/N)"
+                    }
+                };
+                
+                prompt.get(schema, function (err, result) {
+                    prompt.stop();
+                    if (result.confirm === "Y") {
+                        log("Checking for missing parameters @ INIT...");
+                        confirmedInit(parameters);
+                    }
+                });
+            } else {
+                confirmedInit(parameters);
+            }
+
+            function confirmedInit(parameters) {
+                init_promptMissingParameters(parameters, function () {
+                    log("init() - Validating Parameters...");
+                    if (init_validateParameters(parameters)) {
+                        log("init() - Parameters are Valid.");
+                        log(parameters);
+                        init_Execute(parameters);
+                    } else {
+                        console.log("INVALID PARAMETERS");
+                    }
+                });
+
+            }
         }
 
         function init_promptMissingParameters(parameters, callback) {
             log("init_promptMissingParameters(parameters, callback)");
 
             var prompt = require('prompt');
+
             log(parameters);
             var promptSpec = {};
             var missingParamCount = 0;
+
             if (!parameters.base_url) {
                 log("Base URL not provided as parameter... adding to prompt queue");
                 promptSpec.base_url = {description: "Base URL"};
@@ -193,6 +243,12 @@
                 promptSpec.app_descriptor = {message: "App Name or ID"};
                 missingParamCount++;
             }
+            if (!parameters.device_name) {
+                log("Device Nickname not provided as parameter... adding to prompt queue");
+                promptSpec.app_descriptor = {message: "Device Nick Name"};
+                missingParamCount++;
+            }
+
 
             if (missingParamCount > 0) {
                 log("Prompt Queue Size:" + missingParamCount);
@@ -241,13 +297,13 @@
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
-        
+
         function extendObject(parameters, resultContainer) {
             for (var propertyname in resultContainer) {
                 parameters[propertyname] = resultContainer[propertyname];
             }
         }
-        
+
         function init_login(parameters, callback) {
             log("init_login()");
             pvcloud.Login(
@@ -346,6 +402,26 @@
         function init_save(parameters, callback) {
             log("init_save()");
             log(parameters);
+
+// First consider commandline arguments and environment variables, respectively.
+            nconf.argv().env();
+
+// Then load configuration from a designated file.
+            nconf.file({file: configFile});
+            nconf.set("device_name", "TEST DEVICE");
+            nconf.set("account_id", parameters.account_id);
+            nconf.set("app_id", parameters.app_id);
+            nconf.set("app_key", parameters.app_key);
+            nconf.set("element_key", parameters.element_key);
+            nconf.set("device_name", parameters.device_name);
+            nconf.save();
+// Once this is in place, you can just use nconf.get to get your settings.
+// So this would configure `myApp` to listen on port 1337 if the port
+// has not been overridden by any of the three configuration inputs
+// mentioned above.
+            log(nconf.get('connect:element_key'));
+
+            log(__dirname);
             callback();
         }
 
