@@ -6,8 +6,8 @@
         DEBUG_COUNT: 0
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
-    var configFile = __dirname + "/config.json";
     var fs = require("fs");
+    var prompt = require('prompt');
     var pvCloudCLModule = function () {
 
         var configFilePath = "./config.json";
@@ -186,8 +186,8 @@
 
             if (currentDevName && currentElementKey) {
                 console.log("WARNING! This device is already configured as " + currentDevName);
-                var prompt = require('prompt');
                 prompt.start();
+                
                 var schema = {};
                 schema.properties = {
                     confirm: {
@@ -196,10 +196,11 @@
                 };
 
                 prompt.get(schema, function (err, result) {
-                    prompt.stop();
                     if (result.confirm.toUpperCase() === "Y") {
                         log("Checking for missing parameters @ INIT...");
                         confirmedInit(parameters);
+                    } else {
+                        prompt.stop();
                     }
                 });
             } else {
@@ -217,14 +218,11 @@
                         console.log("INVALID PARAMETERS");
                     }
                 });
-
             }
         }
 
         function init_promptMissingParameters(parameters, callback) {
             log("init_promptMissingParameters(parameters, callback)");
-
-            var prompt = require('prompt');
 
             log(parameters);
             var promptSpec = {};
@@ -253,7 +251,7 @@
             }
             if (!parameters.device_name) {
                 log("Device Nickname not provided as parameter... adding to prompt queue");
-                promptSpec.app_descriptor = {message: "Device Nick Name"};
+                promptSpec.device_name = {message: "Device Nick Name"};
                 missingParamCount++;
             }
 
@@ -265,9 +263,6 @@
                 log(promptSpec);
                 console.log("In this process we will collect configuration data to connect this instance of pvCloud Client to a pvCloud IoT App.");
 
-                var prompt = require('prompt');
-
-                prompt.start();
                 prompt.get(schema, function (err, result) {
                     log(result);
                     log(parameters);
@@ -275,11 +270,12 @@
                     extendObject(parameters, result);
                     log("New PARAMETERS Object:");
                     log(parameters);
-                    callback(parameters);
                     prompt.stop();
+                    callback(parameters);
                 });
             } else {
                 log("Prompt Queue was empty. Calling callback...");
+                prompt.stop();
                 callback(parameters);
             }
         }
