@@ -13,15 +13,16 @@
         var configFilePath = "./config.json";
 
         var defaultConfig = {
-            DeviceName: "",
-            BaseURL: "",
-            AppKey: "",
-            ElementKey: ""
+            device_name: "",
+            base_url: "",
+            app_key: "",
+            element_key: ""
         };
 
         function commandLineExecution() {
             var package_json = require("./package.json");
             console.log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
+            log(config_get("device_name"));
 
             if (config_get("device_name")) {
                 console.log("This device is already configured as " + config_get("device_name"));
@@ -155,13 +156,15 @@
         }
 
         function config_save(configObject) {
+            log("config_save");
             var configString = JSON.stringify(configObject);
-            fs.writeFile(configFilePath, configString);
+            log(configObject);
+            fs.writeFileSync(configFilePath, configString);
         }
 
         function config_get(key) {
-            var configObject = require(configFilePath);
-            return configObject["key"];
+            var configObject = config_load();
+            return configObject[key];
         }
 
         function config_set(key, value) {
@@ -194,7 +197,7 @@
 
                 prompt.get(schema, function (err, result) {
                     prompt.stop();
-                    if (result.confirm === "Y") {
+                    if (result.confirm.toUpperCase() === "Y") {
                         log("Checking for missing parameters @ INIT...");
                         confirmedInit(parameters);
                     }
