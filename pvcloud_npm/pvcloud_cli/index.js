@@ -6,15 +6,11 @@
         DEBUG_COUNT: 0
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
-    var nconf = require("nconf");
     var configFile = __dirname + "/config.json";
-
     var fs = require("fs");
     var pvCloudCLModule = function () {
 
         var configFilePath = "./config.json";
-
-        var currentConfig = {};
 
         var defaultConfig = {
             DeviceName: "",
@@ -24,15 +20,11 @@
         };
 
         function commandLineExecution() {
-            nconf.use('file', {
-                file: configFile
-            });
-
             var package_json = require("./package.json");
             console.log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
 
-            if (nconf.get("device_name")) {
-                console.log("This device is already configured as " + nconf.get("device_name"));
+            if (config_get("device_name")) {
+                console.log("This device is already configured as " + config_get("device_name"));
             } else {
                 console.log("This device is not configured yet. Please run pvcloud init command to begin.");
             }
@@ -43,7 +35,7 @@
             switch (params.action) {
                 case "test":
                     options.DEBUG = true;
-                    var devname = nconf.get("device_name");
+                    var devname = config_get("device_name");
                     console.log(devname);
                     log("CLEx: test");
                     log(pvcloud.test());
@@ -145,24 +137,37 @@
         }
 
         function checkConfig() {
-            var configOnFile = loadConfig();
+            var configOnFile = config_load();
             if (!configOnFile || configOnFile.ElementKey === undefined) {
                 console.log("PVCloud is not configured. Consider running the following command");
                 console.log("    pvcloud init");
             }
         }
-        function loadConfig() {
+        function config_load() {
+            var exists = fs.existsSync(configFilePath);
+            if (!exists) {
+                log("Config file missing! Creating default file...");
+                config_save(defaultConfig);
+            }
+            log("Config file found! Loading...");
+            return require(configFilePath);
 
-            fs.exists(configFilePath, function (exists) {
-                if (exists) {
-                    console.log("Config file found! Loading...");
-                    return require(configFilePath);
-                } else {
-                    console.log("Config file missing! Creating file...");
-                    var configString = JSON.stringify(defaultConfig);
-                    fs.writeFile(configFilePath, configString);
-                }
-            });
+        }
+
+        function config_save(configObject) {
+            var configString = JSON.stringify(configObject);
+            fs.writeFile(configFilePath, configString);
+        }
+
+        function config_get(key) {
+            var configObject = require(configFilePath);
+            return configObject["key"];
+        }
+
+        function config_set(key, value) {
+            var configObject = config_load();
+            configObject[key] = value;
+            config_save(configObject);
         }
 
         function init(parameters) {
@@ -173,8 +178,8 @@
             log(parameters);
 
             log("Getting existing configuration...");
-            var currentDevName = nconf.get("device_name");
-            var currentElementKey = nconf.get("element_key");
+            var currentDevName = config_get("device_name");
+            var currentElementKey = config_get("element_key");
 
             if (currentDevName && currentElementKey) {
                 console.log("WARNING! This device is already configured as " + currentDevName);
@@ -186,7 +191,7 @@
                         message: "Do you want to Initialize it anyway? (Y/N)"
                     }
                 };
-                
+
                 prompt.get(schema, function (err, result) {
                     prompt.stop();
                     if (result.confirm === "Y") {
@@ -403,25 +408,15 @@
             log("init_save()");
             log(parameters);
 
-// First consider commandline arguments and environment variables, respectively.
-            nconf.argv().env();
+            var newConfig = config_load();
+            newConfig["device_name"] = "TEST DEVICE";
+            newConfig["account_id"] = parameters.account_id;
+            newConfig["app_id"] = parameters.app_id;
+            newConfig["app_key"] = parameters.app_key;
+            newConfig["element_key"] = parameters.element_key;
+            newConfig["device_name"] = parameters.device_name;
+            config_save(newConfig);
 
-// Then load configuration from a designated file.
-            nconf.file({file: configFile});
-            nconf.set("device_name", "TEST DEVICE");
-            nconf.set("account_id", parameters.account_id);
-            nconf.set("app_id", parameters.app_id);
-            nconf.set("app_key", parameters.app_key);
-            nconf.set("element_key", parameters.element_key);
-            nconf.set("device_name", parameters.device_name);
-            nconf.save();
-// Once this is in place, you can just use nconf.get to get your settings.
-// So this would configure `myApp` to listen on port 1337 if the port
-// has not been overridden by any of the three configuration inputs
-// mentioned above.
-            log(nconf.get('connect:element_key'));
-
-            log(__dirname);
             callback();
         }
 
