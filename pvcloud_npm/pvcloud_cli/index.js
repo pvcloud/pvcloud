@@ -2,7 +2,7 @@
 
 (function () {
     var options = {
-        DEBUG: true,
+        DEBUG: false,
         DEBUG_COUNT: 0
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
@@ -10,7 +10,7 @@
     var prompt = require('prompt');
     var pvCloudCLModule = function () {
 
-        var configFilePath = "./config.json";
+        var configFilePath = __dirname +  "/config.json";
 
         var defaultConfig = {
             device_name: "",
@@ -21,17 +21,26 @@
 
         function commandLineExecution() {
             var package_json = require("./package.json");
-            console.log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
-            log(config_get("device_name"));
-
-            if (config_get("device_name")) {
-                console.log("This device is already configured as " + config_get("device_name"));
-            } else {
-                console.log("This device is not configured yet. Please run pvcloud init command to begin.");
-            }
-
-            log("commandLineExecution()");
             var params = processParameters(process.argv);
+            if(params.debug===true){
+                options.DEBUG = true;
+            } else {
+                options.DEBUG = false;
+            }
+            log("CONFIG FILE PATH: " + configFilePath);
+            
+            log("commandLineExecution()");
+            
+            console.log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
+            
+            var configuredDeviceName = config_get("device_name");
+            log(configuredDeviceName);
+
+            if (params.action !=="init" && (configuredDeviceName=== "" || ! configuredDeviceName)) {
+                console.log("This device is not configured yet. Please run pvcloud init command to begin.");
+                return;
+            }
+            
             log(params);
             switch (params.action) {
                 case "test":
@@ -316,6 +325,8 @@
                     parameters.password,
                     function (error, response, body) {//SUCCESS
                         log("pvcloud.Login > Success. Parsing result...");
+                        log("BODY!!!");
+                        log(body);
                         var bodyObject = JSON.parse(body);
                         log("Parsed Body:   ");
                         log(bodyObject);

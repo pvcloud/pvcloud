@@ -10,7 +10,7 @@ require_once './DA/da_helper.php';
 require_once './DA/da_account.php';
 require_once './DA/da_apps_registry.php';
 require_once './DA/da_session.php';
-require_once '/DA/da_vse_data.php';
+require_once './DA/da_vse_data.php';
 require_once './inc/SimpleResponse.php';
 
 $app = new \Slim\App();
@@ -80,6 +80,13 @@ $app->post('/appfiles/{app_id}/{app_key}/{element_key}', function($request, $res
 
     $result = AppFilesHelper::SaveFile($args['app_id'], $args['app_key'], $args['element_key']);
 
+    include './inc/incJSONHeaders.php';
+    echo json_encode($result);
+});
+
+$app->get('/test/{id}', function($request, $response, $args){
+    $result = new stdClass();
+    $result->id=$args['id'];
     include './inc/incJSONHeaders.php';
     echo json_encode($result);
 });
