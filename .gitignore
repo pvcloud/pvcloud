@@ -13,3 +13,4 @@ vse_files
 /pvcloud_web/app/backend/nbproject/private/
 nbproject
 /pvcloud/node_modules/
+/pvcloud_npm/pvcloud_cli/config.json

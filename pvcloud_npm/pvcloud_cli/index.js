@@ -7,42 +7,39 @@
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
     var fs = require("fs");
-    var prompt = require('prompt');
     var pvCloudCLModule = function () {
 
-        var configFilePath = __dirname +  "/config.json";
-
+        var configFilePath = __dirname + "/config.json";
         var defaultConfig = {
             device_name: "",
             base_url: "",
             app_key: "",
             element_key: ""
         };
-
         function commandLineExecution() {
             var package_json = require("./package.json");
-            var params = processParameters(process.argv);
-            if(params.debug===true){
+            var parameters = processParameters(process.argv);
+            if (parameters.debug === true) {
                 options.DEBUG = true;
             } else {
                 options.DEBUG = false;
             }
+            
+            log("PARAMETERS FOUND:");
+            log(parameters);
+            
             log("CONFIG FILE PATH: " + configFilePath);
-            
             log("commandLineExecution()");
-            
             console.log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
-            
             var configuredDeviceName = config_get("device_name");
             log(configuredDeviceName);
-
-            if (params.action !=="init" && (configuredDeviceName=== "" || ! configuredDeviceName)) {
+            if (parameters.action !== "init" && (configuredDeviceName === "" || !configuredDeviceName)) {
                 console.log("This device is not configured yet. Please run pvcloud init command to begin.");
                 return;
             }
-            
-            log(params);
-            switch (params.action) {
+
+            log(parameters);
+            switch (parameters.action) {
                 case "test":
                     options.DEBUG = true;
                     var devname = config_get("device_name");
@@ -53,7 +50,7 @@
                     break;
                 case "init":
                     log("CLEx: init");
-                    init(params);
+                    doInit(parameters);
                     break;
                 case "write":
                     log("CLEx: write");
@@ -75,7 +72,6 @@
         function processParameters(argv) {
             var sequencedParametersIndex = 2;
             var parameters = {};
-
             for (var i = 2; i < argv.length; i++) {
 
                 //1. LOOK FOR NAMED PARAMETER
@@ -83,7 +79,6 @@
                 //3. LOOK FOR SEQUENCED PARAMETER
 
                 currentParameter = argv[i];
-
                 if (currentParameter.indexOf("=") >= 0) {//named parameter found
                     var separatedContent = currentParameter.split("=");
                     parameters[separatedContent[0]] = separatedContent[1];
@@ -91,7 +86,6 @@
                     var ddashPosition = currentParameter.indexOf("--");
                     var flagName = currentParameter.substring(ddashPosition + 2, currentParameter.length).trim();
                     parameters[flagName] = true;
-
                 } else { // process as sequenced parameter
                     if (sequencedParametersIndex === 2 && !parameters.action) {
                         parameters.action = currentParameter;
@@ -161,7 +155,6 @@
             }
             log("Config file found! Loading...");
             return require(configFilePath);
-
         }
 
         function config_save(configObject) {
@@ -182,121 +175,50 @@
             config_save(configObject);
         }
 
-        function init(parameters) {
+        function doInit(parameters) {
             log("init(parameters)");
             console.log("------------------------");
             console.log("- pvCloud INIT Routine -");
             console.log("------------------------");
             log(parameters);
-
             log("Getting existing configuration...");
-            var currentDevName = config_get("device_name");
-            var currentElementKey = config_get("element_key");
-
-            if (currentDevName && currentElementKey) {
-                console.log("WARNING! This device is already configured as " + currentDevName);
-                prompt.start();
-                
-                var schema = {};
-                schema.properties = {
-                    confirm: {
-                        message: "Do you want to Initialize it anyway? (Y/N)"
-                    }
-                };
-
-                prompt.get(schema, function (err, result) {
-                    if (result.confirm.toUpperCase() === "Y") {
-                        log("Checking for missing parameters @ INIT...");
-                        confirmedInit(parameters);
-                    } else {
-                        prompt.stop();
-                    }
-                });
+            var configuration = config_load();
+            console.log(configuration);
+            log("init() - Validating Parameters...");
+            var validationErrors = init_validateParameters(parameters);
+            if (validationErrors.length === 0) {
+                log("init() - Parameters are Valid.");
+                log(parameters);
+                init_Execute(parameters);
             } else {
-                confirmedInit(parameters);
+                console.log("Parameters Validation Failed!");
+                console.log("use pvcloud {base_url} {username} {password} {app_descriptor} {device_name}");
+                for(var i in validationErrors){
+                    console.log(" (!) " + validationErrors[i]);
+                    
+                }
             }
 
-            function confirmedInit(parameters) {
-                init_promptMissingParameters(parameters, function () {
-                    log("init() - Validating Parameters...");
-                    if (init_validateParameters(parameters)) {
-                        log("init() - Parameters are Valid.");
-                        log(parameters);
-                        init_Execute(parameters);
-                    } else {
-                        console.log("INVALID PARAMETERS");
-                    }
-                });
-            }
-        }
-
-        function init_promptMissingParameters(parameters, callback) {
-            log("init_promptMissingParameters(parameters, callback)");
-
-            log(parameters);
-            var promptSpec = {};
-            var missingParamCount = 0;
-
-            if (!parameters.base_url) {
-                log("Base URL not provided as parameter... adding to prompt queue");
-                promptSpec.base_url = {description: "Base URL"};
-                missingParamCount++;
-            }
-
-            if (!parameters.username) {
-                log("User Name not provided as parameter... adding to prompt queue");
-                promptSpec.username = {description: "Account"};
-                missingParamCount++;
-            }
-            if (!parameters.password) {
-                log("Password not provided as parameter... adding to prompt queue");
-                promptSpec.password = {description: "Type your password here:", hidden: true};
-                missingParamCount++;
-            }
-            if (!parameters.app_descriptor) {
-                log("App Descriptor not provided as parameter... adding to prompt queue");
-                promptSpec.app_descriptor = {message: "App Name or ID"};
-                missingParamCount++;
-            }
-            if (!parameters.device_name) {
-                log("Device Nickname not provided as parameter... adding to prompt queue");
-                promptSpec.device_name = {message: "Device Nick Name"};
-                missingParamCount++;
-            }
-
-
-            if (missingParamCount > 0) {
-                log("Prompt Queue Size:" + missingParamCount);
-                var schema = {};
-                schema.properties = promptSpec;
-                log(promptSpec);
-                console.log("In this process we will collect configuration data to connect this instance of pvCloud Client to a pvCloud IoT App.");
-
-                prompt.get(schema, function (err, result) {
-                    log(result);
-                    log(parameters);
-
-                    extendObject(parameters, result);
-                    log("New PARAMETERS Object:");
-                    log(parameters);
-                    prompt.stop();
-                    callback(parameters);
-                });
-            } else {
-                log("Prompt Queue was empty. Calling callback...");
-                prompt.stop();
-                callback(parameters);
-            }
         }
 
         function init_validateParameters(parameters) {
-            return true;
+            var errors = [];
+            if (!parameters.base_url)
+                errors.push("base_url parameter is missing");
+            if (!parameters.username)
+                errors.push("username parameter is missing");
+            if (!parameters.password)
+                errors.push("password parameter is missing");
+            if (!parameters.app_descriptor)
+                errors.push("app_descriptor parameter is missing");
+            if (!parameters.device_name)
+                errors.push("app_descriptor parameter is missing");
+            return errors;
         }
 
         function init_Execute(parameters) {
             log("init_Execute()");
             log(parameters);
-
             init_login(parameters, function () {
                 init_connect(parameters, function () {
                     init_save(parameters, function () {
@@ -330,17 +252,13 @@
                         var bodyObject = JSON.parse(body);
                         log("Parsed Body:   ");
                         log(bodyObject);
-
                         if (bodyObject.status === "OK") {
                             log("Status is OK. Grabing Login Info...");
                             loginInfo = bodyObject.data;
-
                             log(loginInfo);
-
                             log("Adding account and token to parameters...");
                             parameters.account_id = loginInfo.account_id;
                             parameters.token = loginInfo.token;
-
                             callback();
                         } else {
                             log("!!! STATUS NOT OK!!!");
@@ -363,10 +281,8 @@
         function init_connect(parameters, callback) {
             log("init_connect()");
             log(parameters);
-
             var app_id = 0;
             var app_name = "";
-
             log("Determining if app_descriptor will be AppID or Name...");
             if (isNumeric(parameters.app_descriptor)) {
                 log("   Using AppID");
@@ -387,16 +303,13 @@
                     function (error, response, body) { //SUCCESS
                         log("SUCCESS @ pvcloud.Connect");
                         log(body);
-
                         var bodyObject = JSON.parse(response.body);
-
                         var connectProperties = {
                             account_id: bodyObject.data.account_id,
                             app_id: bodyObject.data.app_id,
                             app_key: bodyObject.data.app_key,
                             element_key: bodyObject.data.element_key
                         };
-
                         if (bodyObject.status !== "OK") {
                             console.log(bodyObject.message);
                         } else {
@@ -417,7 +330,6 @@
         function init_save(parameters, callback) {
             log("init_save()");
             log(parameters);
-
             var newConfig = config_load();
             newConfig["device_name"] = "TEST DEVICE";
             newConfig["account_id"] = parameters.account_id;
@@ -426,7 +338,6 @@
             newConfig["element_key"] = parameters.element_key;
             newConfig["device_name"] = parameters.device_name;
             config_save(newConfig);
-
             callback();
         }
 
@@ -456,7 +367,6 @@
             var finallyCallback = function (error, request, body) {
 
             };
-
             pvcloud.Login(baseURL, username, password, successCallback, errorCallback, finallyCallback);
         }
 
@@ -501,7 +411,7 @@
 
         commandLineExecution();
         return {
-            Init: init
+            Init: doInit
         };
     }();
     exports.Client = pvCloudCLModule;
