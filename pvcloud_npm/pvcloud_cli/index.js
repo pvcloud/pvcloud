@@ -64,6 +64,10 @@
                     log("CLEx: read");
                     doRead(parameters);
                     break;
+                case "read_async":
+                    log("CLEx: read");
+                    doReadAsync(parameters);
+                    break;
                 case "send_file":
                     log("CLEx: read");
                     doSendFile(parameters);
@@ -147,6 +151,15 @@
                                     sequencedParametersIndex++;
                                 }
                                 break;
+                            case "read_async":
+                                if (sequencedParametersIndex === 3 && !parameters.label) {
+                                    parameters.label = currentParameter;
+                                    sequencedParametersIndex++;
+                                } else if (sequencedParametersIndex === 4 && !parameters.result_path) {
+                                    parameters.result_path = currentParameter;
+                                    sequencedParametersIndex++;
+                                }
+                                break;
                             case "send_file":
                                 if (sequencedParametersIndex === 3 && !parameters.label) {
                                     parameters.label = currentParameter;
@@ -167,7 +180,7 @@
                                     parameters.count = currentParameter;
                                     sequencedParametersIndex++;
                                 }
-                                break;                                
+                                break;
                         }
                     }
                 }
@@ -346,6 +359,140 @@
                         log("FINALLY!");
                         log(body);
                     });
+        }
+
+        function doReadAsync(parameters) {
+            log("------------------------");
+            log("- pvCloud READ Routine-");
+            log("------------------------");
+            log(parameters);
+            log("Getting existing configuration...");
+            var configuration = config_load();
+            log(configuration);
+
+            log("Loading required config into parameters...");
+            parameters.base_url = configuration.base_url;
+            parameters.account_id = configuration.account_id;
+            parameters.app_id = configuration.app_id;
+            parameters.app_key = configuration.app_key;
+            parameters.element_key = configuration.element_key;
+
+            read_async_get(parameters);
+        }
+
+        function read_async_get(parameters) {
+            log("read_get()");
+            read_async_status_to_file(parameters.result_path, parameters.label, parameters.action, "CALLING WEB SERVICE");
+            read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, "...PVCLOUD_READING...");
+            pvcloud.Read(
+                    parameters.base_url,
+                    parameters.app_id,
+                    parameters.app_key,
+                    parameters.element_key,
+                    parameters.label,
+                    1,
+                    function (error, response, body) {//SUCCESS
+                        log("SUCCESS!!!");
+                        read_async_status_to_file(parameters.result_path, parameters.label, parameters.action, "SUCCESS");
+                        var bodyObject = JSON.parse(body);
+                        log(bodyObject);
+                        var read_data = bodyObject.data;
+                        log("READ DATA");
+                        log(read_data);
+
+                        if (read_data.length > 0) {
+                            read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, read_data[0].vse_value);
+                        } else {
+                            read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, "...PVCLOUD_NOT_FOUND...");
+                        }
+                        console.log(body);
+                    },
+                    function (error, response, body) {//ERROR
+                        log("ERROR!!!");
+                        log(error);
+                        log(response);
+                        read_async_status_to_file(parameters.result_path, parameters.label, parameters.action, "ERROR " + error);
+                    },
+                    function (error, response, body) {//FINALLY
+                        log("FINALLY!");
+                        log(body);
+                    });
+        }
+
+        function read_async_status_to_file(folder_path, label, operation, status) {
+            if (!label || label === "*")
+                label = "ALL";
+
+            var filePath = folder_path + "/pvc_status_";
+            filePath = filePath + label + "_" + operation;
+
+            log("WRITING TO STATUS FILE...");
+            try {
+                log(filePath);
+
+                var stream = fs.createWriteStream(filePath);
+                log("OPENING STREAM");
+                stream.once('open', function (fd) {
+                    try {
+                        log("STREAM WRITE");
+                        log("STATUS");
+                        log(status);
+
+                        stream.write(status);
+                        stream.end();
+                        stream.close();
+                        log("FS END REACHED!");
+                    } catch (ex) {
+                        log("EXCEPTION!");
+                        log(ex);
+                    }
+                });
+
+                log("END OF STATUS TO FILE");
+
+                log("END OF read_async_status_to_file()");
+            } catch (ex) {
+                log("EXCEPTION ON BIG TRY");
+                log(ex);
+            }
+        }
+
+        function read_async_value_to_file(folder_path, label, operation, strValue) {
+            if (!label || label === "*")
+                label = "ALL";
+
+            var filePath = folder_path + "/pvc_value_";
+            filePath = filePath + label + "_" + operation;
+
+            log("WRITING TO VALUE FILE...");
+            try {
+                log(filePath);
+
+                var stream = fs.createWriteStream(filePath);
+                log("OPENING STREAM");
+                stream.once('open', function (fd) {
+                    try {
+                        log("STREAM WRITE");
+                        log("STATUS");
+                        log(strValue);
+
+                        stream.write(strValue);
+                        stream.end();
+                        stream.close();
+                        log("FS END REACHED!");
+                    } catch (ex) {
+                        log("EXCEPTION!");
+                        log(ex);
+                    }
+                });
+
+                log("END OF VALUE TO FILE");
+
+                log("END OF read_async_value_to_file()");
+            } catch (ex) {
+                log("EXCEPTION ON BIG TRY");
+                log(ex);
+            }
         }
 
         function doSendFile(parameters) {

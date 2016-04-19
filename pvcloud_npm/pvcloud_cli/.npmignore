@@ -1,3 +1,5 @@
 /nbproject/
 /nbproject/*.*
 /config.json
+/pvc_status*
+/pvc_value*

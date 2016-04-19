@@ -5,12 +5,12 @@
 node_modules
 /app
 
-
-
-
-
 vse_files
 /pvcloud_web/app/backend/nbproject/private/
 nbproject
 /pvcloud/node_modules/
 /pvcloud_npm/pvcloud_cli/config.json
+*pvc_value*.*
+*pvc_status*.*
+/pvcloud_npm/pvcloud_cli/pvc_status_*
+pvc_value_*
