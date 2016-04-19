@@ -220,8 +220,11 @@
             log("init_Execute()");
             log(parameters);
             init_login(parameters, function () {
+                console.log("Login Complete. Doing connect...");
                 init_connect(parameters, function () {
+                    console.log("Connect Complete. Saving Config...");
                     init_save(parameters, function () {
+                        console.log("INIT Sequence Complete. Config Saved!");
                         log("INIT SEQUENCE SUCCESSFUL!");
                         log(parameters);
                     });
