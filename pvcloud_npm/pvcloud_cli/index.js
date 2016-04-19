@@ -68,6 +68,10 @@
                     log("CLEx: read");
                     doSendFile(parameters);
                     break;
+                case "delete":
+                    log("CLEx: read");
+                    doDelete(parameters);
+                    break;
             }
         }
 
@@ -152,6 +156,15 @@
                                     sequencedParametersIndex++;
                                 } else if (sequencedParametersIndex === 5 && !parameters.captured_datetime) {
                                     parameters.captured_datetime = currentParameter;
+                                    sequencedParametersIndex++;
+                                }
+                                break;
+                            case "delete":
+                                if (sequencedParametersIndex === 3 && !parameters.label) {
+                                    parameters.label = currentParameter;
+                                    sequencedParametersIndex++;
+                                } else if (sequencedParametersIndex === 4 && !parameters.count) {
+                                    parameters.count = currentParameter;
                                     sequencedParametersIndex++;
                                 }
                                 break;                                
@@ -312,7 +325,7 @@
         }
 
         function read_get(parameters) {
-            log("wirite_send()");
+            log("read_get()");
             pvcloud.Read(
                     parameters.base_url,
                     parameters.app_id,
@@ -334,8 +347,8 @@
                         log(body);
                     });
         }
-        
-        function doSendFile(parameters){
+
+        function doSendFile(parameters) {
             log("------------------------");
             log("- pvCloud SEND FILE Routine-");
             log("------------------------");
@@ -351,12 +364,12 @@
             parameters.app_key = configuration.app_key;
             parameters.element_key = configuration.element_key;
 
-            send_file(parameters);            
+            send_file(parameters);
         }
-        
-        function send_file(parameters){
+
+        function send_file(parameters) {
             log("send_file()");
-            
+
             pvcloud.SendFile(
                     parameters.base_url,
                     parameters.app_id,
@@ -379,7 +392,49 @@
                         log(body);
                     });
         }
-        
+
+        function doDelete(parameters) {
+            log("--------------------------");
+            log("- pvCloud DELETE Routine -");
+            log("--------------------------");
+            log(parameters);
+            log("Getting existing configuration...");
+            var configuration = config_load();
+            log(configuration);
+
+            log("Loading required config into parameters...");
+            parameters.base_url = configuration.base_url;
+            parameters.account_id = configuration.account_id;
+            parameters.app_id = configuration.app_id;
+            parameters.app_key = configuration.app_key;
+            parameters.element_key = configuration.element_key;
+
+            delete_send(parameters);
+        }
+
+        function delete_send(parameters) {
+            log("delete_send()");
+            pvcloud.Delete(
+                    parameters.base_url,
+                    parameters.app_id,
+                    parameters.app_key,
+                    parameters.element_key,
+                    parameters.label,
+                    parameters.count,
+                    function (error, response, body) {//SUCCESS
+                        log("SUCCESS!!!");
+                        console.log(body);
+                    },
+                    function (error, response, body) {//ERROR
+                        log("ERROR!!!");
+                        log(error);
+                        log(response);
+                    },
+                    function (error, response, body) {//FINALLY
+                        log("FINALLY!");
+                        log(body);
+                    });
+        }
 
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
