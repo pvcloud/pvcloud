@@ -26,7 +26,9 @@
             } else {
                 options.DEBUG = false;
             }
-
+            log("ARGUMENTS:");
+            log(process.argv);
+            
             log("PARAMETERS FOUND:");
             log(parameters);
 
