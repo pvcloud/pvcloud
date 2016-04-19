@@ -10,12 +10,14 @@
     var pvCloudCLModule = function () {
 
         var configFilePath = __dirname + "/config.json";
+
         var defaultConfig = {
             device_name: "",
             base_url: "",
             app_key: "",
             element_key: ""
         };
+
         function commandLineExecution() {
             var package_json = require("./package.json");
             var parameters = processParameters(process.argv);
@@ -24,13 +26,13 @@
             } else {
                 options.DEBUG = false;
             }
-            
+
             log("PARAMETERS FOUND:");
             log(parameters);
-            
+
             log("CONFIG FILE PATH: " + configFilePath);
             log("commandLineExecution()");
-            console.log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
+            log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
             var configuredDeviceName = config_get("device_name");
             log(configuredDeviceName);
             if (parameters.action !== "init" && (configuredDeviceName === "" || !configuredDeviceName)) {
@@ -54,9 +56,12 @@
                     break;
                 case "write":
                     log("CLEx: write");
-                    if (!checkConfig())
-                        return;
+                    doWrite(parameters);
                     break;
+                case "read":
+                    log("CLEx: write");
+                    doRead(parameters);
+                    break;                    
             }
         }
 
@@ -127,8 +132,8 @@
                                 if (sequencedParametersIndex === 3 && !parameters.label) {
                                     parameters.label = currentParameter;
                                     sequencedParametersIndex++;
-                                } else if (sequencedParametersIndex === 4 && !parameters.value) {
-                                    parameters.value = currentParameter;
+                                } else if (sequencedParametersIndex === 4 && !parameters.count) {
+                                    parameters.count = currentParameter;
                                     sequencedParametersIndex++;
                                 }
                                 break;
@@ -147,6 +152,7 @@
                 console.log("    pvcloud init");
             }
         }
+
         function config_load() {
             var exists = fs.existsSync(configFilePath);
             if (!exists) {
@@ -193,9 +199,9 @@
             } else {
                 console.log("Parameters Validation Failed!");
                 console.log("use pvcloud {base_url} {username} {password} {app_descriptor} {device_name}");
-                for(var i in validationErrors){
+                for (var i in validationErrors) {
                     console.log(" (!) " + validationErrors[i]);
-                    
+
                 }
             }
 
@@ -230,6 +236,93 @@
                     });
                 });
             });
+        }
+
+        function doWrite(parameters) {
+            log("------------------------");
+            log("- pvCloud WRITE Routine-");
+            log("------------------------");
+            log(parameters);
+            log("Getting existing configuration...");
+            var configuration = config_load();
+            log(configuration);
+
+            log("Loading required config into parameters...");
+            parameters.base_url = configuration.base_url;
+            parameters.account_id = configuration.account_id;
+            parameters.app_id = configuration.app_id;
+            parameters.app_key = configuration.app_key;
+            parameters.element_key = configuration.element_key;
+
+            write_send(parameters);
+        }
+
+        function write_send(parameters) {
+            log("wirite_send()");
+            pvcloud.Write(
+                    parameters.base_url,
+                    parameters.app_id,
+                    parameters.app_key,
+                    parameters.element_key,
+                    parameters.label,
+                    parameters.value,
+                    getFormattedDateTime(),
+                    function (error, response, body) {//SUCCESS
+                        log("SUCCESS!!!");
+                        console.log(body);
+                    },
+                    function (error, response, body) {//ERROR
+                        log("ERROR!!!");
+                        log(error);
+                        log(response);
+                    },
+                    function (error, response, body) {//FINALLY
+                        log("FINALLY!");
+                        log(body);
+                    });
+        }
+        
+        function doRead(parameters) {
+            log("------------------------");
+            log("- pvCloud READ Routine-");
+            log("------------------------");
+            log(parameters);
+            log("Getting existing configuration...");
+            var configuration = config_load();
+            log(configuration);
+
+            log("Loading required config into parameters...");
+            parameters.base_url = configuration.base_url;
+            parameters.account_id = configuration.account_id;
+            parameters.app_id = configuration.app_id;
+            parameters.app_key = configuration.app_key;
+            parameters.element_key = configuration.element_key;
+
+            read_get(parameters);
+        }
+        
+        function read_get(parameters){
+            log("wirite_send()");
+            pvcloud.Read(
+                    parameters.base_url,
+                    parameters.app_id,
+                    parameters.app_key,
+                    parameters.element_key,
+                    parameters.label,
+                    parameters.count,
+                    function (error, response, body) {//SUCCESS
+                        log("SUCCESS!!!");
+                        console.log(body);
+                    },
+                    function (error, response, body) {//ERROR
+                        log("ERROR!!!");
+                        log(error);
+                        log(response);
+                    },
+                    function (error, response, body) {//FINALLY
+                        log("FINALLY!");
+                        log(body);
+                    });
         }
 
         function isNumeric(n) {
@@ -334,43 +427,15 @@
             log("init_save()");
             log(parameters);
             var newConfig = config_load();
-            newConfig["device_name"] = "TEST DEVICE";
+            newConfig["base_url"] = parameters.base_url;
             newConfig["account_id"] = parameters.account_id;
             newConfig["app_id"] = parameters.app_id;
             newConfig["app_key"] = parameters.app_key;
             newConfig["element_key"] = parameters.element_key;
             newConfig["device_name"] = parameters.device_name;
+
             config_save(newConfig);
             callback();
-        }
-
-        /**
-         * Performs login action and outputs the result to the console.
-         * @param {type} parameters Arguments are [3] = username, [4] = password, 
-         * @returns {undefined}
-         */
-        function doLogin(parameters) {
-            var username = parameters.username;
-            var password = parameters.password;
-            var baseURL = "http://crmakers.intel.com:8080/pvcloud_test/";
-            log(parameters);
-            return;
-            var successCallback = function (error, request, body) {
-                var result = body;
-                if (parameters.simple) {
-                    console.log(result);
-                } else {
-                    console.log(body.toke);
-                }
-            };
-            var errorCallback = function (error, request, body) {
-                console.log("ERROR");
-                console.log(error);
-            };
-            var finallyCallback = function (error, request, body) {
-
-            };
-            pvcloud.Login(baseURL, username, password, successCallback, errorCallback, finallyCallback);
         }
 
         /**
