@@ -28,7 +28,7 @@
             }
             log("ARGUMENTS:");
             log(process.argv);
-            
+
             log("PARAMETERS FOUND:");
             log(parameters);
 
@@ -61,9 +61,13 @@
                     doWrite(parameters);
                     break;
                 case "read":
-                    log("CLEx: write");
+                    log("CLEx: read");
                     doRead(parameters);
-                    break;                    
+                    break;
+                case "send_file":
+                    log("CLEx: read");
+                    doSendFile(parameters);
+                    break;
             }
         }
 
@@ -139,20 +143,24 @@
                                     sequencedParametersIndex++;
                                 }
                                 break;
+                            case "send_file":
+                                if (sequencedParametersIndex === 3 && !parameters.label) {
+                                    parameters.label = currentParameter;
+                                    sequencedParametersIndex++;
+                                } else if (sequencedParametersIndex === 4 && !parameters.file_path) {
+                                    parameters.file_path = currentParameter;
+                                    sequencedParametersIndex++;
+                                } else if (sequencedParametersIndex === 5 && !parameters.captured_datetime) {
+                                    parameters.captured_datetime = currentParameter;
+                                    sequencedParametersIndex++;
+                                }
+                                break;                                
                         }
                     }
                 }
             }
 
             return parameters;
-        }
-
-        function checkConfig() {
-            var configOnFile = config_load();
-            if (!configOnFile || configOnFile.ElementKey === undefined) {
-                console.log("PVCloud is not configured. Consider running the following command");
-                console.log("    pvcloud init");
-            }
         }
 
         function config_load() {
@@ -283,7 +291,7 @@
                         log(body);
                     });
         }
-        
+
         function doRead(parameters) {
             log("------------------------");
             log("- pvCloud READ Routine-");
@@ -302,8 +310,8 @@
 
             read_get(parameters);
         }
-        
-        function read_get(parameters){
+
+        function read_get(parameters) {
             log("wirite_send()");
             pvcloud.Read(
                     parameters.base_url,
@@ -326,6 +334,52 @@
                         log(body);
                     });
         }
+        
+        function doSendFile(parameters){
+            log("------------------------");
+            log("- pvCloud SEND FILE Routine-");
+            log("------------------------");
+            log(parameters);
+            log("Getting existing configuration...");
+            var configuration = config_load();
+            log(configuration);
+
+            log("Loading required config into parameters...");
+            parameters.base_url = configuration.base_url;
+            parameters.account_id = configuration.account_id;
+            parameters.app_id = configuration.app_id;
+            parameters.app_key = configuration.app_key;
+            parameters.element_key = configuration.element_key;
+
+            send_file(parameters);            
+        }
+        
+        function send_file(parameters){
+            log("send_file()");
+            
+            pvcloud.SendFile(
+                    parameters.base_url,
+                    parameters.app_id,
+                    parameters.app_key,
+                    parameters.element_key,
+                    parameters.label,
+                    parameters.file_path,
+                    getFormattedDateTime(),
+                    function (error, response, body) {//SUCCESS
+                        log("SUCCESS!!!");
+                        console.log(body);
+                    },
+                    function (error, response, body) {//ERROR
+                        log("ERROR!!!");
+                        log(error);
+                        log(response);
+                    },
+                    function (error, response, body) {//FINALLY
+                        log("FINALLY!");
+                        log(body);
+                    });
+        }
+        
 
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
