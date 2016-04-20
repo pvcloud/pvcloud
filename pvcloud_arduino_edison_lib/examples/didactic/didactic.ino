@@ -43,12 +43,13 @@ void setup() {
 
 bool reading = false;
 int counter = 0;
+long millisWhenReadStarted = 0;
 void loop() {
   counter ++;
   if(!reading) {
     Serial.println("Reading Async");
     pvcloud.ReadAsync("TEST_LBL");
-    
+    millisWhenReadStarted =  millis();
     Serial.print("Also sending new counter value...");
     Serial.println(counter);
     pvcloud.WriteAsync("TEST_LBL", counter);
@@ -64,6 +65,12 @@ void loop() {
   if(val!="...IN PROGRESS..." && val!="...UNDEFINED..."){
     reading=false;
   }
+
+  if(millis() - millisWhenReadStarted > 10000){
+    reading=false;
+    Serial.println("TIMEOUT");
+  }
+  
   delay(1000);
 
 }
