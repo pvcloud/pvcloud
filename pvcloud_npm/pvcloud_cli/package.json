@@ -1,6 +1,6 @@
 {
   "name": "pvcloud_cli",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "pvCloud Utility. This provides all services needed to connect to a pvcloud service and interact with it.",
   "main": "index.js",
   "scripts": {

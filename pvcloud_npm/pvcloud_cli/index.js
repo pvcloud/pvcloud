@@ -383,7 +383,7 @@
         function read_async_get(parameters) {
             log("read_get()");
             read_async_status_to_file(parameters.result_path, parameters.label, parameters.action, "CALLING WEB SERVICE");
-            read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, "...PVCLOUD_READING...");
+            read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, "...READING...");
             pvcloud.Read(
                     parameters.base_url,
                     parameters.app_id,
@@ -403,7 +403,7 @@
                         if (read_data.length > 0) {
                             read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, read_data[0].vse_value);
                         } else {
-                            read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, "...PVCLOUD_NOT_FOUND...");
+                            read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, "...NOT FOUND...");
                         }
                         console.log(body);
                     },
@@ -411,7 +411,8 @@
                         log("ERROR!!!");
                         log(error);
                         log(response);
-                        read_async_status_to_file(parameters.result_path, parameters.label, parameters.action, "ERROR " + error);
+                        read_async_status_to_file(parameters.result_path, parameters.label, parameters.action, "ERROR");
+                        read_async_value_to_file(parameters.result_path, parameters.label, parameters.action, "ERROR: " + body);
                     },
                     function (error, response, body) {//FINALLY
                         log("FINALLY!");
