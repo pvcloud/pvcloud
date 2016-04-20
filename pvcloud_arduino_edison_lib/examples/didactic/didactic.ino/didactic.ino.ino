@@ -42,11 +42,16 @@ void setup() {
 }
 
 bool reading = false;
+int counter = 0;
 void loop() {
-
+  counter ++;
   if(!reading) {
     Serial.println("Reading Async");
     pvcloud.ReadAsync("TEST_LBL");
+    
+    Serial.print("Also sending new counter value...");
+    Serial.println(counter);
+    pvcloud.WriteAsync("TEST_LBL", counter);
     reading = true;
   } else {
     Serial.println("Checking");
