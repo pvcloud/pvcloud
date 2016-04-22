@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>pvCloud - IoT Element Config Form</title>
+
+        <link href="jquery-ui-1.11.4.custom/jquery-ui.css" rel="stylesheet">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            label{
+                display:inline-block;
+                width:200px;
+                text-align: right;
+            }
+            input{
+                display:inline-block;
+                width: 500px;
+                margin-bottom: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ui-widget">
+            <h2>pvCloud - IoT Element Configuration</h2>
+
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tabs-1">Current Configuration</a></li>
+                    <li><a href="#tabs-2">Change</a></li>
+                    <li><a href="#tabs-3">Pin to Cloud (tm)</a></li>
+                </ul>
+                <div id="tabs-1">
+                    <label for="txtDeviceName">Device Name:</label>
+                    <input disabled type="text" id="txtDeviceName"><br>
+                    <label for="txtURL">pvCloud Server URL: </label>
+                    <input disabled type="url" id="txtURL" > <br>
+                    <label for="txtAppDescriptor">App Descriptor:</label>
+                    <input disabled type="text" id="txtAppDescriptor"><br>
+
+                </div>
+                <div id="tabs-2">
+                    <label for="txtDeviceNameNew">Device Name: </label>
+                    <input type="text" id="txtDeviceNameNew" > <br>
+                    <label for="txtURLNew">pvCloud Server URL: </label>
+                    <input type="url" id="txtURLNew" > <br>
+                    <label for="txtNewAppDescriptor">Connect to App: </label>
+                    <input type="text" id="txtNewAppDescriptor"><br>
+                    <label>Credentials Type:</label>
+                    <select id="selCredentials">
+                        <option>User Credentials</option>
+                        <option>App Key</option>
+                        <option>One Time Password</option>
+                    </select><hr>
+                    <h3>Credentials:</h3>
+                    <label for="txtAppKey">App Key: </label>
+                    <input type="text" id="txtAppKey"><br>
+                    <label for="txtOTP">One-Time Password</label>
+                    <input type="text" id="txtOTP"><br>
+                    <label for="txtEmail">Account: </label>
+                    <input type="email" id="txtEmail"><br>
+                    <label for="txtPassword">Password: </label>
+                    <input type="password" id="txtPassword"><br>
+                    <hr>
+                    <button disabled class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" type="button" id="cmdSaveConfig">Re-Configure</button>
+
+                </div>
+                <div id="tabs-3">
+                    <select id="selEnablePinToCloud">
+                        <option>Enabled</option>
+                        <option>Disabled</option>
+                    </select>
+                    <hr>
+                    <button disabled class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" type="button" id="cmdSavePTC">Save</button>
+                </div>
+            </div>            
+            <br>
+
+        </div>
+        <hr>
+        <span class="ui-widget ui-button-text">Copyright (c) 2016 - Intel Corporation.</span>
+        <!-- Button -->
+        <script src="jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
+        <script src="jquery-ui-1.11.4.custom/jquery-ui.js"></script>      
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("button").button();
+                $("#tabs").tabs();
+                getCurrentConfig();
+
+                function getCurrentConfig() {
+                    $.ajax({
+                        url: "getconfig"
+                    }).success(function (data) {
+                        objData = JSON.parse(data);
+                        console.log(objData.base_url);
+                        $("#txtURL").val(objData.base_url);
+                        $("#txtAppDescriptor").val(objData.app_id);
+                        $("#txtDeviceName").val(objData.device_name);
+                    }).fail(function (data) {
+                        alert('error');
+                        console.log(data);
+                    });
+                }
+            });
+
+
+        </script>
+    </body>
+</html>

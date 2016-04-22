@@ -16,7 +16,7 @@ class beParameters {
     public $account_id = 0;
     public $app_id = 0;
     public $value_label = "";
-    public $count_limit = 0;
+    public $count_limit = 20000;
 
 }
 
@@ -26,7 +26,7 @@ class CSVWebService {
         try {
             $app_id = 0; //THIS WILL BE OVERRIDEN BY THE INCLUDE 
             $account_id = 0; //THIS WILL BE OVERRIDEN BY THE INCLUDE 
-            $access = "RO";  
+            $access = "RO";  //THIS WILL BE USED @ INCLUDE
             include './inc/incWebServiceAPIKeyValidation.php';
 
             $parameters = CSVWebService::collectParameters();

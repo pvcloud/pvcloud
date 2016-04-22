@@ -1,8 +1,8 @@
 <?php
 
 //$access is defined in the implementator of this include
-if ($access != "RO") {
-    $access = "RW";
+if ($access != "RO" && $access !="RW") {
+    $access = "RO";
 }
 
 $account_id = filter_input(INPUT_GET, "account_id");

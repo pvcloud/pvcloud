@@ -6,7 +6,10 @@
         DEBUG_COUNT: 0
     };
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
+    var http = require('http'),
+            fs = require('fs');
     var fs = require("fs");
+    var rootPath = __dirname;
     var pvCloudCLModule = function () {
 
         var configFilePath = __dirname + "/config.json";
@@ -65,17 +68,22 @@
                     doRead(parameters);
                     break;
                 case "read_async":
-                    log("CLEx: read");
+                    log("CLEx: read_async");
                     doReadAsync(parameters);
                     break;
                 case "send_file":
-                    log("CLEx: read");
+                    log("CLEx: send_file");
                     doSendFile(parameters);
                     break;
                 case "delete":
-                    log("CLEx: read");
+                    log("CLEx: delete");
                     doDelete(parameters);
                     break;
+                case "server":
+                    log("CLEx: server");
+                    doServer(parameters);
+                    break;
+
             }
         }
 
@@ -582,6 +590,71 @@
                         log("FINALLY!");
                         log(body);
                     });
+        }
+
+        function doServer(parameters) {
+            console.log("Server Routine");
+            var serverPort = 8086;
+
+
+
+            var express = require('express');
+            var app = express();
+
+            app.get('/', function (req, res) {
+                var filepath = __dirname+ "/htdocs/config.html";
+                console.log(filepath);
+                fs.readFile(filepath, 'utf8', function (err, data) {
+                    res.end(data);
+                });
+            });
+
+            app.get('/getconfig', function (req, res) {
+                fs.readFile(__dirname + "/" + "config.json", 'utf8', function (err, data) {
+                    objData = JSON.parse(data);
+                    objData.element_key = "*****";
+                    objData.app_key = "*****";
+                    res.end(JSON.stringify(objData));
+                });
+            });
+            app.get('/:resource', function (req, res) {
+                var resource = req.params.resource;
+                fs.readFile(__dirname + "/htdocs/" + resource, 'utf8', function (err, data) {
+                    res.end(data);
+                });
+            });
+
+            app.get('/jquery-ui-1.11.4.custom/:resource', function (req, res) {
+                var resource = req.params.resource;
+                fs.readFile(__dirname + "/htdocs/jquery-ui-1.11.4.custom/" + resource, 'utf8', function (err, data) {
+                    res.end(data);
+                });
+            });
+
+            app.get('/jquery-ui-1.11.4.custom/images/:resource', function (req, res) {
+                var resource = req.params.resource;
+                fs.readFile(__dirname + "/htdocs/jquery-ui-1.11.4.custom/images/" + resource, 'utf8', function (err, data) {
+                    res.end(data);
+                });
+            });
+
+            app.get('/jquery-ui-1.11.4.custom/external/jquery/:resource', function (req, res) {
+                var resource = req.params.resource;
+                fs.readFile(__dirname + "/htdocs/jquery-ui-1.11.4.custom/external/jquery/" + resource, 'utf8', function (err, data) {
+                    res.end(data);
+                });
+            });
+
+            var server = app.listen(serverPort, function () {
+
+                var host = server.address().address;
+                var port = server.address().port;
+
+                console.log("Example app listening at http://%s:%s", host, port);
+
+            });
+
+            console.log("listening to port " + serverPort);
         }
 
         function isNumeric(n) {
