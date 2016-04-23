@@ -29,27 +29,31 @@
                 margin-bottom: 5px;
             }
         </style>
+        <script src="angular.min.js"></script>
     </head>
     <body>
         <div class="ui-widget">
-            <h2>pvCloud - IoT Element Configuration</h2>
+            <h2>pvCloud - IoT Element Configuration 20</h2>
 
-            <div id="tabs">
-                <ul>
-                    <li><a href="#tabs-1">Current Configuration</a></li>
-                    <li><a href="#tabs-2">Change</a></li>
-                    <li><a href="#tabs-3">Pin to Cloud (tm)</a></li>
-                </ul>
-                <div id="tabs-1">
+            <div ng-app="myApp" ng-controller="myCtrl" style="border-color:red; border-style: solid">
+                <p>Name : <input type="text" ng-model="name"></p>
+                <h1>Hello {{name}}</h1>
+                <div ng-repeat="(key, val) in pinout">{{key}},{{value.label}}</div>
+            </div>            
+
+            <div id="accordion">
+                <h3>Current Configuration</h3>
+                <div>
                     <label for="txtDeviceName">Device Name:</label>
                     <input disabled type="text" id="txtDeviceName"><br>
                     <label for="txtURL">pvCloud Server URL: </label>
                     <input disabled type="url" id="txtURL" > <br>
                     <label for="txtAppDescriptor">App Descriptor:</label>
                     <input disabled type="text" id="txtAppDescriptor"><br>
-
                 </div>
-                <div id="tabs-2">
+
+                <h3>Reconfigure</h3>
+                <div>
                     <label for="txtDeviceNameNew">Device Name: </label>
                     <input type="text" id="txtDeviceNameNew" > <br>
                     <label for="txtURLNew">pvCloud Server URL: </label>
@@ -83,17 +87,177 @@
                     </div>                    
                     <hr>
                     <button disabled class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" type="button" id="cmdSaveConfig">Re-Configure</button>
-
                 </div>
-                <div id="tabs-3">
+                <h3>Pin to Cloud(tm)</h3>
+                <div>
                     <select id="selEnablePinToCloud">
-                        <option>Enabled</option>
                         <option>Disabled</option>
+                        <option>Enabled</option>
                     </select>
                     <hr>
+                    <div>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD0_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                        <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>                          <hr>
+                        <label for="txtD0_Label">D0</label>
+                        <input id="txtD1_Label" type="text">
+                        <select>
+                            <option>Not Connected</option>
+                            <option>Send to Cloud</option>
+                            <option>Retrieve from Cloud</option>
+                        </select>  
+                    </div>
                     <button disabled class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" type="button" id="cmdSavePTC">Save</button>
                 </div>
-            </div>            
+            </div>
             <br>
 
         </div>
@@ -103,64 +267,86 @@
         <script src="jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
         <script src="jquery-ui-1.11.4.custom/jquery-ui.js"></script>      
         <script type="text/javascript">
-            $(document).ready(function () {
-                $("button").button();
-                $("#tabs").tabs();
-                getCurrentConfig();
-                bindEvents();
+                    $(document).ready(function () {
+                        $("button").button();
+                        $("#accordion ").accordion({heightStyle: "content"});
+                        getCurrentConfig();
+                        bindEvents();
 
-                function bindEvents() {
-                    $("#selCredentialsType").change(function () {
-                        var speed = 400;
-                        switch ($("#selCredentialsType").val()) {
-                            case "App Key":
-                                $("#divOTP").hide(speed);
-                                $("#divAccount").hide(speed);
-                                $("#divAppKey").show(speed);
-                                $("#divAccessRequest").hide(speed);
-                                break;
-                            case "User Credentials":
-                                $("#divOTP").hide(speed);
-                                $("#divAccount").show(speed);
-                                $("#divAppKey").hide(speed);
-                                $("#divAccessRequest").hide(speed);
-                                break;
-                            case "One Time Password":
-                                $("#divOTP").show(speed);
-                                $("#divAccount").hide(speed);
-                                $("#divAppKey").hide(speed);
-                                $("#divAccessRequest").hide(speed);
-                                break;
-                            case "Access Request":
-                                $("#divOTP").hide(speed);
-                                $("#divAccount").show(speed);
-                                $("#divAppKey").hide(speed);
-                                $("#divAccessRequest").show(speed);
-                                break;
+                        function bindEvents() {
+                            $("#selCredentialsType").change(function () {
+                                var speed = 400;
+                                switch ($("#selCredentialsType").val()) {
+                                    case "App Key":
+                                        $("#divOTP").hide(speed);
+                                        $("#divAccount").hide(speed);
+                                        $("#divAppKey").show(speed);
+                                        $("#divAccessRequest").hide(speed);
+                                        break;
+                                    case "User Credentials":
+                                        $("#divOTP").hide(speed);
+                                        $("#divAccount").show(speed);
+                                        $("#divAppKey").hide(speed);
+                                        $("#divAccessRequest").hide(speed);
+                                        break;
+                                    case "One Time Password":
+                                        $("#divOTP").show(speed);
+                                        $("#divAccount").hide(speed);
+                                        $("#divAppKey").hide(speed);
+                                        $("#divAccessRequest").hide(speed);
+                                        break;
+                                    case "Access Request":
+                                        $("#divOTP").hide(speed);
+                                        $("#divAccount").show(speed);
+                                        $("#divAppKey").hide(speed);
+                                        $("#divAccessRequest").show(speed);
+                                        break;
+                                }
+
+                            });
                         }
 
+                        function getCurrentConfig() {
+                            $.ajax({
+                                url: "getconfig"
+                            }).success(function (data) {
+                                objData = JSON.parse(data);
+                                console.log(objData.base_url);
+                                $("#txtURL").val(objData.base_url);
+                                $("#txtURLNew").val(objData.base_url);
+                                $("#txtAppDescriptor").val(objData.app_id);
+                                $("#txtAppDescriptorNew").val(objData.app_id);
+                                $("#txtDeviceName").val(objData.device_name);
+                                $("#txtDeviceNameNew").val(objData.device_name);
+                            }).fail(function (data) {
+                                alert('error');
+                                console.log(data);
+                            });
+                        }
                     });
-                }
 
-                function getCurrentConfig() {
-                    $.ajax({
-                        url: "getconfig"
-                    }).success(function (data) {
-                        objData = JSON.parse(data);
-                        console.log(objData.base_url);
-                        $("#txtURL").val(objData.base_url);
-                        $("#txtURLNew").val(objData.base_url);
-                        $("#txtAppDescriptor").val(objData.app_id);
-                        $("#txtAppDescriptorNew").val(objData.app_id);
-                        $("#txtDeviceName").val(objData.device_name);
-                        $("#txtDeviceNameNew").val(objData.device_name);
-                    }).fail(function (data) {
-                        alert('error');
-                        console.log(data);
-                    });
+
+        </script>
+
+        <script type="text/javascript">
+
+            var app = angular.module('myApp', []);
+            app.controller('myCtrl', function ($scope) {
+                $scope.firstName = "John";
+                $scope.lastName = "Doe";
+                $scope.name = "WORLD";
+                
+                $scope.pinout = [];
+                
+                for (var i=0; i<=13; i++){
+                    var pinObject = {
+                        pin:"D" + i,
+                        label:"LBL+D"+i
+                    };
+                    
+                    $scope.pinout.push(pinObject);
                 }
             });
-
 
         </script>
     </body>

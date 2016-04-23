@@ -1,6 +1,6 @@
 {
   "name": "pvcloud",
-  "version": "1.0.12",
+  "version": "1.0.15",
   "description": "pvCloud Utility. This provides all services needed to connect to a pvcloud service and interact with it.",
   "main": "index.js",
   "scripts": {
@@ -14,16 +14,16 @@
     "pvcloud",
     "iot"
   ],
+  "bin": {
+    "pvcloud": "node_modules/pvcloud_cli/index.js"
+  },
   "author": "Jose Nunez <jose.nunez@intel.com>",
   "license": "MIT",
-  "bin": {
-    "pvcloud": "index.js"
-  },
   "bugs": {
     "url": "https://github.com/janunezc/pvcloud/issues"
   },
   "homepage": "https://github.com/janunezc/pvcloud#readme",
   "dependencies": {
-    "pvcloud_cli": "^1.0.22"
+    "pvcloud_cli": "0.0.26"
   }
 }
