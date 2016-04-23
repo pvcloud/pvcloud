@@ -47,7 +47,7 @@ class WebServiceClass {
      */
     private static function sendPWRecoveryEmail($account) {
 
-        $recoveryURL = getBaseURL("pvcloud") . "#/passwordrecovery/$account->account_id/$account->confirmation_guid";
+        $recoveryURL = getBaseURL() . "/#/passwordrecovery/$account->account_id/$account->confirmation_guid";
 
         $message = "Hemos recibido una solicitud de recuperación de contraseña para su cuenta en pvCloud.\n\n";
         $message .= "Para recuperar su contraseña sírvase acceder al siguiente enlace dentro de las próximas 24 horas.\n\n";

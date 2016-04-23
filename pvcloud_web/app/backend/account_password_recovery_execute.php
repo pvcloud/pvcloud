@@ -74,7 +74,7 @@ class WebServiceClass {
      */
     private static function sendPWRecoveryEmail($account) {
 
-        $recoveryURL = getBaseURL("pvcloud") . "#/passwordrecovery/$account->account_id/$account->confirmation_guid";
+        $recoveryURL = getBaseURL() . "/#/passwordrecovery/$account->account_id/$account->confirmation_guid";
 
         $message = "Le comunicamos que el proceso de recuperación de contraseña fue completado con éxito.\n\n";
         $to = $account->email;
@@ -103,10 +103,10 @@ class WebServiceClass {
 $result = WebServiceClass::PasswordRecovery_Execute();
 
 if ($result->status == "OK") {
-    $url = getBaseURL("pvcloud") . "#/prs";
+    $url = getBaseURL() . "/#/prs";
     header("Location: $url");
 } else {
-    $url = getBaseURL("pvcloud") . "#/err";
+    $url = getBaseURL() . "/#/err";
 
     header("Location: $url");
 }

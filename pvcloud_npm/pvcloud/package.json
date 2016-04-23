@@ -1,6 +1,6 @@
 {
   "name": "pvcloud",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "pvCloud Utility. This provides all services needed to connect to a pvcloud service and interact with it.",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,6 @@
   },
   "homepage": "https://github.com/janunezc/pvcloud#readme",
   "dependencies": {
-    "pvcloud_cli": "0.0.26"
+    "pvcloud_cli": "0.0.28"
   }
 }

@@ -1,11 +1,26 @@
 <?php
 
-function getBaseURL($resource) {
+function getBaseURL() {
+
     $server_https = filter_input(INPUT_SERVER, "HTTPS");
-    $server_port = filter_input(INPUT_SERVER, "SERVER_PORT");
-    $protocol = (!empty($server_https) && $server_https !== 'off' || $server_port == 443) ? "https://" : "http://";
-    $domainName = filter_input(INPUT_SERVER, "HTTP_HOST") . "/";
-    return $protocol . $domainName . "$resource/";
+
+    $port = filter_input(INPUT_SERVER, "SERVER_PORT");
+
+    $protocol = (!empty($server_https) && $server_https !== 'off' || $port == 443) ? "https://" : "http://";
+
+    $host = filter_input(INPUT_SERVER, "HTTP_HOST") . ":$port";
+
+    $uri = filter_input(INPUT_SERVER, "REQUEST_URI");
+
+    $result = "$protocol$host$uri";
+
+    $backendPartPos = strrpos($result, "/backend");
+
+    if ($backendPartPos) {
+        $result = substr($result, 0, $backendPartPos);
+    }
+    
+    return $result;
 }
 
 function getClientBaseURL($resource) {

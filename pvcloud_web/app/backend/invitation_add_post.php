@@ -108,7 +108,7 @@ class AddInvitationWebService {
      */
     private static function sendEmailInvitation($host_email,$guest_email,$token) {
 
-        $newAccountURL = getBaseURL("pvcloud") . "#/new_account/$token";    
+        $newAccountURL = getBaseURL() . "/#/new_account/$token";    
         $message = "You have been invited by $host_email to join pvCloud. \n";
         $message.= "Please follow this link to accept this invitation and create a pvCloud account: \n";
         $message.= $newAccountURL;
