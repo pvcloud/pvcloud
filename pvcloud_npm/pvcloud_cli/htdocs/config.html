@@ -308,7 +308,7 @@
 
                         function getCurrentConfig() {
                             $.ajax({
-                                url: "getconfig"
+                                url: "api/getconfig"
                             }).success(function (data) {
                                 objData = JSON.parse(data);
                                 console.log(objData.base_url);
