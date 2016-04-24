@@ -153,7 +153,15 @@ module.exports = function (grunt) {
                             'c:\\xampp\\htdocs\\pvcloud_pre/{,*/}*'
                         ]
                     }]
-            },            
+            },
+            winlocal_test: {
+                files: [{
+                        dot: true,
+                        src: [
+                            'c:\\xampp\\htdocs\\pvcloud_test/{,*/}*'
+                        ]
+                    }]
+            },
             winbackend: {
                 files: [{
                         dot: true,
@@ -161,7 +169,7 @@ module.exports = function (grunt) {
                             'c:\\xampp\\htdocs\\pvcloud\\backend/{,*/}*'
                         ]
                     }]
-            }            
+            }
         },
         // Add vendor prefixed styles
         autoprefixer: {
@@ -364,7 +372,20 @@ module.exports = function (grunt) {
                         ]
                     }
                 ]
-            },            
+            },
+            winlocal_test: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.dist %>',
+                        dest: 'c:\\xampp\\htdocs\\pvcloud_test',
+                        src: [
+                            './**',
+                            '!./backend/DA/da_conf.php'
+                        ]
+                    }
+                ]
+            },
             winbackend: {
                 files: [
                     {
@@ -437,7 +458,7 @@ module.exports = function (grunt) {
         'karma'
     ]);
 
-    grunt.registerTask('build', [
+    grunt.registerTask('build', [//Standard build that creates a DIST folder
         'clean:dist',
         'wiredep',
         'useminPrepare',
@@ -454,20 +475,28 @@ module.exports = function (grunt) {
         'htmlmin'
     ]);
 
-    grunt.registerTask('minion', [
+    grunt.registerTask('minion', [//Windows: builds and copies into c:\xampp/htdocs/pvcloud
         'build',
         'clean:winlocal',
         'copy:winlocal'
     ]);
-    grunt.registerTask('sputnik', [
+    grunt.registerTask('sputnik', [//Windows: builds and copies into c:\xampp/htdocs/pvcloud_pre
         'build',
         'clean:winlocal_pre',
         'copy:winlocal_pre'
     ]);
-    grunt.registerTask('gru', [
+
+    grunt.registerTask('kontiki', [//Windows: builds and copies into c:\xampp/htdocs/pvcloud_pre
+        'build',
+        'clean:winlocal_test',
+        'copy:winlocal_test'
+    ]);
+    grunt.registerTask('gru', [//Windows: builds and copies BACKEND into c:\xampp/htdocs/pvcloud/backend 
         'clean:winbackend',
         'copy:winbackend'
     ]);
+
+
     grunt.registerTask('default', [
         'newer:jshint',
         'test',

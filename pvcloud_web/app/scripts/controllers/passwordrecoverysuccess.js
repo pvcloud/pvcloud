@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('pvcloudApp').controller('PasswordrecoveryCtrl', function ($scope, $routeParams, UtilityService, $rootScope, $location, LabelsService) {
+angular.module('pvcloudApp').controller('PasswordrecoverySuccessCtrl', function ($scope, $routeParams, UtilityService, $rootScope, $location, LabelsService) {
     LabelsService.GetLabels(function (labels) {
         $rootScope.PageLabels = labels;
     });
@@ -29,9 +29,5 @@ angular.module('pvcloudApp').controller('PasswordrecoveryCtrl', function ($scope
 
     $scope.AccountID = $routeParams.account_id;
     $scope.ConfirmationCode = $routeParams.confirmation_code;
-
-    if (actionURL.indexOf("9000")) {
-        document.getElementById("frmPasswordRecovery").setAttribute("action", actionURL);
-    }
 
 });

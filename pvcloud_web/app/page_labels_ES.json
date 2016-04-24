@@ -33,13 +33,17 @@
     "passwordRecovery": {
         "title": "Recuperación de Contraseña",
         "email": "Digite su cuenta de correo electrónico",
+        "email_watermark":"Email asociado a su cuenta de pvCloud",
         "newPassword": "Digite su nueva contraseña",
-        "newPasswordAgain": "Digite su nueva contraseña por segunda vez"
+        "newPassword_watermark":"Nueva Contraseña",
+        "newPasswordAgain": "Digite su nueva contraseña por segunda vez",
+        "newPasswordAgain_watermark":"Nueva Contraseña otra vez",
+        "btn_change_password":"Cambiar Contraseña"
     },
     "passwordRecoverySuccess": {
         "success": "Su clave fue cambiada satisfactoriamente.",
-        "click": "Haga click ",
-        "here": "aqui ",
+        "click": "Haga clic ",
+        "here": "aquí ",
         "toAccess": "para accesar su cuenta."
     },
     "_mycloud_myapps_edit": {

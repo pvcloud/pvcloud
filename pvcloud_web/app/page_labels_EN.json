@@ -33,8 +33,12 @@
     "passwordRecovery": {
         "title": "Password Recovery",
         "email": "Type your email account",
+        "email_watermark":"Email associated with your pvCloud account",
         "newPassword": "Type your new password",
-        "newPasswordAgain": "Type your new password again"
+        "newPassword_watermark":"New Password",
+        "newPasswordAgain": "Type your new password again",
+        "newPasswordAgain_watermark":"New Password Again",
+        "btn_change_password":"Change Password"
     },
     "passwordRecoverySuccess": {
         "success": "Your password has been successfully changed.",
