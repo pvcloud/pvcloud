@@ -47,46 +47,39 @@ class WebServiceClass {
              * @var be_account
              */
             $account = da_account::GetAccountByID($account_id);
-
-            $providedHash = sha1($parameters->old_password);
-            $passwordHashToChange = $account->pwd_hash;
-            $newSalt = random_int(100000, 999999);
-
-
-            if (strlen($passwordHashToChange) === 46) { //use salt
-                $currentSalt = substr($passwordHashToChange, 0, 6);
-                $currentHash = substr($passwordHashToChange, 6);
-                $oldHash = 
-                $newHash = sha1($parameters->new_password);
-                $newHashSalted = sha1($newSalt.$newHash);
-            } else { //dont use salt
-            }
-
-
-
-            $parameters->ophash = $passwordHashToChange;
-            $parameters->cphash = $providedHash;
-            $parameters->nphash = $newPasswordHash;
-            $parameters->account = $account;
-            $parameters->account_id = $account_id;
-
-            if ($providedHash == $passwordHashToChange) {
-                $account->pwd_hash = $newPasswordHash;
+            
+            $decomposedHash = WebServiceClass::decomposeSaltedStrongHash($account->pwd_hash);
+            
+            $proposedSimpleHash = sha1($parameters->old_password);
+            $proposedSaltedHash = $decomposedHash->Salt.$proposedSimpleHash;
+            $proposedStrongHash = sha1($proposedSaltedHash);
+            
+            if($decomposedHash->StrongHash == $proposedStrongHash){
+                $newSimpleHash = sha1($parameters->new_password);
+                $newSaltedStrongHash = WebServiceClass::generateSaltedStrongHash($newSimpleHash);
+                
+                $account->pwd_hash = $newSaltedStrongHash;
                 $savedAccount = da_account::UpdateAccount($account);
                 $parameters->savedAccount = $savedAccount;
                 if ($savedAccount->pwd_hash == $account->pwd_hash) {
                     $response->status = "OK";
                     $response->message = "Clave fue cambiada exitosamente";
-                } else {
+                } 
+                else {
                     $response->status = "ERROR";
                     $response->data = $parameters;
                     $response->message = "Ocurrió un error inesperado al guardar la nueva clave";
                 }
-            } else {
+                
+                
+            }
+            else 
+            {
                 $response->status = "ERROR";
                 $response->message = "Clave actual incorrecta";
                 $response->data = $parameters;
             }
+
         } catch (Exception $ex) {
             $response->status = "EXCEPTION";
             $response->message = $ex->getMessage();
@@ -101,6 +94,23 @@ class WebServiceClass {
         $parameters->new_password = filter_input(INPUT_GET, "new_password");
 
         return $parameters;
+    }
+    
+     private static function decomposeSaltedStrongHash( $saltedStrongHash ) {
+        $result = new stdClass();
+        $result->Salt = substr($saltedStrongHash, 0, 6);
+        $result->StrongHash = substr($saltedStrongHash, 6);
+
+        return $result;
+    }
+    
+    private static function generateSaltedStrongHash( $simpleHash ) {
+        $newSalt = random_int(100000, 999999);
+        $newSaltedHash = $newSalt.$simpleHash;
+        $newStrongHash = sha1($newSaltedHash);
+        $newSaltedStrongHash = $newSalt.$newStrongHash;
+
+        return $newSaltedStrongHash;
     }
 
 }
