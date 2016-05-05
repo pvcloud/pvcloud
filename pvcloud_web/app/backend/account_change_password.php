@@ -10,6 +10,7 @@ require_once './DA/da_conf.php';
 require_once './DA/da_helper.php';
 require_once './DA/da_account.php';
 require_once './DA/da_session.php';
+require_once './BL/BL_Authentication.php';
 
 class WebServiceClass {
 
@@ -50,7 +51,7 @@ class WebServiceClass {
              */
             $account = da_account::GetAccountByID($account_id);
             
-            $decomposedHash = WebServiceClass::decomposeSaltedStrongHash($account->pwd_hash);
+            $decomposedHash = BL_Authentication::DecomposeSaltedStrongHash($account->pwd_hash);
             
             $proposedSimpleHash = sha1($parameters->old_password);
             $proposedSaltedHash = $decomposedHash->Salt.$proposedSimpleHash;
@@ -58,7 +59,7 @@ class WebServiceClass {
             
             if($decomposedHash->StrongHash == $proposedStrongHash){
                 $newSimpleHash = sha1($parameters->new_password);
-                $newSaltedStrongHash = WebServiceClass::generateSaltedStrongHash($newSimpleHash);
+                $newSaltedStrongHash = BL_Authentication::GenerateSaltedStrongHash($newSimpleHash);
                 
                 $account->pwd_hash = $newSaltedStrongHash;
                 $savedAccount = da_account::UpdateAccount($account);
@@ -98,22 +99,7 @@ class WebServiceClass {
         return $parameters;
     }
     
-     private static function decomposeSaltedStrongHash( $saltedStrongHash ) {
-        $result = new stdClass();
-        $result->Salt = substr($saltedStrongHash, 0, 6);
-        $result->StrongHash = substr($saltedStrongHash, 6);
 
-        return $result;
-    }
-    
-    private static function generateSaltedStrongHash( $simpleHash ) {
-        $newSalt = random_int(100000, 999999);
-        $newSaltedHash = $newSalt.$simpleHash;
-        $newStrongHash = sha1($newSaltedHash);
-        $newSaltedStrongHash = $newSalt.$newStrongHash;
-
-        return $newSaltedStrongHash;
-    }
 
 }
 
