@@ -33,12 +33,12 @@
     "passwordRecovery": {
         "title": "Recuperación de Contraseña",
         "email": "Digite su cuenta de correo electrónico",
-        "email_watermark":"Email asociado a su cuenta de pvCloud",
+        "email_watermark": "Email asociado a su cuenta de pvCloud",
         "newPassword": "Digite su nueva contraseña",
-        "newPassword_watermark":"Nueva Contraseña",
+        "newPassword_watermark": "Nueva Contraseña",
         "newPasswordAgain": "Digite su nueva contraseña por segunda vez",
-        "newPasswordAgain_watermark":"Nueva Contraseña otra vez",
-        "btn_change_password":"Cambiar Contraseña"
+        "newPasswordAgain_watermark": "Nueva Contraseña otra vez",
+        "btn_change_password": "Cambiar Contraseña"
     },
     "passwordRecoverySuccess": {
         "success": "Su clave fue cambiada satisfactoriamente.",
@@ -78,29 +78,55 @@
         "btn_save": "Cambiar Contraseña"
     },
     "_mycloud_myapps_edit_dd": {
-        "title": "Cómo usar pvCloud en su app y dispositivos",
+        "title": "¿Cómo usar pvCloud?",
         "lbl_app_id": "AppID:",
         "lbl_app_name": "Nombre de App:",
         "lbl_app_description": "Descripción:",
-        "title_introduction": "Introducción",
-        "intro_p1": "En este documento encontrará información (personalizada) para su App IoT.",
-        "intro_p2": "En las siguientes tres secciones se describe cómo utilizar pvCloud para subir y consumir datos usando su app IoT.",
-        "intro_p3": "Haga clic en el título de la sección que desee explorar para ver su contenido.",
-        "section1_title": "Conecte su Intel Edison 3 pasos",
-        "section1_desc_p1": "Esta sección describe los pasos para implementar pvCloud en su app IoT compatible con Intel Edison o Galileo y dispositivos similares compatibles con Linux y NodeJS.",
-        "section1_step1_title": "PASO 1: Controlador pvCloud",
-        "section1_step1_p1": "Ejecute el siguiente comando 'wget' en la terminal LINUX de su dispositivo Edison. Esto descargará el programa 'pvcloud_api.js' el cual está programado para comunicarse con esta aplicación en particular.",
-        "section1_step1_a1_title": "También puede descargarlo en su PC",
-        "section1_step1_a1": "Descargar en esta PC",
-        "section1_step2_title": "PASO 2: Módulo request.js (Opcional)",
-        "section1_step2_p1": "Si no lo ha hecho todavía, ejecute los siguientes comandos de Linux para instalar el módulo 'request.js' en su Edison.",
-        "section1_step3_title": "PASO 3: Comandos de pvCloud",
-        "section1_step3_p1": "Seguidamente se presentan los comandos disponibles en el controlador de pvCloud para realizar las diferentes operaciones (write, read, readlist, delete).",
-        "section1_step3_ej1": "Example #1 - comando write (escribir)",
-        "section1_step3_ej2": "Example #2 - comando read (leer)",
-        "section1_step3_ej3": "Example #3 - comando readlist (leer lista)",
-        "section1_step3_ej4": "Example #4 - comando delete (borrar)",
-        "section1_step3_ej5": "Example #5 - parámetros opcionales"
+        "sections":[
+            {"title":"Introducción", "content":[
+                    
+            ]}
+        ],
+        "intro_title": "Introducción",
+        "intro_p1": "pvCloud es un sistema de código abierto para la creación de aplicaciones en el Internet de Las Cosas. pvCloud facilita la definición de aplicaciones y la conexión de dispositivos a dichas aplicaciones para el intercambio y almacenamiento de datos.",
+        "intro_p2": "Los elementos principales de pvCloud incluyen:",
+        "intro_p3_o1": "Sitio Web",
+        "intro_p3_o2": "Interfaz de Servicios",
+        "intro_p3_o3": "Persistencia de Datos",
+        "intro_p3_o4": "Cliene NodeJS",
+        "intro_p3_o5": "Librería EDISON/ARDUINO",
+        "intro_p3_o6": "Librería ESP8266",
+        "intro_p3_o7": "Librería MKR1000",
+        "section1_title": "Sitio Web",
+        "section1_p1": "El sitio Web de pvCloud (este sitio) proporciona capacidades administrativas tales como creación de cuentas de usuario, administración de credenciales, definición de aplicaciones IoT e instrucciones de uso del sistema en general.",
+        "section2_title": "Interfaz de Servicios",
+        "section2_p1": "La interfaz de servicios de pvCloud provee mecanismos para comunicar elementos IoT tales como dispositivos, sensores, sitios web 'cliente'.",
+        "section2_p2": "Esta interfaz está basada en el trasiego de datos simples (etiqueta/valor) mediante operaciones simples de escritura, lectura y eliminación de datos. Adicionalmente se proveen mecanismos para el envío de archivos desde los dispositivos hasta el servidor principal.",
+        "section2_p3": "En esta interfaz es donde se implementan los mecanismos de seguridad tales como identificación y autenticación de dispositivos así como el control de acceso a las aplicaciones.",
+        "section3_title": "Persistencia de Datos",
+        "section3_p1": "Los datos enviados desde los elementos IoT son almacenados en una base de datos mySQL para su posterior utilización por otros elementos de cada aplicación.",
+        "section4_title": "Cliente NodeJS",
+        "section4_p01": "Uno de los principales componentes de pvCloud es el cliente NodeJS que incluye una librería (pvcloud_lib) y un módulo ejecutable (pvcloud_cli) todo empacado en módulos NPM de NodeJS.",
+        "seciton4_p02": "Para instalar el cliente NodeJS de pvCloud basta con ejecutar el comando '  npm install pvcloud -g  ' en un sistema operativo que tenga NodeJS habilitado.",
+        "section4_p03": "Una vez instalado se puede ejecutar el siguiente comando para inicializar la conexión a una aplicación de pvCloud.",
+        "section4_p05": "Ya inicializado, será cuestión de ejecutar alguno de los siguientes comandos para escribir, leer o borrar datos de la App correspondiente en pvCloud.",
+        "section4_p06": "Para escribir el valor 'testvalue' con el nombre 'testlabel':    pvcloud write testlabel testvalue",
+        "section4_p07": "Para leer los últimos 3 valores con el nombre 'testlabel':       pvcloud read testlabel 3",
+        "section4_p08": "Para leer el último valor registrado sin importar la etiqueta:   pvcloud read '*' ",
+        "section4_p09": "Para leer los últimos 3 valores sin importar la etiqueta:        pvcloud read '*' 3",
+        "section4_p10": "Para eliminar los ultimos 3 valores de la etiqueta 'testlabel':  pvcloud delete testlabel 3",
+        "section4_p11": "Para subir un archivo '/myfile.txt' con la etiqueta 'myfile':    pvcloud send_file '/myfile.txt' 'myfile'",
+        "section4_p12": "Para activar el modo servidor:                                   pvcloud server",
+        "section4_p13": "* El modo servidor permite reconfigurar el sistema accediendo a un servidor web local y configurar varias opciones que facilitan el manejo automatizado de variables como por ejemplo conectar pines de un Edison o Galileo con etiquetas de entrada y/o salida hacia pvCloud en una función que se llama 'Pin-To-Cloud'.",
+        "section5_title": "Librería EDISON/ARDUINO",
+        "section5_p1": "Esta librería puede descargarse en el siguiente enlace. Permite realizar llamadas a pvCloud desde un sketch de ARDUINO en un Edison que tenga instalado el cliente NODEJS.",
+        "section5_p2": "Las formas de utilizar la librería se ilustran mediante el ejemplo denomindado 'DIDACTICO'.",
+        "section6_title": "Librería ESP8266",
+        "section6_p1": "Este programa de ARDUINO IDE permite tanto programar el ESP8266 de SPARKFUN mediante funciones comunes (write, read, delete) así como implementar el sistema de configuración por servidor temporal y el sistema de conexion 'pin-to-cloud'.",
+        "section6_p2": "Puede descargar esta libreria en el siguiente enlace",
+        "section7_title": "Librería MKR1000",
+        "section7_p1": "Este programa de ARDUINO IDE permite tanto programar el MKR1000 de ARDUINO mediante funciones comunes (write, read, delete) así como implementar el sistema de configuración por servidor temporal y el sistema de conexion 'pin-to-cloud'.",
+        "section7_p2": "Puede descargar esta libreria en el siguiente enlace"
     },
     "_mycloud_myapps_edit_pages": {
         "nopages": "No hay páginas definidas",
@@ -112,49 +138,49 @@
     },
     "_mycloud_pagesdef": {
         "title": "Título",
-        "description":"Descripción",
+        "description": "Descripción",
         "visibility": "Visibilidad",
         "private": "privado",
         "public": "Público",
         "shared": "Compartido",
         "save": "Guardar",
-        "delete" : "Eliminar",
-        "pagedef":"Definición de Página",
+        "delete": "Eliminar",
+        "pagedef": "Definición de Página",
         "backtoapp": "Regresar al App",
         "cancel": "cancelar",
         "phtitle": "Digite aquí el título de la página",
-        "phdescription" : "Describa brevemente su app"
-        
+        "phdescription": "Describa brevemente su app"
+
     },
     "_mycloud_myapps_data_pages": {
         "title": "Herramientas de Datos",
         "description": "En esta sección se suministran herramientas para navegar y analizar los datos de la aplicación.",
         "download": "Descargar CSV"
     },
-    "_mycloud_pagesdef_widgets":{
-        "filter":"Digite una o más palabras para filtrar la lista",
+    "_mycloud_pagesdef_widgets": {
+        "filter": "Digite una o más palabras para filtrar la lista",
         "name_description": "Nombre y Descripción",
-        "add_widget":"Agregar Widget",
-        "no_widget":"No hay widgets definidos"
-        
-    
-    
+        "add_widget": "Agregar Widget",
+        "no_widget": "No hay widgets definidos"
+
+
+
     },
-    "_mycloud_widgetsdef":{
-        "title":"Título",
+    "_mycloud_widgetsdef": {
+        "title": "Título",
         "description": "Descripción",
-        "widget_type":"Tipo de Widget",
-        "frequency":"Frecuencia",
-        "save":"Guardar",
-        "backtopage":"Regresar a la pagina",
-        "phtitle":"Digite aquí el título del widget",
-        "phdes":"Describa brevemente su widget",
-        "phwidgettype":"Seleccione el tipo de widget",
-        "phfrequency":"Digite aquí la frecuencia del widget",
-        "cancel":"Cancel",
-        "delete":"Borrar"
-        
-    
-    
+        "widget_type": "Tipo de Widget",
+        "frequency": "Frecuencia",
+        "save": "Guardar",
+        "backtopage": "Regresar a la pagina",
+        "phtitle": "Digite aquí el título del widget",
+        "phdes": "Describa brevemente su widget",
+        "phwidgettype": "Seleccione el tipo de widget",
+        "phfrequency": "Digite aquí la frecuencia del widget",
+        "cancel": "Cancel",
+        "delete": "Borrar"
+
+
+
     }
 }

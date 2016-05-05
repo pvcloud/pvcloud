@@ -32,28 +32,40 @@ class WebServiceClass {
             /**
              * @var be_account
              */
-            $activatedAccount = da_account::GetAccountByID($account_id);
+            $account = da_account::GetAccountByID($account_id);
 
-            $currentPasswordHash = sha1($parameters->old_password);
-            $oldPasswordHash = $activatedAccount->pwd_hash;
-            $newPasswordHash = sha1($parameters->new_password);
-            
-            $parameters->ophash = $oldPasswordHash;
-            $parameters->cphash = $currentPasswordHash;
+            $providedHash = sha1($parameters->old_password);
+            $passwordHashToChange = $account->pwd_hash;
+            $newSalt = random_int(100000, 999999);
+
+
+            if (strlen($passwordHashToChange) === 46) { //use salt
+                $currentSalt = substr($passwordHashToChange, 0, 6);
+                $currentHash = substr($passwordHashToChange, 6);
+                $oldHash = 
+                $newHash = sha1($parameters->new_password);
+                $newHashSalted = sha1($newSalt.$newHash);
+            } else { //dont use salt
+            }
+
+
+
+            $parameters->ophash = $passwordHashToChange;
+            $parameters->cphash = $providedHash;
             $parameters->nphash = $newPasswordHash;
-            $parameters->account = $activatedAccount;
+            $parameters->account = $account;
             $parameters->account_id = $account_id;
 
-            if ($currentPasswordHash == $oldPasswordHash) {
-                $activatedAccount->pwd_hash = $newPasswordHash;
-                $savedAccount = da_account::UpdateAccount($activatedAccount);
+            if ($providedHash == $passwordHashToChange) {
+                $account->pwd_hash = $newPasswordHash;
+                $savedAccount = da_account::UpdateAccount($account);
                 $parameters->savedAccount = $savedAccount;
-                if ($savedAccount->pwd_hash == $activatedAccount->pwd_hash) {
+                if ($savedAccount->pwd_hash == $account->pwd_hash) {
                     $response->status = "OK";
                     $response->message = "Clave fue cambiada exitosamente";
                 } else {
                     $response->status = "ERROR";
-                    $response->data=$parameters;
+                    $response->data = $parameters;
                     $response->message = "Ocurrió un error inesperado al guardar la nueva clave";
                 }
             } else {
