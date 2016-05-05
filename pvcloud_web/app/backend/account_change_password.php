@@ -17,10 +17,12 @@ class WebServiceClass {
     public $message = "";
     public $data = NULL;
 
+    /**
+     * 
+     * @return \WebServiceClass
+     */
     public static function ChangePassword() {
-
         $response = new WebServiceClass();
-
 
         /*
          * STEP 1: GET STORED STORED_SALT+STORED_STRONG_HASH
