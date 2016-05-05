@@ -84,9 +84,9 @@ $app->post('/appfiles/{app_id}/{app_key}/{element_key}', function($request, $res
     echo json_encode($result);
 });
 
-$app->get('/test/{id}', function($request, $response, $args){
+$app->get('/test/{id}', function($request, $response, $args) {
     $result = new stdClass();
-    $result->id=$args['id'];
+    $result->id = $args['id'];
     include './inc/incJSONHeaders.php';
     echo json_encode($result);
 });
@@ -152,7 +152,12 @@ class LoginHelper {
     private static function authenticationResult($account, $parameters) {
         $response = new SimpleResponse();
 
-        if ($account->email == $parameters->email && sha1($parameters->password) == $account->pwd_hash) {
+        $proposedPassword = $parameters->password;
+        $proposedSimpleHash = sha1($proposedPassword);
+        $decomposedHash = BL_Authentication::DecomposeSaltedStrongHash($account->pwd_hash);
+        $proposedStrongHash = sha1($decomposedHash->Salt . $proposedSimpleHash);
+
+        if ($account->email == $parameters->email && $proposedStrongHash == $decomposedHash->StrongHash) {
             $session = LoginHelper::getValidSession($account);
             $response->status = "OK";
             $response->data = $session;
@@ -196,7 +201,6 @@ class AppConnectHelper {
                         $data->app_key = $connectResult->app_key;
                         $data->element_key = $connectResult->element_key;
                         $response->data = $data;
-                        
                     } else {
                         $response->status = $connectResult->status;
                         $response->message = $connectResult->message;
@@ -255,7 +259,7 @@ class AppConnectHelper {
 
             $result->element_key = $elementAuthentication;
             $app = AppConnectHelper::getAppData($app_id, $app_name, $account_id);
-            
+
             if ($app == NULL) {
                 $result->status = "ERROR";
                 $result->message = "Application not found....";

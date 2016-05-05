@@ -7,6 +7,7 @@ require_once './DA/da_helper.php';
 
 require_once './DA/da_account.php';
 require_once './DA/da_session.php';
+require_once './BL/BL_Authentication.php';
 require_once './inc/SimpleResponse.php';
 
 class LoginWebService {
@@ -19,7 +20,7 @@ class LoginWebService {
 
         try {
             $parameters = LoginWebService::collectParameters();
-            
+
             if (LoginWebService::parametersAreValid($parameters)) {
                 $account = da_account::GetAccount($parameters->email);
                 $response = LoginWebService::authenticationResult($account, $parameters);
@@ -36,7 +37,6 @@ class LoginWebService {
     }
 
     /**
-     * 
      * @param be_account $account
      * @return be_session
      * @throws Exception
@@ -67,8 +67,12 @@ class LoginWebService {
 
     private static function authenticationResult($account, $parameters) {
         $response = new SimpleResponse();
-
-        if ($account->email == $parameters->email && sha1($parameters->password) == $account->pwd_hash) {
+        $proposedPassword = $parameters->password;
+        $proposedSimpleHash = sha1($proposedPassword);
+        $decomposedHash = BL_Authentication::DecomposeSaltedStrongHash($account->pwd_hash);
+        $proposedStrongHash = sha1($decomposedHash->Salt.$proposedSimpleHash);
+        
+        if ($account->email == $parameters->email && $proposedStrongHash == $decomposedHash->StrongHash) {
             $session = LoginWebService::getValidSession($account);
             $response->status = "OK";
             $response->data = $session;

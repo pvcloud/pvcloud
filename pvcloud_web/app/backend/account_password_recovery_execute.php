@@ -10,6 +10,8 @@ require_once './DA/da_conf.php';
 require_once './DA/da_helper.php';
 require_once './DA/da_account.php';
 require_once './DA/da_session.php';
+require_once './BL/BL_Authentication.php';
+
 include './inc/incBaseURL.php';
 
 class WebServiceClass {
@@ -34,7 +36,7 @@ class WebServiceClass {
                         $difference = $currentDateTime->diff($accountModificationTime);
 
                         if ($difference->d == 0) {
-                            $account->pwd_hash = sha1($parameters->Password);
+                            $account->pwd_hash = BL_Authentication::GenerateSaltedStrongHash(sha1($parameters->Password));
                             $savedAccount = da_account::UpdateAccount($account);
                             if ($savedAccount != NULL && $savedAccount->account_id == $account->account_id) {
                                 $response->status = "OK";
