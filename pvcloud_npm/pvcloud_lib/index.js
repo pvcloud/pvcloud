@@ -134,6 +134,7 @@
         log("requestWrapper()");
         log("URL: ");
         log(url);
+
         request.post({url: url, formData: postData}, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
                 log("SUCCESS!!!--------------------------------------------");
