@@ -226,6 +226,7 @@ class AppConnectHelper {
         $parameters = new stdClass();
         $parameters->account_id = filter_input(INPUT_POST, "account_id");
         $parameters->token = filter_input(INPUT_POST, "token");
+        $parameters->element_key = filter_input(INPUT_POST, "app_key");
         $parameters->element_key = filter_input(INPUT_POST, "element_key");
         $parameters->app_id = filter_input(INPUT_POST, "app_id");
         $parameters->app_name = filter_input(INPUT_POST, "app_name");

@@ -21,7 +21,7 @@ class BL_Authentication {
      * @return string Strong Hash
      */
     public static function GenerateSaltedStrongHash($simpleHash) {
-        $newSalt = random_int(100000, 999999);
+        $newSalt = rand (100000, 999999);
         $newSaltedHash = $newSalt . $simpleHash;
         $newStrongHash = sha1($newSaltedHash);
         $newSaltedStrongHash = $newSalt . $newStrongHash;

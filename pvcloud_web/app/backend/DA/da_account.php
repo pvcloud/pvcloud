@@ -149,6 +149,60 @@ class da_account {
         return $result;
     }
 
+        /**
+     * 
+     * @param string $email
+     * @return be_account
+     * @throws Exception
+     */
+    public static function GetAccounts() {
+        $sqlCommand = "SELECT account_id,email,nickname,pwd_hash, confirmed, confirmation_guid, created_datetime, modified_datetime, deleted_datetime"
+                . " FROM accounts ";
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $result = new be_account();
+        $stmt->bind_result($result->account_id, $result->email, $result->nickname, $result->pwd_hash, $result->confirmed, $result->confirmation_guid, $result->created_datetime, $result->modified_datetime, $result->deleted_datetime);
+
+        
+        $accountEntry = new be_account();
+
+        $stmt->bind_result(
+                $accountEntry->account_id,
+                $accountEntry->email,
+                $accountEntry->nickname,
+                $accountEntry->pwd_hash, 
+                $accountEntry->confirmed, 
+                $accountEntry->confirmation_guid, 
+                $accountEntry->created_datetime, 
+                $accountEntry->modified_datetime, 
+                $accountEntry->deleted_datetime
+                );
+
+        $arrayResult = [];
+        while ($stmt->fetch()) {
+            $arrayResult[] = json_decode(json_encode($accountEntry));
+        }
+
+        $stmt->close();
+
+        return $arrayResult;        
+        
+    }
     /**
      * 
      * @param int $account_id
