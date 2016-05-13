@@ -8,7 +8,7 @@
     var pvcloud = require("pvcloud_lib").pvcloudAPI;
     var http = require('http'),
             fs = require('fs');
-    var fs = require("fs");
+
     var rootPath = __dirname;
     var pvCloudCLModule = function () {
 
