@@ -40,8 +40,8 @@
             log("WELCOME TO PVCLOUD CLIENT v." + package_json.version);
             var configuredDeviceName = config_get("device_name");
             log(configuredDeviceName);
-            if (parameters.action !== "init" && (configuredDeviceName === "" || !configuredDeviceName)) {
-                console.log("This device is not configured yet. Please run pvcloud init command to begin.");
+            if ((parameters.action !== "init" && parameters.action !== "help") && (configuredDeviceName === "" || !configuredDeviceName)) {
+                console.log("This device is not configured yet. Please run pvcloud init command to begin. Use pvcloud help to learn more about this tool.");
                 return;
             }
 
@@ -83,12 +83,16 @@
                     log("CLEx: server");
                     doServer(parameters);
                     break;
-
+                //case "help":
+                case "help":
+                    log("CLEx: help");
+                    doHelp();
+                    break;
             }
         }
 
         /**
-         * This function processes parameters received from interpreter 
+         * This function processes parameters received from interpreter
          * It supports 3 types of parameters:
          *    - Sequenced parameters (first one is "action", second one is "action modifier1" etc.
          *    - double-dash parameters (--simple, --version, etc)
@@ -189,11 +193,11 @@
                                     sequencedParametersIndex++;
                                 }
                                 break;
+
                         }
                     }
                 }
             }
-
             return parameters;
         }
 
@@ -629,6 +633,11 @@
             });
         }
 
+        function doHelp() {
+            var str = fs.readFileSync(__dirname + "/help.txt", "utf8");
+            console.log(str);
+        }
+
         function isNumeric(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
@@ -788,5 +797,3 @@
     }();
     exports.Client = pvCloudCLModule;
 })();
-
-
