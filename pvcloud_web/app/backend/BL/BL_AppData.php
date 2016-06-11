@@ -299,7 +299,7 @@ class BL_AppData {
      * @return \stdClass
      * @throws Exception
      */
-    public static function doSaveFile() {
+    private static function doSaveFile() {
 
         $fileResult = new stdClass();
         $target_dir = "vse_files/";
