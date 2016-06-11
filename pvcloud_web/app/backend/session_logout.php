@@ -7,7 +7,7 @@ require_once './DA/da_helper.php';
 
 require_once './DA/da_account.php';
 require_once './DA/da_session.php';
-require_once './inc/SimpleResponse.php';
+require_once './BL/SimpleResponse.php';
 
 
 class LogoutWebService {

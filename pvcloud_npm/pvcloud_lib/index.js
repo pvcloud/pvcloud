@@ -2,53 +2,47 @@
     var request = require("request");
     var fs = require("fs");
     var options = {
-        DEBUG: false,
+        DEBUG: true,
         DEBUG_COUNT: 0
     };
-
     var pvCloudAPI = function () {
         return{
             test: function () {
                 return "SIMPLE SMOKE TEST";
             },
             /**
-             * Performs a LOGIN operation to a target pvCloud server defined in baseURL
-             * @param {type} baseURL target pvCloud Server
-             * @param {type} userName user account
-             * @param {type} password password
-             * @param {type} successCallback callback function for successful web service call. Receives (error, response, body) signature. body.data contains login results. When successful it contains also temporarly login token.
-             * @param {type} errorCallback callback function for error web service call. Receives (error, response, body) signature
-             * @param {type} finallyCallback callback function to be executed whether there was an error or not. Receives (error, response, body) signature
+             * Connects an IoT Element to an App, using provided data for authentication and verification, all in one single transaction.
+             * @param {string} baseURL URL to pvCloud Server Instance
+             * @param {string or int} account_descriptor Either Account ID or Email
+             * @param {string or int} app_descriptor Either AppID or AppName. If AppName is used, it only matches apps of specific account provided.
+             * @param {string or int} secret Either account password, one-time-passcode or app_key
+             * @param {string} element_key Existing element_key to be reused. Element will be disconnected from previous app and assigned to the requested app.
+             * @param {function} successCallback Function to process successful call
+             * @param {function} errorCallback Function to process errors
+             * @param {function} finallyCallback Function always called to wrap up
              * @returns {undefined}
              */
-            Login: function (baseURL, userName, password, successCallback, errorCallback, finallyCallback) {
-                var loginURL = baseURL + "/backend/vse.php/login";
-                var PostData = {email: userName, pwd: password};
-                postWrapper(loginURL, PostData, successCallback, errorCallback, finallyCallback);
-            },
-            /**
-             * Obtains the data required for connecting an IoT Element to an IoT App
-             * @param {type} baseURL pvCloud Server Instance
-             * @param {type} account_id Account that owns the App to connect to
-             * @param {type} loginToken Active token obtained on a previous login interaction
-             * @param {type} elementKey Active long-term element key identificator to be used instead of a login token
-             * @param {type} app_id ID of the app to connect
-             * @param {type} app_name Name of the app to connect to be used instead of the app_id (app named under the context of the account)
-             * @param {type} successCallback Callback function to process successful connect interaction. Receives error, response, body. Where body.data contains the information required to perform long term connection to an ioT App.
-             * @param {type} errorCallback
-             * @param {type} finallyCallback
-             * @returns {undefined}
-             */
-            Connect: function (baseURL, account_id, loginToken, elementKey, app_id, app_name, successCallback, errorCallback, finallyCallback) {
+            Connect: function (baseURL, account_descriptor, app_descriptor, secret, element_key, successCallback, errorCallback, finallyCallback) {
+                log("CONNECT!");
                 var appConnectURL = baseURL + "/backend/vse.php/connect";
                 var PostData = {
-                    account_id: account_id,
-                    token: loginToken,
-                    element_key: elementKey,
-                    app_id: app_id,
-                    app_name: app_name
+                    account_descriptor: account_descriptor,
+                    app_descriptor: app_descriptor,
+                    secret: secret,
+                    element_key: element_key
                 };
-                postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
+                try {
+                    log("CALLING POST WRAPPER");
+                    postWrapper(appConnectURL, PostData, successCallback, errorCallback, finallyCallback);
+                    log("POST WRAPPER CALL RETURNED!");
+                } catch (ex) {
+                    log("EEEERRRRROOOORRR");
+                    log(ex);
+                    errorCallback(ex);
+                    finallyCallback();
+                }
+                
+                log("DONE WITH CONNECT!!! JUST WAIT FOR CALLBACKS");
             },
             /**
              * Sends data to a pvcloud server for specific app, label and value
@@ -134,12 +128,18 @@
         log("requestWrapper()");
         log("URL: ");
         log(url);
+        log(successCallback);
+        log(errorCallback);
+        log(finallyCallback);
 
         request.post({url: url, formData: postData}, function (error, response, body) {
             if (!error && response && response.statusCode === 200) {
-                log("SUCCESS!!!--------------------------------------------");
-                if (successCallback)
+                log("SUCCESSFUL REQUEST AND RESPONSE.body");
+                log(JSON.parse(body));
+                if (successCallback){
+                    log("CALLING SUCESS CALLBACK");
                     successCallback(error, response, body);
+                }
             } else if (error) {
                 if (errorCallback) {
                     errorCallback(error, response, body);
@@ -153,7 +153,7 @@
                 if (errorCallback) {
                     errorCallback(error, response, body);
                 } else {
-                    OutputResult("PVCLOUD_ERROR");
+                    logError("PVCLOUD_ERROR");
                 }
 
             } else if (error) {
@@ -164,7 +164,7 @@
                 if (errorCallback)
                     errorCallback(error, response, body);
                 else {
-                    OutputResult("PVCLOUD_ERROR");
+                    logError("PVCLOUD_ERROR");
                 }
             } else {
                 log("UNKNOWN FAILURE:---------------------------------------");
@@ -173,7 +173,7 @@
                 if (errorCallback)
                     errorCallback(error, response, body);
                 else
-                    OutputResult("PVCLOUD_FAILURE");
+                    logError("PVCLOUD_FAILURE");
             }
 
             if (finallyCallback)
@@ -203,7 +203,7 @@
                 if (errorCallback) {
                     errorCallback(error, response, body);
                 } else {
-                    OutputResult("PVCLOUD_ERROR");
+                    logError("PVCLOUD_ERROR");
                 }
 
             } else if (error) {
@@ -214,7 +214,7 @@
                 if (errorCallback)
                     errorCallback(error, response, body);
                 else {
-                    OutputResult("PVCLOUD_ERROR");
+                    logError("PVCLOUD_ERROR");
                 }
             } else {
                 log("UNKNOWN FAILURE:---------------------------------------");
@@ -223,7 +223,7 @@
                 if (errorCallback)
                     errorCallback(error, response, body);
                 else
-                    OutputResult("PVCLOUD_FAILURE");
+                    logError("PVCLOUD_FAILURE");
             }
 
             if (finallyCallback)
@@ -253,7 +253,7 @@
                 if (errorCallback) {
                     errorCallback(error, response, body);
                 } else {
-                    OutputResult("PVCLOUD_ERROR");
+                    logError("PVCLOUD_ERROR");
                 }
 
             } else if (error) {
@@ -264,7 +264,7 @@
                 if (errorCallback)
                     errorCallback(error, response, body);
                 else {
-                    OutputResult("PVCLOUD_ERROR");
+                    logError("PVCLOUD_ERROR");
                 }
             } else {
                 log("UNKNOWN FAILURE:---------------------------------------");
@@ -273,7 +273,7 @@
                 if (errorCallback)
                     errorCallback(error, response, body);
                 else
-                    OutputResult("PVCLOUD_FAILURE");
+                    logError("PVCLOUD_FAILURE");
             }
 
             if (finallyCallback)

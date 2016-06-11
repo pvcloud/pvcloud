@@ -116,16 +116,16 @@ class da_apps_registry {
         }
 
         $stmt->close();
-
         return $result;
     }
 
-    public static function GetAppByAccountAndAppName($account_id, $app_name) {
+    public static function GetAppByAccountIDAndAppName($account_id, $app_name) {
+
         $sqlCommand = ""
                 . "SELECT   app_id,account_id,app_nickname,app_description,api_key,visibility_type_id,created_datetime,modified_datetime,deleted_datetime,last_connected_datetime "
                 . " FROM app_registry "
                 . " WHERE account_id = ? AND app_nickname = ? ";
-
+        
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
             $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
@@ -142,14 +142,25 @@ class da_apps_registry {
             throw new Exception($msg, $stmt->errno);
         }
 
+
         if (!$stmt->execute()) {
             $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
 
         $result = new be_app();
+
         $stmt->bind_result(
-                $result->app_id, $result->account_id, $result->app_nickname, $result->app_description, $result->api_key, $result->visibility_type_id, $result->created_datetime, $result->modified_datetime, $result->deleted_datetime, $result->last_connected_datetime
+                $result->app_id,  //app_id,
+                $result->account_id, //account_id,
+                $result->app_nickname, //app_nickname,
+                $result->app_description, //app_description,
+                $result->api_key, //api_key,
+                $result->visibility_type_id,//visibility_type_id,
+                $result->created_datetime, //created_datetime,
+                $result->modified_datetime, //modified_datetime,
+                $result->deleted_datetime, //deleted_datetime,
+                $result->last_connected_datetime //last_connected_datetime 
         );
 
         if (!$stmt->fetch()) {
@@ -172,22 +183,22 @@ class da_apps_registry {
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
-            $msg =  "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
             throw new Exception($msg, $mysqli->connect_errno);
         }
 
         if (!($stmt = $mysqli->prepare($sqlCommand))) {
-            $msg =  "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
             throw new Exception($msg, $mysqli->errno);
         }
 
         if (!$stmt->bind_param("i", $account_id)) {
-            $msg =  "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
 
         if (!$stmt->execute()) {
-            $msg =  "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
 
@@ -218,12 +229,12 @@ class da_apps_registry {
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
-            $msg =  "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
             throw new Exception($msg, $mysqli->connect_errno);
         }
 
         if (!($stmt = $mysqli->prepare($sqlCommand))) {
-            $msg =  "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
             throw new Exception($msg, $mysqli->errno);
         }
 
@@ -233,7 +244,7 @@ class da_apps_registry {
         }
 
         if (!$stmt->execute()) {
-            $msg =  "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             throw new Exception($msg, $stmt->errno);
         }
 

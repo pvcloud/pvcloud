@@ -169,6 +169,14 @@ module.exports = function (grunt) {
                             'c:\\xampp\\htdocs\\pvcloud\\backend/{,*/}*'
                         ]
                     }]
+            },
+            winbackend_test: {
+                files: [{
+                        dot: true,
+                        src: [
+                            'c:\\xampp\\htdocs\\pvcloud_test\\backend/{,*/}*'
+                        ]
+                    }]
             }
         },
         // Add vendor prefixed styles
@@ -331,7 +339,7 @@ module.exports = function (grunt) {
                             'jqueryui-themes/{,*/}*.css',
                             'jqueryui-themes/smoothness/images{,*/}*.png',
                             'jqueryui-themes/smoothness/images{,*/}*.gif',
-                            'backend/**'                        ]
+                            'backend/**']
                     }, {
                         expand: true,
                         cwd: '.tmp/images',
@@ -394,13 +402,26 @@ module.exports = function (grunt) {
                         ]
                     }
                 ]
-            },            
+            },
             winbackend: {
                 files: [
                     {
                         expand: true,
                         cwd: '<%= yeoman.app %>\\backend',
                         dest: 'c:\\xampp\\htdocs\\pvcloud\\backend',
+                        src: [
+                            '.htaccess',
+                            './**'
+                        ]
+                    }
+                ]
+            },
+            winbackend_test: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>\\backend',
+                        dest: 'c:\\xampp\\htdocs\\pvcloud_test\\backend',
                         src: [
                             '.htaccess',
                             './**'
@@ -495,21 +516,25 @@ module.exports = function (grunt) {
         'copy:winlocal_pre'
     ]);
 
-    grunt.registerTask('kontiki', [//Windows: builds and copies into c:\xampp/htdocs/pvcloud_pre without da_config
+    grunt.registerTask('kontiki', [//Windows: builds and copies into c:\xampp/htdocs/pvcloud_test without da_config
         'build',
         'clean:winlocal_test',
         'copy:winlocal_test'
     ]);
-    grunt.registerTask('kontiki2', [//Windows: builds and copies into c:\xampp/htdocs/pvcloud_pre WITH da_config
+    grunt.registerTask('kontiki2', [//Windows: builds and copies into c:\xampp/htdocs/pvcloud_test WITH da_config
         'build',
         'clean:winlocal_test',
         'copy:winlocal_test2'
-    ]);    
+    ]);
     grunt.registerTask('gru', [//Windows: builds and copies BACKEND into c:\xampp/htdocs/pvcloud/backend 
         'clean:winbackend',
         'copy:winbackend'
     ]);
-
+    
+    grunt.registerTask('gru_test', [//Windows: builds and copies BACKEND into c:\xampp/htdocs/pvcloud/backend 
+        'clean:winbackend_test',
+        'copy:winbackend_test'
+    ]);
 
     grunt.registerTask('default', [
         'newer:jshint',

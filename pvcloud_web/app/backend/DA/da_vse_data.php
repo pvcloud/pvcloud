@@ -67,15 +67,19 @@ class da_vse_data {
      */
     public static function GetEntries($app_id, $label, $count) {
 
+
+        if ($label == "*" || !isset($label)) {
+            $label = "";
+        }
+
         $sqlCommand = "SELECT entry_id,app_id,vse_label,vse_value,vse_type,vse_annotations,captured_datetime,created_datetime "
                 . " FROM vse_data "
                 . " WHERE app_id = ? AND (vse_label = ? OR ? = '') "
                 . " ORDER BY entry_id DESC ";
 
-        $label = $label && $label != "*" ? $label : "";
-        $count = $count ? $count : 1;
-
-        if (isset($count) && $count != NULL && is_numeric($count) && $count > 0) {
+        if ($count == "*") {
+            
+        } else if ($count > 0) {
             $sqlCommand .= " LIMIT $count ";
         } else {
             $sqlCommand .= " LIMIT 1 ";
@@ -112,9 +116,54 @@ class da_vse_data {
             $arrayResult[] = json_decode(json_encode($entry));
         }
 
+        
+        $stmt->close();
+        return $arrayResult;
+    }
+
+    public static function GetEntriesCount($app_id, $label, $count) {
+        $sqlCommand = "SELECT Count(0) "
+                . " FROM vse_data "
+                . " WHERE app_id = ? AND (vse_label = ? OR ? = '') ";
+
+        $countOfEntries = -1;
+
+        $mysqli = DA_Helper::mysqli_connect();
+        if ($mysqli->connect_errno) {
+            $msg = "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+            throw new Exception($msg, $mysqli->connect_errno);
+        }
+
+        if (!($stmt = $mysqli->prepare($sqlCommand))) {
+            $msg = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+            throw new Exception($msg, $mysqli->connect_errno);
+        }
+
+        if (!$stmt->bind_param("iss", $app_id, $label, $label)) {
+            $msg = "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        if (!$stmt->execute()) {
+            $msg = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            throw new Exception($msg, $stmt->errno);
+        }
+
+        $stmt->bind_result($countOfEntries);
+
+        if ($stmt->fetch()) {
+            if ($countOfEntries > $count) {
+                $countOfEntries = $count;
+            } else {
+                
+            }
+        } else {
+            
+        }
+
         $stmt->close();
 
-        return $arrayResult;
+        return $countOfEntries;
     }
 
     public static function GetEntriesForWidget($widget_id, $optional_max_limit, $last_entry_id) {
@@ -228,20 +277,24 @@ class da_vse_data {
      * @return type
      * @throws Exception
      */
-    public static function ClearEntries($app_id, $label, $count) {
-
-        $label = $label && $label != "*" ? $label : "";
+    public static function ClearEntries($app_id, $label, $count, $return_deleted_entries) {
 
         $result = new stdClass();
+
+        if (!isset($label) || $label == "*") {
+            $label = "";
+        }
 
         if (!isset($count)) {
             $count = 1;
         } else if ($count == "*") {
-            $count = ""; //DELETE ALL
+            $count = "200000"; //DELETE ALL
         }
 
-        if ($count > 0) {
-            $result->EntriesToDelete = da_vse_data::GetEntries($app_id, $label, $count);
+        if ($return_deleted_entries == true) {
+            $result->DeletedEntries = da_vse_data::GetEntries($app_id, $label, $count);
+        } else {
+            $result->DeleteCount = da_vse_data::GetEntriesCount($app_id, $label, $count);
         }
 
         $sqlCommand = ""
@@ -286,7 +339,7 @@ class da_vse_data {
 
         $stmt->close();
 
-        $result->RemainingEntries = da_vse_data::GetEntries($app_id, $label, $count);
+        $result->RemainingEntries = da_vse_data::GetEntriesCount($app_id, $label, "200000");
 
         return $result;
     }
