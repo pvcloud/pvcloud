@@ -15,14 +15,32 @@
 
 #include <SPI.h>
 #include <WiFi101.h>
+#include <FlashStorage.h>
+
+#include "StringSplit.h"
+#include "List.h"
 
 bool justThrowHTTPMessage = false;//DEBUG MODE TO SEE HTTP MESSAGE
 WiFiServer server(80);//DEFINING WEB SERVER @ PORT 80
 
+// Create a structure that is big enough to contain a name
+// and a surname. The "valid" variable is set to "true" once
+// the structure is filled with actual data for the first time.
+typedef struct {
+  boolean valid = false;
+  char SSID[100];
+  char passphrase[100];
+} Config;
+
+// Reserve a portion of flash memory to store a "Person" and
+// call it "my_flash_store".
+FlashStorage(my_flash_store, Config);
+
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-  while (!Serial);
+  //while (!Serial);
+  delay(1000);
   
   randomSeed(analogRead(0));
   Serial.println("Welcome to MKR1000 PIN-TO-CLOUD CONFIG");
@@ -30,12 +48,35 @@ void setup() {
 
   doBlink(10,200);
 
+
+  Config configuration;
+  Serial.print("CONFIG BEFORE: ");
+  Serial.print(configuration.valid);
+  configuration = retrieveConfig();
+  Serial.print("CONFIG AFTER: ");
+  Serial.print(configuration.valid);
+  if(configuration.valid==false || configuration.SSID ==""){
+    Serial.println("CONFIGURATION NOT FOUND... SAVING IT!");
+    String ssid = "opodiym";
+    String pass = "luaus7151";
+    ssid.toCharArray(configuration.SSID, 100);
+    pass.toCharArray(configuration.passphrase, 100);
+    configuration.valid = true;
+    my_flash_store.write(configuration);
+  } else {
+    Serial.println("CONFIGURATION FOUND!");  
+    openAccessPoint();  
+  }
+  Serial.print("SSID:");
+  Serial.print(configuration.SSID);
+  Serial.print(", Passphrase: ");
+  Serial.println(configuration.passphrase);
+
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not found!");
     while (true);
   }
 
-  openAccessPoint();
 
   server.begin(); //BEGIN WEB SERVER 
 
@@ -80,6 +121,7 @@ void loop() {
               if(payload!=""){
                 Serial.print("PAYLOAD: ");
                 Serial.println(payload);
+                processPayload(payload);
               }
               
               // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
@@ -184,3 +226,32 @@ String getHTML_ConfigPage(){
 
   return html;
 }
+
+Config retrieveConfig(){
+  my_flash_store.read();  
+}
+
+void processPayload(String payload){
+  List<String> payLoadList;
+  
+  StringSplit::split(payLoadList,payload,'&');
+
+  payLoadList.ToBegin();
+  while(!payLoadList.IsEnd())
+  {
+    List<String> entryElements;
+    String configEntry = payLoadList.GetValue();
+    
+    StringSplit::split(entryElements, configEntry, '=');
+    entryElements.ToBegin();
+
+    Serial.print("Key: ");
+    Serial.print(entryElements.GetValue());
+    entryElements.Next();
+    Serial.print(", Value: ");
+    Serial.println(entryElements.GetValue());
+    
+    payLoadList.Next();
+  } 
+}
+
