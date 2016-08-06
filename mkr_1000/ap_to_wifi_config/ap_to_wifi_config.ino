@@ -221,13 +221,61 @@ String getHTML_ConfigPage(){
   String html = "";
 
   // the content of the HTTP response follows the header:
+  html += "<!DOCTYPE html>";
+  html += "<html>";
+  html += "<head>";
+  html += " <title>WELCOME TO PIN 2 CLOUD for MKR1000</title>";
+  html += " <meta charset='UTF-8'>";
+  html += " <meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+  html += " <style>";
+  html += " table tr td:first-child{color:navy; text-align:right}";
+  html += " .separated td{border-top:1px solid gray} ";
+  html += " fieldset {max-width:836px; display:block; margin:0 auto} ";
+  html += " fieldset.gpio{min-width:400px;display:inline-block} ";
+  html += " form{display:block; margin:0 auto}";
+  html += " div{display:block; margin:0 auto; max-width:900px}";
+  html += " </style>";
+  html += "</head>";
+  html += "<body>";
+  
   html += "<form id='WIFILOGIN' method='POST' action='L'>";
-  html += "SSID: <input id='txtSSID' name='txtSSID' type='text' /><br />";
-  html += "Passphrase: <input id='txtPassphrase' name='txtPassphrase' type='password' /><br />";
-  html += "<input type='submit' value='SEND'/>";
+  html += " <h1>PIN2CLOUD CONFIG (MKR1000)</h1> ";
+  html += " <hr>";
+  html += " <fieldset title='WiFi Connection'>";
+  html += "<legend>WiFi Connection</legend>";
+  html += "<table> ";
+  html += " <tr>";
+  html += " <td style='text-align: right'>SSID:</td>";
+  html += " <td><input id='ssid' name='ssid' type='text' /></td>";
+  html += " </tr>";
+  html += " <tr>";
+  html += " <td>PASSWORD:</td> ";
+  html += " <td><input type='text' id='wifi_password' name='wifi_password'></td>";
+  html += " </tr>";
+  html += "</table>";
+  html += " </fieldset> ";
+  html += " <br>";
+  html += " <fieldset>";
+  html += "<legend>CLOUD CONNECTION</legend> ";
+  html += "<table> ";
+  html += " <tr>";
+  html += " <td>Base URL:</td> ";
+  html += " <td><input placeholder='Cloud Service URL' type='text' id='cloudBaseURL' name='cloudBaseURL'></td>";
+  html += " </tr>";
+  html += " <tr>";
+  html += " <td>Secret:</td> ";
+  html += " <td><input placeholder='Cloud Service Secret' type='text' id='cloudSecret' name='cloudSecret'></td>";
+  html += " </tr>";
+  html += "</table>";
+  html += " </fieldset> ";
+  
   html += "</form>";
   html += "<button><a href='/ON'>ON</a></button> turn the LED on<br><br>";
   html += "<button><a href='/OFF'>OFF</a></button><br>";
+
+
+  html += "</body>";
+  html += "</html> ";  
   return html;
 }
 
@@ -251,9 +299,10 @@ void processPayload(String payload){
     entryElements.Next();
     Serial.print(", Value: ");
     Serial.println(entryElements.GetValue());
+
     
     
     payLoadList.Next();
-  } 
+  } //while  
 }
 
