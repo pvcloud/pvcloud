@@ -27,7 +27,7 @@ WiFiServer server(80);//DEFINING WEB SERVER @ PORT 80
 // and a surname. The "valid" variable is set to "true" once
 // the structure is filled with actual data for the first time.
 typedef struct {
-  boolean valid = false;
+  int initializationToken;
   char SSID[100];
   char passphrase[100];
 } Config;
@@ -46,38 +46,43 @@ void setup() {
   Serial.println("Welcome to MKR1000 PIN-TO-CLOUD CONFIG");
   pinMode(LED_BUILTIN, OUTPUT);      // set the LED pin mode
 
-  doBlink(10,200);
+  doBlink(5,200);
 
 
   Config configuration;
+  configuration.initializationToken = 1;
+  
+  String defaultValue = "initial";
+  defaultValue.toCharArray(configuration.SSID,100);
+  defaultValue.toCharArray(configuration.passphrase,100);
+  
   Serial.print("CONFIG BEFORE: ");
-  Serial.print(configuration.valid);
-  configuration = retrieveConfig();
+  Serial.println(configuration.initializationToken);
+  configuration = my_flash_store.read();  
   Serial.print("CONFIG AFTER: ");
-  Serial.print(configuration.valid);
-  if(configuration.valid==false || configuration.SSID ==""){
+  Serial.println(configuration.initializationToken);
+  if(configuration.initializationToken != 1){
     Serial.println("CONFIGURATION NOT FOUND... SAVING IT!");
     String ssid = "opodiym";
     String pass = "luaus7151";
     ssid.toCharArray(configuration.SSID, 100);
     pass.toCharArray(configuration.passphrase, 100);
-    configuration.valid = true;
+    configuration.initializationToken = 1;
     my_flash_store.write(configuration);
   } else {
     Serial.println("CONFIGURATION FOUND!");  
-    openAccessPoint();  
   }
   Serial.print("SSID:");
   Serial.print(configuration.SSID);
   Serial.print(", Passphrase: ");
   Serial.println(configuration.passphrase);
-
+  
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not found!");
     while (true);
   }
 
-
+  openAccessPoint();  
   server.begin(); //BEGIN WEB SERVER 
 
   printAccessPointStatus();
@@ -223,15 +228,11 @@ String getHTML_ConfigPage(){
   html += "</form>";
   html += "<button><a href='/ON'>ON</a></button> turn the LED on<br><br>";
   html += "<button><a href='/OFF'>OFF</a></button><br>";
-
   return html;
 }
 
-Config retrieveConfig(){
-  my_flash_store.read();  
-}
 
-void processPayload(String payload){
+void processPayload(String payload){ 
   List<String> payLoadList;
   
   StringSplit::split(payLoadList,payload,'&');
@@ -250,6 +251,7 @@ void processPayload(String payload){
     entryElements.Next();
     Serial.print(", Value: ");
     Serial.println(entryElements.GetValue());
+    
     
     payLoadList.Next();
   } 
