@@ -23,18 +23,63 @@
 bool justThrowHTTPMessage = false;//DEBUG MODE TO SEE HTTP MESSAGE
 WiFiServer server(80);//DEFINING WEB SERVER @ PORT 80
 
-// Create a structure that is big enough to contain a name
-// and a surname. The "valid" variable is set to "true" once
-// the structure is filled with actual data for the first time.
+//DEFINITIONS
+enum DigitalModes {
+  DISABLED_DIGITAL,
+  INPUT_DIGITAL,
+  OUTPUT_DIGITAL,
+  OUTPUT_PWM
+};
+
+enum AnalogModes {
+  DISABLED_ANALOG,
+  ENABLED
+};
+
+typedef struct {
+  String Name;
+  String Label;
+  DigitalModes Mode;
+} DigitalPort;
+
+typedef struct {
+  String Name;
+  String Label;
+  AnalogModes Mode;
+} AnalogPort;
+
 typedef struct {
   int initializationToken;
   char SSID[100];
   char passphrase[100];
+  DigitalPort D0;
+  DigitalPort D1;
+  DigitalPort D2;
+  DigitalPort D3;
+  DigitalPort D4;
+  DigitalPort D5;
+  DigitalPort D6;
+  DigitalPort D7;
+  DigitalPort D8;
+  DigitalPort D9;
+  DigitalPort D10;
+  DigitalPort D11;
+  DigitalPort D12;
+  DigitalPort D13;
+  AnalogPort A0;
+  AnalogPort A1;
+  AnalogPort A2;
+  AnalogPort A3;
+  AnalogPort A4;
+  AnalogPort A5;
+  AnalogPort A6;
 } Config;
 
 // Reserve a portion of flash memory to store a "Person" and
 // call it "my_flash_store".
 FlashStorage(my_flash_store, Config);
+
+Config configuration;
 
 void setup() {
   //Initialize serial and wait for port to open:
@@ -49,7 +94,7 @@ void setup() {
   doBlink(5,200);
 
 
-  Config configuration;
+  
   configuration.initializationToken = 1;
   
   String defaultValue = "initial";
