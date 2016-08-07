@@ -51,6 +51,7 @@ typedef struct {
   int initializationToken;
   char SSID[100];
   char passphrase[100];
+  int RefreshRate;
   DigitalPort D0;
   DigitalPort D1;
   DigitalPort D2;
@@ -224,14 +225,14 @@ client.println(" <tr>");
 client.println(" <td>Refresh Rate:</td>");
 client.println(" <td> ");
 client.println("<select id='refreshRate' name='refreshRate'> ");
-client.println("<option>1 sec</option> ");
-client.println("<option>5 sec</option> ");
-client.println("<option selected>10 sec</option>");
-client.println("<option>15 sec</option>");
-client.println("<option>30 sec</option>");
-client.println("<option>1 min</option> ");
-client.println("<option>5 min</option> ");
-client.println("<option>10 min</option>");
+client.println("<option value='1'>1 sec</option> ");
+client.println("<option value='5'>5 sec</option> ");
+client.println("<option value='10' selected>10 sec</option>");
+client.println("<option value='15'>15 sec</option>");
+client.println("<option value='30'>30 sec</option>");
+client.println("<option value='60'>1 min</option> ");
+client.println("<option value='300'>5 min</option> ");
+client.println("<option value='600'>10 min</option>");
 client.println("</select>");
 client.println(" </td>");
 client.println(" </tr>");
@@ -253,9 +254,9 @@ client.println("<input type='text' id='label_d0' name='label_d0' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d0' name='selMode_d0'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -266,9 +267,9 @@ client.println("<input type='text' id='label_d1' name='label_d1' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d1' name='selMode_d1'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -279,10 +280,10 @@ client.println("<input type='text' id='label_d2' name='label_d2' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d2' name='selMode_d2'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
-client.println(" <option>OUTPUT PWM</option> ");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+client.println(" <option value='3'>OUTPUT PWM</option> ");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -293,10 +294,10 @@ client.println("<input type='text' id='label_d3' name='label_d3' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d3' name='selMode_d3'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
-client.println(" <option>OUTPUT PWM</option> ");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+client.println(" <option value='3'>OUTPUT PWM</option> ");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -307,10 +308,10 @@ client.println("<input type='text' id='label_d4' name='label_d4' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d4' name='selMode_d4'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
-client.println(" <option>OUTPUT PWM</option> ");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+client.println(" <option value='3'>OUTPUT PWM</option> ");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -321,10 +322,10 @@ client.println("<input type='text' id='label_d5' name='label_d5' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d5' name='selMode_d5'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
-client.println(" <option>OUTPUT PWM</option> ");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+client.println(" <option value='3'>OUTPUT PWM</option> ");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -335,9 +336,9 @@ client.println("<input type='text' id='label_d6' name='label_d6' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d6' name='selMode_d6'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -348,9 +349,9 @@ client.println("<input type='text' id='label_d7' name='label_d7' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d7' name='selMode_d7'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -361,9 +362,9 @@ client.println("<input type='text' id='label_d8' name='label_d8' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d8' name='selMode_d8'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -374,9 +375,9 @@ client.println("<input type='text' id='label_d9' name='label_d9' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d9' name='selMode_d9'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -387,9 +388,9 @@ client.println("<input type='text' id='label_d10' name='label_d10' placeholder='
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d10' name='selMode_d10'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -400,9 +401,9 @@ client.println("<input type='text' id='label_d11' name='label_d11' placeholder='
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d11' name='selMode_d11'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -413,9 +414,9 @@ client.println("<input type='text' id='label_d12' name='label_d12' placeholder='
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d12' name='selMode_d12'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -426,9 +427,9 @@ client.println("<input type='text' id='label_d13' name='label_d13' placeholder='
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_d13' name='selMode_d13'>");
-client.println(" <option>DISABLED</option> ");
-client.println(" <option>INPUT</option> ");
-client.println(" <option>OUTPUT DIGITAL</option>");
+client.println(" <option value='0'>DISABLED</option> ");
+client.println(" <option value='1'>INPUT</option> ");
+client.println(" <option value='2'>OUTPUT DIGITAL</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -449,7 +450,7 @@ client.println("<input type='text' id='label_a0' name='label_a0' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a0' name='selMode_a0'>");
-client.println(" <option>DISABLED</option><option>ENABLED</option>");
+client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -460,7 +461,7 @@ client.println("<input type='text' id='label_a1' name='label_a1' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a1' name='selMode_a1'>");
-client.println(" <option>DISABLED</option><option>ENABLED</option>");
+client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -471,7 +472,7 @@ client.println("<input type='text' id='label_a2' name='label_a2' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a2' name='selMode_a2'>");
-client.println(" <option>DISABLED</option><option>ENABLED</option>");
+client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -482,7 +483,7 @@ client.println("<input type='text' id='label_a3' name='label_a3' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a3' name='selMode_a3'>");
-client.println(" <option>DISABLED</option><option>ENABLED</option>");
+client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -493,7 +494,7 @@ client.println("<input type='text' id='label_a4' name='label_a4' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a4' name='selMode_a4'>");
-client.println(" <option>DISABLED</option><option>ENABLED</option>");
+client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -504,7 +505,7 @@ client.println("<input type='text' id='label_a5' name='label_a5' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a5' name='selMode_a5'>");
-client.println(" <option>DISABLED</option><option>ENABLED</option>");
+client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -515,7 +516,7 @@ client.println("<input type='text' id='label_a6' name='label_a6' placeholder='PO
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a6' name='selMode_a6'>");
-client.println(" <option>DISABLED</option><option>ENABLED</option>");
+client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
 client.println("</select>");
 client.println("</td> ");
 client.println(" </tr>");
@@ -650,8 +651,32 @@ void processPayload(String payload){
     if(key=="label_a4"){val.toCharArray(configuration.A4.Label, 100);}
     if(key=="label_a5"){val.toCharArray(configuration.A5.Label, 100);}
     if(key=="label_a6"){val.toCharArray(configuration.A6.Label, 100);}
+    
+    if(key=="selMode_d0"){configuration.D0.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d1"){configuration.D1.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d2"){configuration.D2.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d3"){configuration.D3.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d4"){configuration.D4.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d5"){configuration.D5.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d6"){configuration.D6.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d7"){configuration.D7.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d8"){configuration.D8.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d9"){configuration.D9.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d10"){configuration.D10.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d11"){configuration.D11.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d12"){configuration.D12.Mode = (DigitalModes) val.toInt();}
+    if(key=="selMode_d13"){configuration.D13.Mode = (DigitalModes) val.toInt();}
 
-    //if(key=="selMode_d0"){val.toCharArray(configuration.A6.Label, 100);}
+    if(key=="selMode_a0"){configuration.A0.Mode = (AnalogModes) val.toInt();}
+    if(key=="selMode_a1"){configuration.A1.Mode = (AnalogModes) val.toInt();}
+    if(key=="selMode_a2"){configuration.A2.Mode = (AnalogModes) val.toInt();}
+    if(key=="selMode_a3"){configuration.A3.Mode = (AnalogModes) val.toInt();}
+    if(key=="selMode_a4"){configuration.A4.Mode = (AnalogModes) val.toInt();}
+    if(key=="selMode_a5"){configuration.A5.Mode = (AnalogModes) val.toInt();}
+    if(key=="selMode_a6"){configuration.A6.Mode = (AnalogModes) val.toInt();}
+
+    if(key=="refreshRate"){configuration.RefreshRate = val.toInt();}
+
     
 
   
@@ -692,6 +717,9 @@ void dumpConfiguration(){
 
   Serial.print("Passphrase:");
   Serial.println(configuration.passphrase);
+
+  Serial.print("Refresh Rate:");
+  Serial.println(configuration.RefreshRate);
   
   dumpDigitalPort(configuration.D0, "D0");
   dumpDigitalPort(configuration.D1, "D1");
