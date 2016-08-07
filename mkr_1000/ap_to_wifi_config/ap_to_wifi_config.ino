@@ -788,9 +788,9 @@ void SwitchToClientMode(){
   // attempt to connect to Wifi network:
   while (client_status != WL_CONNECTED) {
     Serial.print("Attempting to connect to SSID: ");
-    Serial.println(client_ssid);
+    Serial.println(configuration.SSID);
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    client_status = WiFi.begin(client_ssid, client_pass);
+    client_status = WiFi.begin(configuration.SSID, configuration.passphrase);
 
     // wait 10 seconds for connection:
     delay(10000);
