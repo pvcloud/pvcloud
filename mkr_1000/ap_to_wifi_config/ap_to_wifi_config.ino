@@ -20,6 +20,7 @@
 #include "StringSplit.h"
 #include "List.h"
 
+void dumpConfiguration();
 bool justThrowHTTPMessage = false;//DEBUG MODE TO SEE HTTP MESSAGE
 WiFiServer server(80);//DEFINING WEB SERVER @ PORT 80
 
@@ -37,14 +38,12 @@ enum AnalogModes {
 };
 
 typedef struct {
-  String Name;
-  String Label;
+  char Label [100];
   DigitalModes Mode;
 } DigitalPort;
 
 typedef struct {
-  String Name;
-  String Label;
+  char Label [100];
   AnalogModes Mode;
 } AnalogPort;
 
@@ -92,9 +91,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);      // set the LED pin mode
 
   doBlink(5,200);
-
-
-  
+ 
   configuration.initializationToken = 1;
   
   String defaultValue = "initial";
@@ -102,18 +99,13 @@ void setup() {
   defaultValue.toCharArray(configuration.passphrase,100);
   
   Serial.print("CONFIG BEFORE: ");
-  Serial.println(configuration.initializationToken);
+  dumpConfiguration();
+
   configuration = my_flash_store.read();  
   Serial.print("CONFIG AFTER: ");
-  Serial.println(configuration.initializationToken);
+  dumpConfiguration();
   if(configuration.initializationToken != 1){
-    Serial.println("CONFIGURATION NOT FOUND... SAVING IT!");
-    String ssid = "opodiym";
-    String pass = "luaus7151";
-    ssid.toCharArray(configuration.SSID, 100);
-    pass.toCharArray(configuration.passphrase, 100);
-    configuration.initializationToken = 1;
-    my_flash_store.write(configuration);
+    Serial.println("CONFIGURATION NOT FOUND...GOING TO CONFIG MODE?");
   } else {
     Serial.println("CONFIGURATION FOUND!");  
   }
@@ -519,7 +511,7 @@ client.println(" </tr>");
 client.println(" <tr> ");
 client.println("<td>A6</td>");
 client.println("<td>");
-client.println("<input type='text' id='label_a6' name='label_a3' placeholder='PORT_A6...'>");
+client.println("<input type='text' id='label_a6' name='label_a6' placeholder='PORT_A6...'>");
 client.println("</td> ");
 client.println("<td>");
 client.println("<select id='selMode_a6' name='selMode_a6'>");
@@ -632,16 +624,95 @@ void processPayload(String payload){
     
     StringSplit::split(entryElements, configEntry, '=');
     entryElements.ToBegin();
-
-    Serial.print("Key: ");
-    Serial.print(entryElements.GetValue());
+    String key = entryElements.GetValue();
     entryElements.Next();
-    Serial.print(", Value: ");
-    Serial.println(entryElements.GetValue());
+    String val = entryElements.GetValue();
+    if(key=="ssid"){val.toCharArray(configuration.SSID,100);}
+    if(key=="wifi_password"){val.toCharArray(configuration.passphrase,100);}
+    if(key=="label_d0"){val.toCharArray(configuration.D0.Label, 100);}
+    if(key=="label_d1"){val.toCharArray(configuration.D1.Label, 100);}
+    if(key=="label_d2"){val.toCharArray(configuration.D2.Label, 100);}
+    if(key=="label_d3"){val.toCharArray(configuration.D3.Label, 100);}
+    if(key=="label_d4"){val.toCharArray(configuration.D4.Label, 100);}
+    if(key=="label_d5"){val.toCharArray(configuration.D5.Label, 100);}
+    if(key=="label_d6"){val.toCharArray(configuration.D6.Label, 100);}
+    if(key=="label_d7"){val.toCharArray(configuration.D7.Label, 100);}
+    if(key=="label_d8"){val.toCharArray(configuration.D8.Label, 100);}
+    if(key=="label_d9"){val.toCharArray(configuration.D9.Label, 100);}
+    if(key=="label_d10"){val.toCharArray(configuration.D10.Label, 100);}
+    if(key=="label_d11"){val.toCharArray(configuration.D11.Label, 100);}
+    if(key=="label_d12"){val.toCharArray(configuration.D12.Label, 100);}
+    if(key=="label_d13"){val.toCharArray(configuration.D13.Label, 100);}
+    if(key=="label_a0"){val.toCharArray(configuration.A0.Label, 100);}
+    if(key=="label_a1"){val.toCharArray(configuration.A1.Label, 100);}
+    if(key=="label_a2"){val.toCharArray(configuration.A2.Label, 100);}
+    if(key=="label_a3"){val.toCharArray(configuration.A3.Label, 100);}
+    if(key=="label_a4"){val.toCharArray(configuration.A4.Label, 100);}
+    if(key=="label_a5"){val.toCharArray(configuration.A5.Label, 100);}
+    if(key=="label_a6"){val.toCharArray(configuration.A6.Label, 100);}
 
+    //if(key=="selMode_d0"){val.toCharArray(configuration.A6.Label, 100);}
     
-    
+
+  
     payLoadList.Next();
   } //while  
+
+  
+  configuration.initializationToken = 1;
+  my_flash_store.write(configuration);
 }
 
+void dumpDigitalPort(DigitalPort port, String portName){
+  Serial.print("PORT: ");
+  Serial.print(portName);
+  Serial.print("Label: ");
+  Serial.print(port.Label);
+  Serial.print(", Mode:");
+  Serial.println(port.Mode);
+}
+
+void dumpAnalogPort(AnalogPort port, String portName){
+  Serial.print("PORT: ");
+  Serial.print(portName);
+  Serial.print("Label: ");
+  Serial.print(port.Label);
+  Serial.print(", Mode:");
+  Serial.println(port.Mode);
+}
+
+void dumpConfiguration(){
+  Serial.println("CONFIGURATION DUMP:");
+
+  Serial.print("InitializationToken:");
+  Serial.println(configuration.initializationToken);
+
+  Serial.print("SSID:");
+  Serial.println(configuration.SSID);
+
+  Serial.print("Passphrase:");
+  Serial.println(configuration.passphrase);
+  
+  dumpDigitalPort(configuration.D0, "D0");
+  dumpDigitalPort(configuration.D1, "D1");
+  dumpDigitalPort(configuration.D2, "D2");
+  dumpDigitalPort(configuration.D3, "D3");
+  dumpDigitalPort(configuration.D4, "D4");
+  dumpDigitalPort(configuration.D5, "D5");
+  dumpDigitalPort(configuration.D6, "D6");
+  dumpDigitalPort(configuration.D7, "D7");
+  dumpDigitalPort(configuration.D8, "D8");
+  dumpDigitalPort(configuration.D9, "D9");
+  dumpDigitalPort(configuration.D10, "D10");
+  dumpDigitalPort(configuration.D11, "D11");
+  dumpDigitalPort(configuration.D12, "D12");
+  dumpDigitalPort(configuration.D13, "D13");
+
+  dumpAnalogPort(configuration.A0, "A0");
+  dumpAnalogPort(configuration.A1, "A1");
+  dumpAnalogPort(configuration.A2, "A2");
+  dumpAnalogPort(configuration.A3, "A3");
+  dumpAnalogPort(configuration.A4, "A4");
+  dumpAnalogPort(configuration.A5, "A5");
+  dumpAnalogPort(configuration.A6, "A6");  
+}
