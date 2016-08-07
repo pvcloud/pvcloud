@@ -21,8 +21,25 @@
 #include "List.h"
 
 void dumpConfiguration();
+void printWifiClientStatus();
 bool justThrowHTTPMessage = false;//DEBUG MODE TO SEE HTTP MESSAGE
+bool inClientMode = false;
 WiFiServer server(80);//DEFINING WEB SERVER @ PORT 80
+
+/*************************************************************/
+
+int client_status = WL_IDLE_STATUS;
+// if you don't want to use DNS (and reduce your sketch size)
+// use the numeric IP instead of the name for the server:
+//IPAddress server(74,125,232,128);  // numeric IP for Google (no DNS)
+char client_server[] = "costaricamakers.com";    // name address for Google (using DNS)
+
+// Initialize the Ethernet client library
+// with the IP address and port of the server
+// that you want to connect to (port 80 is default for HTTP):
+WiFiClient client_part2;
+/********************************************************************/
+
 
 //DEFINITIONS
 enum DigitalModes {
@@ -92,6 +109,11 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);      // set the LED pin mode
 
   doBlink(5,200);
+
+  if (WiFi.status() == WL_NO_SHIELD) {
+    Serial.println("WiFi shield not found!");
+    while (true);
+  }  
  
   configuration.initializationToken = 1;
   
@@ -107,462 +129,470 @@ void setup() {
   dumpConfiguration();
   if(configuration.initializationToken != 1){
     Serial.println("CONFIGURATION NOT FOUND...GOING TO CONFIG MODE?");
+    SwitchToAccessPointMode();
   } else {
-    Serial.println("CONFIGURATION FOUND!");  
+    Serial.println("CONFIGURATION FOUND... Switching to CLIENT MODE");  
+    SwitchToClientMode();
   }
-  Serial.print("SSID:");
-  Serial.print(configuration.SSID);
-  Serial.print(", Passphrase: ");
-  Serial.println(configuration.passphrase);
-  
-  if (WiFi.status() == WL_NO_SHIELD) {
-    Serial.println("WiFi shield not found!");
-    while (true);
-  }
-
-  openAccessPoint();  
-  server.begin(); //BEGIN WEB SERVER 
-
-  printAccessPointStatus();
 }
 
 
 void loop() {
-  WiFiClient client = server.available(); 
-  String method = "";
-  if (client) {  
-    Serial.println("Client Connected!");  
-    String currentLine = ""; 
-    while (client.connected()) { 
-      if (client.available()) {
-        char c = client.read(); 
-        currentLine += c;
-        String payload = "";
-
-        if(justThrowHTTPMessage){
-          if(c=='\r') Serial.print("[R]"); 
-          else if(c=='\n') Serial.print("[N]"); 
-          else Serial.print(c);
-        } else {        
-          if(c == '\n'){ //PROCESS LINE
-            Serial.print(currentLine);
-            if(currentLine.startsWith("POST")){
-              Serial.println("POST DETECTED!");
-              method = "POST";            
-            }
+  if(inClientMode){
+    // if there are incoming bytes available
+    // from the server, read them and print them:
+    while (client_part2.available()) {
+      char c = client_part2.read();
+      Serial.write(c);
+    }
+    
+    // if the server's disconnected, stop the client:
+    if (!client_part2.connected()) {
+      Serial.println();
+      Serial.println("disconnecting from server.");
+      client_part2.stop();
+    
+      // do nothing forevermore:
+      while (true);
+    }    
+    
+  } else {
+    WiFiClient client = server.available(); 
+    String method = "";
+    if (client) {  
+      Serial.println("Client Connected!");  
+      String currentLine = ""; 
+      while (client.connected()) { 
+        if (client.available()) {
+          char c = client.read(); 
+          currentLine += c;
+          String payload = "";
   
-            if(currentLine.startsWith("GET")){
-              Serial.println("GET DETECTED!");
-              method = "GET";
-            }
-           
-            if(currentLine=="\r\n" || currentLine == ""){
-              while(client.available()){
-                char c2 = client.read();
-                payload += c2;
+          if(justThrowHTTPMessage){
+            if(c=='\r') Serial.print("[R]"); 
+            else if(c=='\n') Serial.print("[N]"); 
+            else Serial.print(c);
+          } else {        
+            if(c == '\n'){ //PROCESS LINE
+              Serial.print(currentLine);
+              if(currentLine.startsWith("POST")){
+                Serial.println("POST DETECTED!");
+                method = "POST";            
               }
-              if(payload!=""){
-                Serial.print("PAYLOAD: ");
-                Serial.println(payload);
-                processPayload(payload);
+    
+              if(currentLine.startsWith("GET")){
+                Serial.println("GET DETECTED!");
+                method = "GET";
               }
-              
-              // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-              // and a content-type so the client knows what's coming, then a blank line:
-              client.println("HTTP/1.1 200 OK");
-              client.println("Content-type:text/html");
-              client.println();
-          
-              // the content of the HTTP response follows the header:
-
-
-client.println("<!DOCTYPE html>");
-client.println("<html>");
-client.println("<head>");
-client.println(" <title>WELCOME TO PIN 2 CLOUD for MKR1000</title>");
-client.println(" <meta charset='UTF-8'>");
-client.println(" <meta name='viewport' content='width=device-width, initial-scale=1.0'>");
-client.println(" <style>");
-client.println(" table tr td:first-child{color:navy; text-align:right}");
-client.println(" .separated td{border-top:1px solid gray} ");
-client.println(" fieldset {max-width:836px; display:block; margin:0 auto} ");
-client.println(" fieldset.gpio{min-width:400px;display:inline-block} ");
-client.println(" form{display:block; margin:0 auto}");
-client.println(" div{display:block; margin:0 auto; max-width:900px}");
-client.println(" </style>");
-client.println("</head>");
-client.println(" ");
-client.println("<body>");
-client.println(" <form action='L' method='POST'> ");
-client.println(" <h1>PIN2CLOUD CONFIG (MKR1000)</h1> ");
-client.println(" <hr>");
-client.println(" <fieldset title='WiFi Connection'>");
-client.println("<legend>WiFi Connection</legend>");
-client.println("<table> ");
-client.println(" <tr>");
-client.println(" <td style='text-align: right'>SSID:</td>");
-client.println(" <td><input id='ssid' name='ssid' type='text' /></td>");
-client.println(" </tr>");
-client.println(" <tr>");
-client.println(" <td>PASSWORD:</td> ");
-client.println(" <td><input type='text' id='wifi_password' name='wifi_password'></td>");
-client.println(" </tr>");
-client.println("</table>");
-client.println(" </fieldset> ");
-client.println(" <br>");
-client.println(" <fieldset>");
-client.println("<legend>CLOUD CONNECTION</legend> ");
-client.println("<table> ");
-client.println(" <tr>");
-client.println(" <td>Base URL:</td> ");
-client.println(" <td><input placeholder='Cloud Service URL' type='text' id='cloudBaseURL' name='cloudBaseURL'></td>");
-client.println(" </tr>");
-client.println(" <tr>");
-client.println(" <td>Secret:</td> ");
-client.println(" <td><input placeholder='Cloud Service Secret' type='text' id='cloudSecret' name='cloudSecret'></td>");
-client.println(" </tr>");
-client.println(" <tr>");
-client.println(" <td>Refresh Rate:</td>");
-client.println(" <td> ");
-client.println("<select id='refreshRate' name='refreshRate'> ");
-client.println("<option value='1'>1 sec</option> ");
-client.println("<option value='5'>5 sec</option> ");
-client.println("<option value='10' selected>10 sec</option>");
-client.println("<option value='15'>15 sec</option>");
-client.println("<option value='30'>30 sec</option>");
-client.println("<option value='60'>1 min</option> ");
-client.println("<option value='300'>5 min</option> ");
-client.println("<option value='600'>10 min</option>");
-client.println("</select>");
-client.println(" </td>");
-client.println(" </tr>");
-client.println("</table>");
-client.println(" </fieldset> ");
-client.println(" <div style='margin: 0 auto; position: relative; left:18px'>");
-client.println("<fieldset class='gpio'>");
-client.println(" <legend>DIGITAL GPIO</legend> ");
-client.println(" <table class='gpio'> ");
-client.println(" <tr> ");
-client.println("<th>PIN</th> ");
-client.println("<th>LABEL</th> ");
-client.println("<th>MODE</th>");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D0</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d0' name='label_d0' placeholder='PORT_D0...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d0' name='selMode_d0'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D1</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d1' name='label_d1' placeholder='PORT_D1...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d1' name='selMode_d1'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D2</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d2' name='label_d2' placeholder='PORT_D2...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d2' name='selMode_d2'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println(" <option value='3'>OUTPUT PWM</option> ");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D3</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d3' name='label_d3' placeholder='PORT_D3...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d3' name='selMode_d3'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println(" <option value='3'>OUTPUT PWM</option> ");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D4</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d4' name='label_d4' placeholder='PORT_D4...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d4' name='selMode_d4'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println(" <option value='3'>OUTPUT PWM</option> ");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D5</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d5' name='label_d5' placeholder='PORT_D5...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d5' name='selMode_d5'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println(" <option value='3'>OUTPUT PWM</option> ");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D6</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d6' name='label_d6' placeholder='PORT_D6...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d6' name='selMode_d6'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D7</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d7' name='label_d7' placeholder='PORT_D7...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d7' name='selMode_d7'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D8</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d8' name='label_d8' placeholder='PORT_D8...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d8' name='selMode_d8'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D9</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_d9' name='label_d9' placeholder='PORT_D9...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d9' name='selMode_d9'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D10</td> ");
-client.println("<td>");
-client.println("<input type='text' id='label_d10' name='label_d10' placeholder='PORT_D10...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d10' name='selMode_d10'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D11</td> ");
-client.println("<td>");
-client.println("<input type='text' id='label_d11' name='label_d11' placeholder='PORT_D11...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d11' name='selMode_d11'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D12</td> ");
-client.println("<td>");
-client.println("<input type='text' id='label_d12' name='label_d12' placeholder='PORT_D12...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d12' name='selMode_d12'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>D13</td> ");
-client.println("<td>");
-client.println("<input type='text' id='label_d13' name='label_d13' placeholder='PORT_D13...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_d13' name='selMode_d13'>");
-client.println(" <option value='0'>DISABLED</option> ");
-client.println(" <option value='1'>INPUT</option> ");
-client.println(" <option value='2'>OUTPUT DIGITAL</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" </table> ");
-client.println("</fieldset>");
-client.println("<fieldset class='gpio'>");
-client.println(" <legend>ANALOG INPUT PINS</legend> ");
-client.println(" <table class='gpio'> ");
-client.println(" <tr> ");
-client.println("<th>PIN</th> ");
-client.println("<th>LABEL</th> ");
-client.println("<th>MODE</th>");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>A0</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_a0' name='label_a0' placeholder='PORT_A0...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_a0' name='selMode_a0'>");
-client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>A1</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_a1' name='label_a1' placeholder='PORT_A1...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_a1' name='selMode_a1'>");
-client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>A2</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_a2' name='label_a2' placeholder='PORT_A2...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_a2' name='selMode_a2'>");
-client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>A3</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_a3' name='label_a3' placeholder='PORT_A3...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_a3' name='selMode_a3'>");
-client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>A4</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_a4' name='label_a4' placeholder='PORT_A4...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_a4' name='selMode_a4'>");
-client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>A5</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_a5' name='label_a5' placeholder='PORT_A5...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_a5' name='selMode_a5'>");
-client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" <tr> ");
-client.println("<td>A6</td>");
-client.println("<td>");
-client.println("<input type='text' id='label_a6' name='label_a6' placeholder='PORT_A6...'>");
-client.println("</td> ");
-client.println("<td>");
-client.println("<select id='selMode_a6' name='selMode_a6'>");
-client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
-client.println("</select>");
-client.println("</td> ");
-client.println(" </tr>");
-client.println(" </table> ");
-client.println(" ");
-client.println("</fieldset>");
-client.println("<div style='max-width:300px; display: inline-block'> ");
-client.println(" <input type='submit' style='display:block; margin: 16px auto; padding: 16px; ' value='SAVE CONFIGURATION'/>");
-client.println("</div>");
-client.println(" </div>");
-client.println(" </form>");
-client.println("</body>");
-client.println("</html> ");
-
-
-
-          
-              // The HTTP response ends with another blank line:
-              client.println();  
+             
+              if(currentLine=="\r\n" || currentLine == ""){
+                while(client.available()){
+                  char c2 = client.read();
+                  payload += c2;
+                }
+                if(payload!=""){
+                  Serial.print("PAYLOAD: ");
+                  Serial.println(payload);
+                  processPayload(payload);
+                }
+                
+                // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+                // and a content-type so the client knows what's coming, then a blank line:
+                client.println("HTTP/1.1 200 OK");
+                client.println("Content-type:text/html");
+                client.println();
+            
+                // the content of the HTTP response follows the header:
   
-              break;
+  
+  client.println("<!DOCTYPE html>");
+  client.println("<html>");
+  client.println("<head>");
+  client.println(" <title>WELCOME TO PIN 2 CLOUD for MKR1000</title>");
+  client.println(" <meta charset='UTF-8'>");
+  client.println(" <meta name='viewport' content='width=device-width, initial-scale=1.0'>");
+  client.println(" <style>");
+  client.println(" table tr td:first-child{color:navy; text-align:right}");
+  client.println(" .separated td{border-top:1px solid gray} ");
+  client.println(" fieldset {max-width:836px; display:block; margin:0 auto} ");
+  client.println(" fieldset.gpio{min-width:400px;display:inline-block} ");
+  client.println(" form{display:block; margin:0 auto}");
+  client.println(" div{display:block; margin:0 auto; max-width:900px}");
+  client.println(" </style>");
+  client.println("</head>");
+  client.println(" ");
+  client.println("<body>");
+  client.println(" <form action='L' method='POST'> ");
+  client.println(" <h1>PIN2CLOUD CONFIG (MKR1000)</h1> ");
+  client.println(" <hr>");
+  client.println(" <fieldset title='WiFi Connection'>");
+  client.println("<legend>WiFi Connection</legend>");
+  client.println("<table> ");
+  client.println(" <tr>");
+  client.println(" <td style='text-align: right'>SSID:</td>");
+  client.println(" <td><input id='ssid' name='ssid' type='text' /></td>");
+  client.println(" </tr>");
+  client.println(" <tr>");
+  client.println(" <td>PASSWORD:</td> ");
+  client.println(" <td><input type='text' id='wifi_password' name='wifi_password'></td>");
+  client.println(" </tr>");
+  client.println("</table>");
+  client.println(" </fieldset> ");
+  client.println(" <br>");
+  client.println(" <fieldset>");
+  client.println("<legend>CLOUD CONNECTION</legend> ");
+  client.println("<table> ");
+  client.println(" <tr>");
+  client.println(" <td>Base URL:</td> ");
+  client.println(" <td><input placeholder='Cloud Service URL' type='text' id='cloudBaseURL' name='cloudBaseURL'></td>");
+  client.println(" </tr>");
+  client.println(" <tr>");
+  client.println(" <td>Secret:</td> ");
+  client.println(" <td><input placeholder='Cloud Service Secret' type='text' id='cloudSecret' name='cloudSecret'></td>");
+  client.println(" </tr>");
+  client.println(" <tr>");
+  client.println(" <td>Refresh Rate:</td>");
+  client.println(" <td> ");
+  client.println("<select id='refreshRate' name='refreshRate'> ");
+  client.println("<option value='1'>1 sec</option> ");
+  client.println("<option value='5'>5 sec</option> ");
+  client.println("<option value='10' selected>10 sec</option>");
+  client.println("<option value='15'>15 sec</option>");
+  client.println("<option value='30'>30 sec</option>");
+  client.println("<option value='60'>1 min</option> ");
+  client.println("<option value='300'>5 min</option> ");
+  client.println("<option value='600'>10 min</option>");
+  client.println("</select>");
+  client.println(" </td>");
+  client.println(" </tr>");
+  client.println("</table>");
+  client.println(" </fieldset> ");
+  client.println(" <div style='margin: 0 auto; position: relative; left:18px'>");
+  client.println("<fieldset class='gpio'>");
+  client.println(" <legend>DIGITAL GPIO</legend> ");
+  client.println(" <table class='gpio'> ");
+  client.println(" <tr> ");
+  client.println("<th>PIN</th> ");
+  client.println("<th>LABEL</th> ");
+  client.println("<th>MODE</th>");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D0</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d0' name='label_d0' placeholder='PORT_D0...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d0' name='selMode_d0'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D1</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d1' name='label_d1' placeholder='PORT_D1...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d1' name='selMode_d1'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D2</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d2' name='label_d2' placeholder='PORT_D2...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d2' name='selMode_d2'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println(" <option value='3'>OUTPUT PWM</option> ");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D3</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d3' name='label_d3' placeholder='PORT_D3...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d3' name='selMode_d3'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println(" <option value='3'>OUTPUT PWM</option> ");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D4</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d4' name='label_d4' placeholder='PORT_D4...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d4' name='selMode_d4'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println(" <option value='3'>OUTPUT PWM</option> ");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D5</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d5' name='label_d5' placeholder='PORT_D5...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d5' name='selMode_d5'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println(" <option value='3'>OUTPUT PWM</option> ");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D6</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d6' name='label_d6' placeholder='PORT_D6...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d6' name='selMode_d6'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D7</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d7' name='label_d7' placeholder='PORT_D7...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d7' name='selMode_d7'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D8</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d8' name='label_d8' placeholder='PORT_D8...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d8' name='selMode_d8'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D9</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d9' name='label_d9' placeholder='PORT_D9...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d9' name='selMode_d9'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D10</td> ");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d10' name='label_d10' placeholder='PORT_D10...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d10' name='selMode_d10'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D11</td> ");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d11' name='label_d11' placeholder='PORT_D11...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d11' name='selMode_d11'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D12</td> ");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d12' name='label_d12' placeholder='PORT_D12...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d12' name='selMode_d12'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>D13</td> ");
+  client.println("<td>");
+  client.println("<input type='text' id='label_d13' name='label_d13' placeholder='PORT_D13...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_d13' name='selMode_d13'>");
+  client.println(" <option value='0'>DISABLED</option> ");
+  client.println(" <option value='1'>INPUT</option> ");
+  client.println(" <option value='2'>OUTPUT DIGITAL</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" </table> ");
+  client.println("</fieldset>");
+  client.println("<fieldset class='gpio'>");
+  client.println(" <legend>ANALOG INPUT PINS</legend> ");
+  client.println(" <table class='gpio'> ");
+  client.println(" <tr> ");
+  client.println("<th>PIN</th> ");
+  client.println("<th>LABEL</th> ");
+  client.println("<th>MODE</th>");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>A0</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_a0' name='label_a0' placeholder='PORT_A0...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_a0' name='selMode_a0'>");
+  client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>A1</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_a1' name='label_a1' placeholder='PORT_A1...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_a1' name='selMode_a1'>");
+  client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>A2</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_a2' name='label_a2' placeholder='PORT_A2...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_a2' name='selMode_a2'>");
+  client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>A3</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_a3' name='label_a3' placeholder='PORT_A3...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_a3' name='selMode_a3'>");
+  client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>A4</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_a4' name='label_a4' placeholder='PORT_A4...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_a4' name='selMode_a4'>");
+  client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>A5</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_a5' name='label_a5' placeholder='PORT_A5...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_a5' name='selMode_a5'>");
+  client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" <tr> ");
+  client.println("<td>A6</td>");
+  client.println("<td>");
+  client.println("<input type='text' id='label_a6' name='label_a6' placeholder='PORT_A6...'>");
+  client.println("</td> ");
+  client.println("<td>");
+  client.println("<select id='selMode_a6' name='selMode_a6'>");
+  client.println(" <option value='0'>DISABLED</option><option value='1'>ENABLED</option>");
+  client.println("</select>");
+  client.println("</td> ");
+  client.println(" </tr>");
+  client.println(" </table> ");
+  client.println(" ");
+  client.println("</fieldset>");
+  client.println("<div style='max-width:300px; display: inline-block'> ");
+  client.println(" <input type='submit' style='display:block; margin: 16px auto; padding: 16px; ' value='SAVE CONFIGURATION'/>");
+  client.println("</div>");
+  client.println(" </div>");
+  client.println(" </form>");
+  client.println("</body>");
+  client.println("</html> ");
+  
+  
+  
+            
+                // The HTTP response ends with another blank line:
+                client.println();  
+    
+                break;
+              }
+    
+             
+              currentLine="";
+            }
+    
+            // Check to see if the client request was "GET /H" or "GET /L":
+            if (currentLine.endsWith("GET /ON")) {
+               digitalWrite(LED_BUILTIN, HIGH);               // GET /H turns the LED on
+            }
+            if (currentLine.endsWith("GET /OFF")) {
+              digitalWrite(LED_BUILTIN, LOW);                // GET /L turns the LED off
             }
   
-           
-            currentLine="";
-          }
+            if (currentLine.endsWith("POST /CONFIG")){
+              doBlink(10,50);
+              Serial.println(payload);
+            }
   
-          // Check to see if the client request was "GET /H" or "GET /L":
-          if (currentLine.endsWith("GET /ON")) {
-             digitalWrite(LED_BUILTIN, HIGH);               // GET /H turns the LED on
           }
-          if (currentLine.endsWith("GET /OFF")) {
-            digitalWrite(LED_BUILTIN, LOW);                // GET /L turns the LED off
-          }
-
-          if (currentLine.endsWith("POST /CONFIG")){
-            doBlink(10,50);
-            Serial.println(payload);
-          }
-
         }
       }
+      // close the connection:
+      client.stop();
+      Serial.println("client disconnected");
     }
-    // close the connection:
-    client.stop();
-    Serial.println("client disconnected");
   }
 }
 
@@ -686,6 +716,9 @@ void processPayload(String payload){
   
   configuration.initializationToken = 1;
   my_flash_store.write(configuration);
+  Serial.println("Resetting in 5 seconds...");
+  delay(5000);
+  Reset();
 }
 
 void dumpDigitalPort(DigitalPort port, String portName){
@@ -743,4 +776,68 @@ void dumpConfiguration(){
   dumpAnalogPort(configuration.A4, "A4");
   dumpAnalogPort(configuration.A5, "A5");
   dumpAnalogPort(configuration.A6, "A6");  
+}
+
+void SwitchToClientMode(){
+  inClientMode = true;
+  
+  char client_ssid[] = "opodiym"; //  your network SSID (name)
+  char client_pass[] = "luaus7151";    // your network password (use for WPA, or use as key for WEP)
+  int  client_keyIndex = 0;            // your network key Index number (needed only for WEP)  
+
+  // attempt to connect to Wifi network:
+  while (client_status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(client_ssid);
+    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+    client_status = WiFi.begin(client_ssid, client_pass);
+
+    // wait 10 seconds for connection:
+    delay(10000);
+  }  
+
+  Serial.println("Connected to wifi");
+  printWifiClientStatus();
+
+  Serial.println("\nStarting connection to server...");
+  // if you get a connection, report back via serial:
+  if (client_part2.connect(client_server, 80)) {
+    Serial.println("connected to server");
+    // Make a HTTP request:
+    client_part2.println("GET /search?q=arduino HTTP/1.1");
+    client_part2.println("Host: www.google.com");
+    client_part2.println("Connection: close");
+    client_part2.println();
+  }
+}
+
+void SwitchToAccessPointMode(){
+  inClientMode = false;
+  openAccessPoint();  
+  server.begin(); //BEGIN WEB SERVER 
+
+  printAccessPointStatus();
+}
+
+void Reset(){
+  Serial.println("Resetting...!");
+  setup();
+  Serial.println("This line should have not executed!!!!!!!!");
+}
+
+void printWifiClientStatus() {
+  // print the SSID of the network you're attached to:
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+
+  // print your WiFi shield's IP address:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+
+  // print the received signal strength:
+  long rssi = WiFi.RSSI();
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
 }
