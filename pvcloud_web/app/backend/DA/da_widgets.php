@@ -18,10 +18,7 @@ class be_widget {
 class be_widgettype {
 
     public $widget_type_id = 0;
-    public $widget_type_name = "";
-    public $description = "";
-
-
+    public $widget_type_code = "";
 }
 
 class da_widgets {
@@ -250,10 +247,9 @@ class da_widgets {
      * @return \be_widgettype
      */
     public static function GetWidgetsTypes() {
-        $sqlCommand = "SELECT widget_type_id, widget_type_name, description"
+        $sqlCommand = "SELECT widget_type_id, widget_type_code"
                 . " FROM widget_types "
-                . " WHERE deleted_datetime is null ";
-     
+                . " WHERE deleted_datetime is null ";     
 
         $mysqli = DA_Helper::mysqli_connect();
         if ($mysqli->connect_errno) {
@@ -276,7 +272,7 @@ class da_widgets {
         $widgetTypeEntry = new be_widgettype();
 
         $stmt->bind_result(
-                $widgetTypeEntry->widget_type_id, $widgetTypeEntry->widget_type_name, $widgetTypeEntry->description);
+                $widgetTypeEntry->widget_type_id, $widgetTypeEntry->widget_type_code);
 
         $arrayResult = [];
         while ($stmt->fetch()) {

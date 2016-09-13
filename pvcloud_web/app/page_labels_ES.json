@@ -82,10 +82,12 @@
         "lbl_app_id": "AppID:",
         "lbl_app_name": "Nombre de App:",
         "lbl_app_description": "Descripción:",
-        "sections":[
-            {"title":"Introducción", "content":[
-                    
-            ]}
+        "sections": [
+            {
+                "title": "Introducción",
+                "content": [
+                ]
+            }
         ],
         "intro_title": "Introducción",
         "intro_p1": "pvCloud es un sistema de código abierto para la creación de aplicaciones en el Internet de Las Cosas. pvCloud facilita la definición de aplicaciones y la conexión de dispositivos a dichas aplicaciones para el intercambio y almacenamiento de datos.",
@@ -176,11 +178,21 @@
         "phtitle": "Digite aquí el título del widget",
         "phdes": "Describa brevemente su widget",
         "phwidgettype": "Seleccione el tipo de widget",
+        "SIMPLE_LAST_VALUE": "Último Valor",
+        "SIMPLE_LINE_CHART": "Gráfico Lineal",
         "phfrequency": "Digite aquí la frecuencia del widget",
         "cancel": "Cancel",
-        "delete": "Borrar"
-
-
-
+        "delete": "Borrar",
+        "FREQ_0s": "Inmediato",
+        "FREQ_5s": "5 Seg.",
+        "FREQ_10s": "10 Seg.",
+        "FREQ_30s": "30 Seg.",
+        "FREQ_1m": "1 Min.",
+        "FREQ_2m": "2 Min.",
+        "FREQ_5m": "5 Min.",
+        "FREQ_10m": "10 Min.",
+        "FREQ_30m": "30 Min.",
+        "FREQ_1h": "1 Hora",
+        "FREQ_1d": "1 Día"
     }
 }

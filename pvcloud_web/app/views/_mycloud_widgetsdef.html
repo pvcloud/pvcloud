@@ -8,7 +8,7 @@
     </ol>
 
     <!-- TABS ASK JOSE!!!! --> 
-    <ul data-ng-show="PageID!=='new'" class="nav nav-tabs" data-ng-class="{'nav-justified':PageID != undefined}">
+    <ul data-ng-show="PageID !== 'new'" class="nav nav-tabs" data-ng-class="{'nav-justified':PageID != undefined}">
         <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Basics}"><a data-ng-click="SwitchToTab(Tabs.Basics)">Definición&nbsp;de&nbsp;Widget</a></li>
         <li role="presentation" data-ng-show="WidgetID" data-ng-class="{active:CurrentTab == Tabs.Configuration}"><a data-ng-click="SwitchToTab(Tabs.Configuration)">Configuración</a></li>
     </ul>
@@ -34,25 +34,39 @@
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
                 <label for="txtType">{{PageLabels._mycloud_widgetsdef.widget_type}}</label>
-                <select class="form-control"  data-ng-model="Widget.widget_type_id" data-ng-change="SetFormDirty()" required  ng-options="wt.widget_type_id as wt.widget_type_name for wt in WidgetTypes">
+                <select class="form-control"  data-ng-model="Widget.widget_type_id" data-ng-change="SetFormDirty()" required  
+                        ng-options="wt.widget_type_id as PageLabels._mycloud_widgetsdef[wt.widget_type_code] for wt in WidgetTypes">
                     <option value="">{{PageLabels._mycloud_widgetsdef.phwidgettype}}</option>
                 </select>
             </div>
-            
-             <!-- Widget Type-->
+
+            <!-- Frequency-->
             <div class="form-group">
                 <span style="display:inline-block;color:red; float:right" data-ng-if="ValidationError_Description"><i class="glyphicon glyphicon-warning-sign"></i> {{ValidationError_Description}}</span>
                 <label for="txtFrequency">{{PageLabels._mycloud_widgetsdef.frequency}}</label>
-                <input type="text" class="form-control" id="txtFrequency" placeholder={{PageLabels._mycloud_widgetsdef.phfrequency}} data-ng-change="SetFormDirty()" data-ng-model="Widget.frequency">
+                <select class="form-control"  
+                        data-ng-model="Widget.frequency" 
+                        data-ng-change="SetFormDirty()" required >
+                    <option value="">{{PageLabels._mycloud_widgetsdef.phfrequency}}</option>
+                    <option value="0">{{PageLabels._mycloud_widgetsdef.FREQ_0s}}</option>
+                    <option value="5">{{PageLabels._mycloud_widgetsdef.FREQ_5s}}</option>
+                    <option value="10">{{PageLabels._mycloud_widgetsdef.FREQ_10s}}</option>
+                    <option value="30">{{PageLabels._mycloud_widgetsdef.FREQ_30s}}</option>
+                    <option value="60">{{PageLabels._mycloud_widgetsdef.FREQ_1m}}</option>
+                    <option value="120">{{PageLabels._mycloud_widgetsdef.FREQ_2m}}</option>
+                    <option value="300">{{PageLabels._mycloud_widgetsdef.FREQ_5m}}</option>
+                    <option value="600">{{PageLabels._mycloud_widgetsdef.FREQ_10m}}</option>
+                    <option value="1800">{{PageLabels._mycloud_widgetsdef.FREQ_30m}}</option>
+                    <option value="3600">{{PageLabels._mycloud_widgetsdef.FREQ_1h}}</option>
+                    <option value="86400">{{PageLabels._mycloud_widgetsdef.FREQ_1d}}</option>
+                </select>
             </div>
-               
-
             <button class="btn btn-success" data-ng-click="SaveWidget()" data-ng-disabled="FormIsClean"><i class="glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;{{PageLabels._mycloud_widgetsdef.save}}</button>
-            <button class="btn btn-danger" data-ng-if="Widget.widget_id > 0" data-ng-click="DeletePage()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;{{PageLabels._mycloud_widgetsdef.save}}</button>
+            <button class="btn btn-danger" data-ng-if="Widget.widget_id > 0" data-ng-click="DeleteWidget()" ><i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;{{PageLabels._mycloud_widgetsdef.delete}}</button>
             <button class="btn btn-link" data-ng-click="Cancelar()">{{FormIsClean?PageLabels._mycloud_widgetsdef.backtopage:PageLabels._mycloud_widgetsdef.cancel}}</button>          
         </form>        
     </div>
-    
+
     <!-- WIDGETS CONFIGURATION -->
     <div class="container-fluid" data-ng-show="CurrentTab == Tabs.Widgets"> 
         TEST ON CONFIG TABS
@@ -64,6 +78,6 @@
         -->
 
     </div>
-    
+
 </div>
 

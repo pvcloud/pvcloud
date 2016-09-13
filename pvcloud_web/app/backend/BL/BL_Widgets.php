@@ -1,75 +1,48 @@
 <?php
 
-/* * *
- * MAKE A POST CALL TO THIS URL: 
- * http://localhost:8080/pvcloud/backend/widget_add_post.php
- * 
- * SEND A JSON OBJECT AS THE RAW BODY AS FOLLOWS:
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-    {"account_id":"1",
-    "token":"use the current login token here",
-    "page_id":"1",
-    "widget_type_id":"1",
-    "title":"generic title",
-    "description":"generic description",
-    "order":"1"
-    }
-
- * 
- * * */
-error_reporting(E_ERROR);
-
-
-
-class simpleResponse {
-
-    public $status = "";
-    public $message = "";
-    public $data = [];
-
-}
-
-require_once './DA/da_conf.php';
-require_once './DA/da_helper.php';
-require_once './DA/da_account.php';
-require_once './DA/da_session.php';
-require_once './DA/da_apps_registry.php';
-require_once './DA/da_widgets.php';
-
-include './inc/incWebServiceSessionValidation_POST.php';
-
-class AddWidgetWebService {
+/**
+ * Description of BL_Widgets
+ *
+ * @author janunezc
+ */
+class BL_Widgets {
 
     public static function AddWidget() {
 
-        $response = new simpleResponse();
+        $responseData = new simpleResponse();
         try {
-            $parameters = AddWidgetWebService::collectParameters();
-            $parametersErrors = AddWidgetWebService::validateParameters($parameters);
+            $parameters = BL_Widgets::collectParameters();
+            $parametersErrors = BL_Widgets::validateParameters($parameters);
 
             if (count($parametersErrors) == 0) {
-                $savedWidget = AddWidgetWebService::saveWidget($parameters);
+                $savedWidget = BL_Widgets::saveWidget($parameters);
                 if ($savedWidget->widget_id > 0) {
-                    $response->message = "Widget guardado satisfactoriamente";
-                    $response->status = "OK";
-                    $response->data = $savedWidget;
+                    $responseData->message = "Widget guardado satisfactoriamente";
+                    $responseData->status = "OK";
+                    $responseData->data = $savedWidget;
                 }
             } else {
-                $response->message = "Parámetros Inválidos";
-                $response->status = "ERROR";
-                $response->data = $parametersErrors;
+                $responseData->message = "Parámetros Inválidos";
+                $responseData->status = "ERROR";
+                $responseData->data = $parametersErrors;
             }
         } catch (Exception $ex) {
-            $response->message = $ex->getMessage();
-            $response->status = "EXCEPTION";
-            $response->data = NULL;
+            $responseData->message = $ex->getMessage();
+            $responseData->status = "EXCEPTION";
+            $responseData->data = NULL;
         }
 
-        return $response;
+        return $responseData;
     }
 
     private static function collectParameters() {
-        
+
         $rawPOSTContent = file_get_contents('php://input');
         $decodedPOSTParams = json_decode($rawPOSTContent);
 
@@ -80,7 +53,7 @@ class AddWidgetWebService {
         $parameters->description = $decodedPOSTParams->description;
         $parameters->order = $decodedPOSTParams->order;
         $parameters->refresh_frequency_sec = $decodedPOSTParams->refresh_frequency_sec;
-        
+
         return $parameters;
     }
 
@@ -94,7 +67,7 @@ class AddWidgetWebService {
         if (!is_numeric($parameters->widget_type_id) || !$parameters->widget_type_id > 0) {
             $errorsFound[] = "Tipo de widget es inválido.";
         }
-        
+
         if (!is_string($parameters->title) || $parameters->title == "") {
             $errorsFound[] = "Título del widget es inválido.";
         }
@@ -106,7 +79,7 @@ class AddWidgetWebService {
         if (!is_numeric($parameters->order) || !($parameters->order >= 1)) {
             $errorsFound[] = "Orden del Widget es inválido.";
         }
-        
+
         if (!is_numeric($parameters->refresh_frequency_sec) || !($parameters->refresh_frequency_sec >= 1)) {
             $errorsFound[] = "Frecuencia es inválida.";
         }
@@ -119,6 +92,3 @@ class AddWidgetWebService {
     }
 
 }
-include './inc/incJSONHeaders.php';
-
-echo json_encode(AddWidgetWebService::AddWidget());

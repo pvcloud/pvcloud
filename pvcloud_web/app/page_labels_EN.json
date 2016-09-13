@@ -33,12 +33,12 @@
     "passwordRecovery": {
         "title": "Password Recovery",
         "email": "Type your email account",
-        "email_watermark":"Email associated with your pvCloud account",
+        "email_watermark": "Email associated with your pvCloud account",
         "newPassword": "Type your new password",
-        "newPassword_watermark":"New Password",
+        "newPassword_watermark": "New Password",
         "newPasswordAgain": "Type your new password again",
-        "newPasswordAgain_watermark":"New Password Again",
-        "btn_change_password":"Change Password"
+        "newPasswordAgain_watermark": "New Password Again",
+        "btn_change_password": "Change Password"
     },
     "passwordRecoverySuccess": {
         "success": "Your password has been successfully changed.",
@@ -105,48 +105,58 @@
     },
     "_mycloud_pagesdef": {
         "title": "Title",
-        "description":"Description",
+        "description": "Description",
         "visibility": "Visibility",
         "private": "Private",
         "public": "Public",
         "shared": "Shared",
         "save": "Save",
-        "delete" : "Delete",
-        "pagedef":"Page Definition" ,
+        "delete": "Delete",
+        "pagedef": "Page Definition",
         "backtoapp": "Back to App",
         "cancel": "Cancel",
         "phtitle": "Type here your page title",
-        "phdescription" : "Describe briefly your app"
+        "phdescription": "Describe briefly your app"
     },
     "_mycloud_myapps_data_pages": {
         "title": "Data Tools",
         "description": "In this section tools will be provided to surf and analize application data.",
         "download": "Download CSV"
     },
-    "_mycloud_pagesdef_widgets":{
-        "filter":"Type one ore more words to filter",
+    "_mycloud_pagesdef_widgets": {
+        "filter": "Type one ore more words to filter",
         "name_description": "Name and Description",
-        "add_widget":"Add Widget",
-        "no_widget":"No widgets defined"
-        
-    
-    
+        "add_widget": "Add Widget",
+        "no_widget": "No widgets defined"
+
+
+
     },
-    "_mycloud_widgetsdef":{
-        "title":"Title",
+    "_mycloud_widgetsdef": {
+        "title": "Title",
         "description": "Description",
-        "widget_type":"Widget Type",
-        "frequency":"Frequency",
-        "save":"Save",
-        "backtopage":"Go back to the Page",
-        "phtitle":"Type here the title of your widget",
-        "phdes":"Describe briefly your widget",
-        "phwidgettype":"Select your widget type",
-        "phfrequency":"Type here the widget's frequency",
-        "cancel":"Cancel",
-        "delete":"Delete"
-        
-    
-    
+        "widget_type": "Widget Type",
+        "frequency": "Frequency",
+        "save": "Save",
+        "backtopage": "Go back to the Page",
+        "phtitle": "Type here the title of your widget",
+        "phdes": "Describe briefly your widget",
+        "phwidgettype": "Select your widget type",
+        "SIMPLE_LAST_VALUE": "Last Value",
+        "SIMPLE_LINE_CHART": "Linear Chart",
+        "phfrequency": "Type here the widget's frequency",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "FREQ_0s": "Immediate",
+        "FREQ_5s": "5 Sec",
+        "FREQ_10s": "10 Sec",
+        "FREQ_30s": "30 Sec",
+        "FREQ_1m": "1 Min",
+        "FREQ_2m": "2 Min",
+        "FREQ_5m": "5 Min",
+        "FREQ_10m": "10 Min",
+        "FREQ_30m": "30 Min",
+        "FREQ_1h": "1 Hour",
+        "FREQ_1d": "1 Day"
     }
 }

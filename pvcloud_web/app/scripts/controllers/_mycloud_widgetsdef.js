@@ -5,11 +5,6 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         console.log($scope.Widget.widget_type_id);
         $scope.FormIsClean = false;
     };
-    
-
-    
-
-
 
     $scope.Cancelar = function () {
         if (!$scope.FormIsClean) {
@@ -17,7 +12,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
                 return;
             }
         }
-        $location.path("pagesdef/"+$scope.Page.page_id+"/tab_widgets");
+        $location.path("pagesdef/" + $scope.Page.page_id + "/tab_widgets");
     };
 
     $scope.SaveWidget = function () {
@@ -36,10 +31,6 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
             console.log("CREATE WIDGET");
             createWidget($scope.Widget);
         }
-
-
-
-
     };
 
     $scope.RemoveWidget = function () {
@@ -74,7 +65,7 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
     initialize();
 
     function createWidget(widgetToSave) {
-        if ( widgetToSave.page_id > 0) {
+        if (widgetToSave.page_id > 0) {
             if (widgetToSave.title !== undefined && widgetToSave.title !== "") {
                 if (widgetToSave.description !== undefined && widgetToSave.description !== "") {
                     console.log("$scope.Widget:", $scope.Widget);
@@ -87,11 +78,11 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
                             token,
                             $scope.Widget
                             );
-                    
+
                     promise.then(function (response) {
                         UtilityService.ProcessServiceResponse(response.data /*Used response.data as object returned by $http.post includes a lot more of unnecessary stuff*/,
                                 function success(response) {
-                                    
+
                                     var savedWidget = response.data;
                                     $location.path("/widgetsdef/" + savedWidget.widget_id);
                                     alert("Los datos se almacenaron satisfactoriamente.");
@@ -166,23 +157,21 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         getListOfWidgetTypes();
 
     }
-    
-    
-      function getListOfWidgetTypes() {
+
+
+    function getListOfWidgetTypes() {
 
         var wsParameters = {
             account_id: sessionService.GetCurrentAccountID(),
-            token: sessionService.GetCurrentToken(),
+            token: sessionService.GetCurrentToken()
 
         };
-          
+
         WidgetService.GetWidgetTypes(wsParameters.account_id, wsParameters.token).$promise.then(function (response) {
-                    $scope.WidgetTypes = response.data;
-                    //console.log($scope.WidgetTypes);
+            $scope.WidgetTypes = response.data;
+            console.log("WIDGET TYPES");
+            console.log($scope.WidgetTypes);
         });
-
-      
-
     }
 
     function getDataFromServer() {
@@ -191,32 +180,31 @@ angular.module('pvcloudApp').controller('_mycloud_widgetsdef', function ($scope,
         var widget_id = $routeParams.p1;
         var page_id = $routeParams.p2;
 
-            if (widget_id === "new") {
-                
-                PageService.GetPage(account_id, token, page_id).$promise.then(function (response) {
-                    var page = response.data;
-                            
-                    var widget = {
-                        widget_id: "new",
-                        page_id: page_id,
-                        widget_type_id: 0,
-                        title: "",
-                        description: "",
-                        refresh_frequency_sec: 10,
-                        order: 0
-                    };
-                    loadDataToForm(widget, page);
-                });
-            } 
-            else 
-            {
-                WidgetService.GetWidgetAndPageByID(account_id, token, widget_id).$promise.then(function (response) {
-                    var widget = response.data.widget;
-                    var page = response.data.page;
-                    loadDataToForm(widget, page);
-                });
-            }
-        
+        if (widget_id === "new") {
+
+            PageService.GetPage(account_id, token, page_id).$promise.then(function (response) {
+                var page = response.data;
+
+                var widget = {
+                    widget_id: "new",
+                    page_id: page_id,
+                    widget_type_id: 0,
+                    title: "",
+                    description: "",
+                    refresh_frequency_sec: 10,
+                    order: 0
+                };
+                loadDataToForm(widget, page);
+            });
+        } else
+        {
+            WidgetService.GetWidgetAndPageByID(account_id, token, widget_id).$promise.then(function (response) {
+                var widget = response.data.widget;
+                var page = response.data.page;
+                loadDataToForm(widget, page);
+            });
+        }
+
     }
 
     function loadDataToForm(widget, page) {

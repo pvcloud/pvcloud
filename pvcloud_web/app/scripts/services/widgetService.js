@@ -17,8 +17,7 @@ angular.module('pvcloudApp').factory('WidgetService', function ($resource, $http
     
     function WidgetInsert(account_id, token, Widget){
         console.log("WidgetInsert --> http.post");
-        return  $http.post(baseURL + "widget_add_post.php", 
-            {   
+        var postData = {   
                 account_id: account_id, 
                 token: token, 
                 title: Widget.title, 
@@ -27,7 +26,11 @@ angular.module('pvcloudApp').factory('WidgetService', function ($resource, $http
                 widget_type_id:Widget.widget_type_id, 
                 order:1, 
                 refresh_frequency_sec:Widget.frequency
-            });
+            };
+            
+            console.log(postData);
+        
+        return  $http.post(baseURL + "webui_api.php/widget_add", postData);
     }
     
     
